@@ -112,32 +112,38 @@ void Motor::ConnectDynamixel()
 	}
 }
 
-void Motor::WriteData()
+bool Motor::WriteData()
 {
+	bool is_Write = false;
 	// !!!!!! Must write torque enable first
 	switch (write_count)
 	{
 	case 0:
+		is_Write = is_Write_TorqueEnable;
 		if (is_Write_TorqueEnable)
 			WriteTorqueEnable();
 		write_count = 1;
 		break;
 	case 1:
+		is_Write = is_Write_Torque;
 		if (is_Write_Torque)
 			WriteTorque();
 		write_count = 2;
 		break;
 	case 2:
+		is_Write = is_Write_Velocity;
 		if (is_Write_Velocity)
 			WriteVelocity();
 		write_count = 3;
 		break;
 	case 3:
+		is_Write = is_Write_Scale;
 		if (is_Write_Scale)
 			WriteScale();
-		write_count = 0;	
+		write_count = 0;
 		break;
 	}
+	return is_Write;
 }
 
 void Motor::AddParam()
@@ -181,17 +187,17 @@ void Motor::ReadData()
 
 void Motor::AddParamPresentAngle()
 {
-	bool dxl_addparam_result = groupBulkRead->addParam(Motor_ID, ADDR_PRESENT_POSITION, LEN_PRESENT_POSITION);
+	groupBulkRead->addParam(Motor_ID, ADDR_PRESENT_POSITION, LEN_PRESENT_POSITION);
 }
 
 void Motor::AddParamPresentVelocity()
 {
-	bool dxl_addparam_result = groupBulkRead->addParam(Motor_ID, ADDR_PRESENT_VELOCITY, LEN_PRESENT_VELOCITY);
+	groupBulkRead->addParam(Motor_ID, ADDR_PRESENT_VELOCITY, LEN_PRESENT_VELOCITY);
 }
 
 void Motor::AddParamPresentTorque()
 {
-	bool dxl_addparam_result = groupBulkRead->addParam(Motor_ID, ADDR_PRESENT_TORQUE, LEN_PRESENT_TORQUE);
+ 	groupBulkRead->addParam(Motor_ID, ADDR_PRESENT_TORQUE, LEN_PRESENT_TORQUE);
 }
 
 void Motor::ReadPresentAngle()
@@ -221,6 +227,7 @@ void Motor::WriteScale()
     param_goal_position[3] = DXL_HIBYTE(DXL_HIWORD(Motor_Scale));
 
 	groupBulkWrite->addParam(Motor_ID, ADDR_GOAL_POSITION, LEN_GOAL_POSITION, param_goal_position);
+	is_Write_Scale = false;
 }
 
 void Motor::WriteVelocity()
@@ -232,15 +239,17 @@ void Motor::WriteVelocity()
     param_goal_velocity[3] = DXL_HIBYTE(DXL_HIWORD(Motor_Velocity));
 
 	groupBulkWrite->addParam(Motor_ID, ADDR_GOAL_VELOCITY, LEN_GOAL_VELOCITY, param_goal_velocity);
+	is_Write_Velocity = false;
 }
 
 void Motor::WriteTorque()
 {
 	uint8_t param_goal_torque[LEN_GOAL_TORQUE];
 	param_goal_torque[0] = DXL_LOBYTE(DXL_LOWORD(Motor_Torque));
-    param_goal_torque[1] = DXL_HIBYTE(DXL_LOWORD(Motor_Torque));
-
+    param_goal_torque[1] = DXL_LOBYTE(DXL_HIWORD(Motor_Torque));
+	
 	groupBulkWrite->addParam(Motor_ID, ADDR_GOAL_TORQUE, LEN_GOAL_TORQUE, param_goal_torque);
+	is_Write_Torque = false;
 }
 
 void Motor::WriteTorqueEnable()
@@ -249,4 +258,5 @@ void Motor::WriteTorqueEnable()
 	param_torque_enable[0] = Motor_TorqueEnable;
 
 	groupBulkWrite->addParam(Motor_ID, ADDR_TORQUE_ENABLE, LEN_TORQUE_ENABLE, param_torque_enable);
+	is_Write_TorqueEnable = false;
 }

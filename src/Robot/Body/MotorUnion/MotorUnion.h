@@ -51,7 +51,7 @@ public:
 	const float &GetMotor_PresentTorque(const unsigned char &idx) const;
 	const int &GetMotor_Velocity(const unsigned char &idx) const;
 
-protected:
+// protected:
 	const float &GetMotor_Scale2RPM(const unsigned char &idx) const;
 	const short &GetMotor_CenterScale(const unsigned char &idx) const;
 	const int &GetMotor_Scale(const unsigned char &idx) const;	 // in motor scale

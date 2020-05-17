@@ -95,23 +95,23 @@ const bool MotorUnion::ConnectAllMotors(vector<unsigned char> &AllPortNumber)
 
 const bool MotorUnion::CheckAllMotorsConnected() const
 {
-	bool tmp = true;
+	bool connected = true;
 	for (int i = 0; i < Motor_Union.size(); i++)
 	{
 		Motor_Union.at(i)->ConnectDynamixel();
-		tmp &= Motor_Union.at(i)->GetMotorConnected();
+		connected &= Motor_Union.at(i)->GetMotorConnected();
 	}
-	return tmp;
+	return connected;
 }
 
 const bool MotorUnion::CheckAllMotorsArrival() const
 {
-	bool tmp = true;
+	bool arrival = true;
 	for (int i = 0; i < Motor_Union.size(); i++)
 	{
-		tmp = Motor_Union.at(i)->GetMotor_Arrival() & tmp;
+		arrival &= Motor_Union.at(i)->GetMotor_Arrival();
 	}
-	return tmp;
+	return arrival;
 }
 
 void MotorUnion::WaitAllMotorsArrival() const
@@ -133,9 +133,10 @@ void MotorUnion::WaitAllMotorsArrival(const int &total_waiting_time_ms) const
 		this_thread::sleep_for(chrono::milliseconds(waiting_frequency));
 	}
 }
+
 //------------------------------------------------------------------------------//
 /*
-	Get Motors Data
+	Get All Motors Data
 */
 const bool MotorUnion::GetAllMotorsTorqueEnable() const
 {
@@ -151,7 +152,6 @@ const bool MotorUnion::GetAllMotorsTorqueEnable() const
 /*
 	Set Motors Data
 */
-
 void MotorUnion::SetAllMotorsAngle(const float &angle) const
 {
 	for (int i = 0; i < Motor_Union.size(); i++)
@@ -344,57 +344,61 @@ void MotorUnion::BGReadWrite()
 {
 	while (!_is_deleted_thread_BG)
 	{
-		// auto start = std::chrono::steady_clock::now();
-		if (true)
+		if (CheckAllMotorsConnected())
 		{
 			if (_is_recovery_state)
 			{
 				RecoveryState();
 				_is_recovery_state = false;
 			}
+			this_thread::sleep_for(chrono::milliseconds(100));
 			WriteData();
 			ReadData();
 		}
 		else
 			_is_recovery_state = true;
-		// auto end = std::chrono::steady_clock::now();
-		// std::cout << chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << endl;
 	}
 }
 
 void MotorUnion::WriteData() const
 {
+	// Add parameters
+	bool is_Write = false;
 	for (int i = 0; i < Motor_Union.size(); i++)
-		Motor_Union.at(i)->WriteData();
+		is_Write |= Motor_Union.at(i)->WriteData();
 
-	for (int i = 0; i < groupBulkWrite.size(); i++)
+	// Write to motor
+	if(is_Write)
 	{
-		int dxl_comm_result = groupBulkWrite.at(i)->txPacket();
-		if (dxl_comm_result != COMM_SUCCESS)
-			printf("%s\n", packetHandler->getTxRxResult(dxl_comm_result));
-		groupBulkWrite.at(i)->clearParam();
+		for (int i = 0; i < groupBulkWrite.size(); i++)
+		{
+			int dxl_comm_result = groupBulkWrite.at(i)->txPacket();
+			if (dxl_comm_result != COMM_SUCCESS)
+				printf("%s\n", packetHandler->getTxRxResult(dxl_comm_result));
+			groupBulkWrite.at(i)->clearParam();
+		}
 	}
 }
 
 void MotorUnion::ReadData() const
 {
-	// Add parameters first
+	// Add parameters
 	for (int i = 0; i < Motor_Union.size(); i++)
 		Motor_Union.at(i)->AddParam();
 
 	// Read Data
-	for (int i = 0; i < portHandler.size(); i++)
+	for (int i = 0; i < groupBulkRead.size(); i++)
 	{
 		int dxl_comm_result = groupBulkRead.at(i)->txRxPacket();
 		if (dxl_comm_result != COMM_SUCCESS)
 			printf("%s\n", packetHandler->getTxRxResult(dxl_comm_result));
 	}
 
-	// Write to Motor
+	// Record to Motor
 	for (int i = 0; i < Motor_Union.size(); i++)
 		Motor_Union.at(i)->ReadData();
 
 	// clear parameters
-	for (int i = 0; i < portHandler.size(); i++)
+	for (int i = 0; i < groupBulkRead.size(); i++)
 		groupBulkRead.at(i)->clearParam();
 }

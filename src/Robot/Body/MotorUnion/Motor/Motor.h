@@ -60,7 +60,7 @@ public:
 		dynamixel::GroupBulkRead *groupBulkRead,
 		dynamixel::GroupBulkWrite *groupBulkWrite);
 	void ConnectDynamixel();
-	void WriteData();
+	bool WriteData();
 	void AddParam();
 	void ReadData();
 

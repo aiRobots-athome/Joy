@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.5)
+project(HeadandLiftingPlatform)
+
+find_package(OpenCV REQUIRED)
+include_directories(${OpenCV_INCLUDE_DIRS})
+
+add_library(HeadandLiftingPlatform SHARED HeadandLiftingPlatform.cpp)
+target_link_libraries(HeadandLiftingPlatform MotorUnion ${OpenCV_LIBS})

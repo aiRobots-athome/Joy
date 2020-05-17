@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC  -std=c++11 -pthread -g  -shared -Wl,-soname,libmotor.so -o libmotor.so CMakeFiles/motor.dir/motor.cpp.o 

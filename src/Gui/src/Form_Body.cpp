@@ -115,13 +115,13 @@ void Form_Body::Display()
 			form_head->Display();
 		else
 			;
-		this_thread::sleep_for(chrono::milliseconds(waiting_delay_ms));
+		this_thread::sleep_for(chrono::milliseconds(50));
 	}
 }
 
 void Form_Body::SetupImages()
 {
-	string path = string(getenv("HOME")) + "/New_May/src/Gui/images/";
+	string path = string(getenv("PWD")) + "/src/Gui/images/";
 	QIcon up = QIcon(string(path + "up.png").c_str());
 	QIcon down = QIcon(string(path + "down.png").c_str());
 	QIcon left = QIcon(string(path + "left.png").c_str());

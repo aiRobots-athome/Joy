@@ -1,10 +1,10 @@
 #include "MotorMx.h"
 
 MotorMx::MotorMx()
-	: Motor(57600, 0, 64, 116, 104, 102, 132, 128, 126,  1, 4, 4, 2, 4, 4, 2) {}
+	: Motor(57600, 0, 64, 104, 108, 112, 116, 126, 128, 132, 1, 4, 4, 4, 4, 2, 4, 4) {}
 
 MotorMx::MotorMx(const unsigned char &MotorID, const string &MotorModel)
-	: Motor(57600, MotorID, 64, 116, 104, 102, 132, 128, 126, 1, 4, 4, 2, 4, 4, 2)
+	: Motor(57600, MotorID, 64, 104, 108, 112, 116, 126, 128, 132, 1, 4, 4, 4, 4, 2, 4, 4)
 {
 	if (MotorModel == "Mx106" || MotorModel == "Mx64")
 	{
@@ -13,15 +13,15 @@ MotorMx::MotorMx(const unsigned char &MotorID, const string &MotorModel)
 		Min_Position_Limit = 0;
 		Max_Velocity_Limit = 210;
 		Min_Velocity_Limit = -210;
+		Max_Accel_Limit = 32767;
 		Max_Torque_Limit = 2047;
-		Min_Torque_Limit = -2047;
 
 		Angle2MotorScale = (Max_Position_Limit - Min_Position_Limit) / 360.0;
 		MotorScale2Angle = 1.0 / Angle2MotorScale;
 		Scale2RPM = 0.229;
 
-		SetMotor_Velocity(-Max_Velocity_Limit);
-		SetMotor_Torque(-Max_Torque_Limit);
+		SetMotor_Velocity(210);
+		SetMotor_Accel(100);
 		SetMotor_TorqueEnable(true);
 	}
 }

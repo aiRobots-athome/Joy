@@ -5,19 +5,21 @@ Motor::Motor()
 	  BAUDRATE(0),
 	  Motor_ID(0),
 	  ADDR_TORQUE_ENABLE(0),
-	  ADDR_GOAL_POSITION(0),
 	  ADDR_GOAL_VELOCITY(0),
-	  ADDR_GOAL_TORQUE(0),
-	  ADDR_PRESENT_POSITION(0),
-	  ADDR_PRESENT_VELOCITY(0),
+	  ADDR_PROFILE_ACCEL(0),
+	  ADDR_PROFILE_VELOCITY(0),
+	  ADDR_GOAL_POSITION(0),
 	  ADDR_PRESENT_TORQUE(0),
+	  ADDR_PRESENT_VELOCITY(0),
+	  ADDR_PRESENT_POSITION(0),
 	  LEN_TORQUE_ENABLE(0),
-	  LEN_GOAL_POSITION(0),
 	  LEN_GOAL_VELOCITY(0),
-	  LEN_GOAL_TORQUE(0),
-	  LEN_PRESENT_POSITION(0),
+	  LEN_PROFILE_ACCEL(0),
+	  LEN_PROFILE_VELOCITY(0),
+	  LEN_GOAL_POSITION(0),
+	  LEN_PRESENT_TORQUE(0),
 	  LEN_PRESENT_VELOCITY(0),
-	  LEN_PRESENT_TORQUE(0)
+	  LEN_PRESENT_POSITION(0)
 {
 	connected = false;
 	write_count = 0;
@@ -28,36 +30,40 @@ Motor::Motor(
 	const unsigned int &baudrate,
 	const unsigned char &id,
 	const uint16_t &addr_torque_enable,
-	const uint16_t &addr_goal_position,
 	const uint16_t &addr_goal_velocity,
-	const uint16_t &addr_goal_torque,
-	const uint16_t &addr_present_position,
-	const uint16_t &addr_present_velocity,
+	const uint16_t &addr_profile_accel,
+	const uint16_t &addr_profile_velocity,
+	const uint16_t &addr_goal_position,
 	const uint16_t &addr_present_torque,
+	const uint16_t &addr_present_velocity,
+	const uint16_t &addr_present_position,
 	const uint16_t &len_torque_enable,
-	const uint16_t &len_goal_position,
 	const uint16_t &len_goal_velocity,
-	const uint16_t &len_goal_torque,
-	const uint16_t &len_present_position,
+	const uint16_t &len_profile_accel,
+	const uint16_t &len_profile_velocity,
+	const uint16_t &len_goal_position,
+	const uint16_t &len_present_torque,
 	const uint16_t &len_present_velocity,
-	const uint16_t &len_present_torque)
+	const uint16_t &len_present_position)
 	: motor(),
 	  BAUDRATE(baudrate),
 	  Motor_ID(id),
 	  ADDR_TORQUE_ENABLE(addr_torque_enable),
-	  ADDR_GOAL_POSITION(addr_goal_position),
 	  ADDR_GOAL_VELOCITY(addr_goal_velocity),
-	  ADDR_GOAL_TORQUE(addr_goal_torque),
-	  ADDR_PRESENT_POSITION(addr_present_position),
-	  ADDR_PRESENT_VELOCITY(addr_present_velocity),
+	  ADDR_PROFILE_ACCEL(addr_profile_accel),
+	  ADDR_PROFILE_VELOCITY(addr_profile_velocity),
+	  ADDR_GOAL_POSITION(addr_goal_position),
 	  ADDR_PRESENT_TORQUE(addr_present_torque),
+	  ADDR_PRESENT_VELOCITY(addr_present_velocity),
+	  ADDR_PRESENT_POSITION(addr_present_position),
 	  LEN_TORQUE_ENABLE(len_torque_enable),
-	  LEN_GOAL_POSITION(len_goal_position),
 	  LEN_GOAL_VELOCITY(len_goal_velocity),
-	  LEN_GOAL_TORQUE(len_goal_torque),
-	  LEN_PRESENT_POSITION(len_present_position),
+	  LEN_PROFILE_ACCEL(len_profile_accel),
+	  LEN_PROFILE_VELOCITY(len_profile_velocity),
+	  LEN_GOAL_POSITION(len_goal_position),
+	  LEN_PRESENT_TORQUE(len_present_torque),
 	  LEN_PRESENT_VELOCITY(len_present_velocity),
-	  LEN_PRESENT_TORQUE(len_present_torque)
+	  LEN_PRESENT_POSITION(len_present_position)
 {
 	connected = false;
 	write_count = 0;
@@ -127,7 +133,7 @@ bool Motor::WriteData()
 	case 1:
 		is_Write = is_Write_Torque;
 		if (is_Write_Torque)
-			WriteTorque();
+			WriteAccel();
 		write_count = 2;
 		break;
 	case 2:
@@ -238,17 +244,29 @@ void Motor::WriteVelocity()
     param_goal_velocity[2] = DXL_LOBYTE(DXL_HIWORD(Motor_Velocity));
     param_goal_velocity[3] = DXL_HIBYTE(DXL_HIWORD(Motor_Velocity));
 
-	groupBulkWrite->addParam(Motor_ID, ADDR_GOAL_VELOCITY, LEN_GOAL_VELOCITY, param_goal_velocity);
+	switch (Motor_Operating_Mode)
+	{
+	case 1:
+		groupBulkWrite->addParam(Motor_ID, ADDR_GOAL_VELOCITY, LEN_GOAL_VELOCITY, param_goal_velocity);
+		break;
+	
+	case 3:
+		groupBulkWrite->addParam(Motor_ID, ADDR_PROFILE_VELOCITY, LEN_PROFILE_VELOCITY, param_goal_velocity);
+		break;
+	}
+
 	is_Write_Velocity = false;
 }
 
-void Motor::WriteTorque()
+void Motor::WriteAccel()
 {
-	uint8_t param_goal_torque[LEN_GOAL_TORQUE];
-	param_goal_torque[0] = DXL_LOBYTE(DXL_LOWORD(Motor_Torque));
-    param_goal_torque[1] = DXL_LOBYTE(DXL_HIWORD(Motor_Torque));
-	
-	groupBulkWrite->addParam(Motor_ID, ADDR_GOAL_TORQUE, LEN_GOAL_TORQUE, param_goal_torque);
+	uint8_t param_goal_accel[LEN_PROFILE_ACCEL];
+	param_goal_accel[0] = DXL_LOBYTE(DXL_LOWORD(Motor_Accel));
+    param_goal_accel[1] = DXL_HIBYTE(DXL_LOWORD(Motor_Accel));
+	param_goal_accel[2] = DXL_LOBYTE(DXL_HIWORD(Motor_Accel));
+    param_goal_accel[3] = DXL_HIBYTE(DXL_HIWORD(Motor_Accel));
+
+	groupBulkWrite->addParam(Motor_ID, ADDR_PROFILE_ACCEL, LEN_PROFILE_ACCEL, param_goal_accel);
 	is_Write_Torque = false;
 }
 

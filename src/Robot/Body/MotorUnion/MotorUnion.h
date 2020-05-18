@@ -3,6 +3,8 @@
 #include "./Motor/MotorPro.h"
 #include "./Motor/MotorProPlus.h"
 #include <vector>
+#include <thread>
+#include <chrono>
 
 class MotorUnion
 {
@@ -31,10 +33,10 @@ protected:
 	void WaitAllMotorsArrival(const int &total_waiting_time_ms) const;
 
 	/* Set All Motors Data */
+	void SetAllMotorsOperatingMode(const unsigned char &mode) const;
 	void SetAllMotorsAngle(const float &angle) const;
 	void SetAllMotorsVelocity(const int &velocity) const;
-	void SetAllMotorsVelocityWithTime(const short &ms) const;
-	void SetAllMotorsTorque(const short &torque) const;
+	void SetAllMotorsAccel(const int &accel) const;
 	void SetAllMotorsTorqueEnable(const bool &enable) const;
 
 private:
@@ -54,23 +56,16 @@ public:
 // protected:
 	const float &GetMotor_Scale2RPM(const unsigned char &idx) const;
 	const short &GetMotor_CenterScale(const unsigned char &idx) const;
-	const int &GetMotor_Scale(const unsigned char &idx) const;	 // in motor scale
-	const float &GetMotor_Angle(const unsigned char &idx) const; // in dregree
-	const short &GetMotor_Torque(const unsigned char &idx) const;
+	const float &GetMotor_Angle(const unsigned char &idx) const;
+	const int &GetMotor_Accel(const unsigned char &idx) const;
 	const bool &GetMotor_TorqueEnable(const unsigned char &idx) const;
 	const float &GetMotor_PresentVelocity(const unsigned char &idx) const;
-	const int &GetMotor_Max_Position_Limit(const unsigned char &idx) const;
-	const int &GetMotor_Min_Position_Limit(const unsigned char &idx) const;
-	const int &GetMotor_Max_Velocity_Limit(const unsigned char &idx) const;
-	const int &GetMotor_Min_Velocity_Limit(const unsigned char &idx) const;
-	const int &GetMotor_Max_Torque_Limit(const unsigned char &idx) const;
-	const int &GetMotor_Min_Torque_Limit(const unsigned char &idx) const;
 	/* Set Motor Data */
+	void SetMotor_Operating_Mode(const unsigned char &idx, const char &mode) const;
 	void SetMotor_CenterScale(const unsigned char &idx, const short &motor_center_scale) const;
 	void SetMotor_Angle(const unsigned char &idx, const float &angle) const;
 	void SetMotor_Velocity(const unsigned char &idx, const int &velocity) const;
-	void SetMotor_Velocity_withTime(const unsigned char &idx, const short &ms) const;
-	void SetMotor_Torque(const unsigned char &idx, const short &torque) const;
+	void SetMotor_Accel(const unsigned char &idx, const int &accel) const;
 	void SetMotor_TorqueEnable(const unsigned char &idx, const bool &enable) const;
 
 private:

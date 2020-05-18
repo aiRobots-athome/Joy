@@ -4,13 +4,13 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/opt/ros/${ROS_DISTRO}/include/opencv-3.3.1-dev",
                 "/usr/include/x86_64-linux-gnu/qt5",
                 "/opt/ros/${ROS_DISTRO}/include",
                 "/usr/include/pcl-1.8",
                 "/usr/include/eigen3",
                 "/usr/include/vtk-6.3",
-                "/usr/include/SDL2"
+                "/usr/include/SDL2",
+                "${workspaceFolder}/build"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",

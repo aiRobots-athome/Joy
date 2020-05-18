@@ -5,7 +5,7 @@ Form_Strategy::Form_Strategy(QWidget *parent) : QDialog(parent),
 {
 	ui->setupUi(this);
 	std::string str;
-	file_strategy_name.open(std::string(getenv("HOME")) + "/New_May/src/Strategy/name.txt");
+	file_strategy_name.open(std::string(getenv("PWD")) + "/src/Strategy/name.txt");
 	do
 	{
 		getline(file_strategy_name, str);

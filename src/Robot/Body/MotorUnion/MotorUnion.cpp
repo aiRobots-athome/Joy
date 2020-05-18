@@ -152,6 +152,14 @@ const bool MotorUnion::GetAllMotorsTorqueEnable() const
 /*
 	Set Motors Data
 */
+void MotorUnion::SetAllMotorsOperatingMode(const unsigned char &mode) const
+{
+	for (int i = 0; i < Motor_Union.size(); i++)
+	{
+		SetMotor_Operating_Mode(i, mode);
+	} 
+}
+
 void MotorUnion::SetAllMotorsAngle(const float &angle) const
 {
 	for (int i = 0; i < Motor_Union.size(); i++)
@@ -168,19 +176,11 @@ void MotorUnion::SetAllMotorsVelocity(const int &velocity) const
 	}
 }
 
-void MotorUnion::SetAllMotorsVelocityWithTime(const short &ms) const
+void MotorUnion::SetAllMotorsAccel(const int &accel) const
 {
 	for (int i = 0; i < Motor_Union.size(); i++)
 	{
-		SetMotor_Velocity_withTime(i, ms);
-	}
-}
-
-void MotorUnion::SetAllMotorsTorque(const short &torque) const
-{
-	for (int i = 0; i < Motor_Union.size(); i++)
-	{
-		SetMotor_Torque(i, torque);
+		SetMotor_Accel(i, accel);
 	}
 }
 
@@ -196,7 +196,7 @@ void MotorUnion::RecoveryState() const
 {
 	for (int i = 0; i < Motor_Union.size(); i++)
 	{
-		SetMotor_Torque(i, Motor_Union.at(i)->GetMotor_Torque());
+		SetMotor_Accel(i, Motor_Union.at(i)->GetMotor_Accel());
 		SetMotor_TorqueEnable(i, Motor_Union.at(i)->GetMotor_TorqueEnable());
 	}
 }
@@ -233,19 +233,14 @@ const float &MotorUnion::GetMotor_Angle(const unsigned char &idx) const
 	return Motor_Union.at(idx)->GetMotor_Angle();
 }
 
-const int &MotorUnion::GetMotor_Scale(const unsigned char &idx) const
-{
-	return Motor_Union.at(idx)->GetMotor_Scale();
-}
-
 const int &MotorUnion::GetMotor_Velocity(const unsigned char &idx) const
 {
 	return Motor_Union.at(idx)->GetMotor_Velocity();
 }
 
-const short &MotorUnion::GetMotor_Torque(const unsigned char &idx) const
+const int &MotorUnion::GetMotor_Accel(const unsigned char &idx) const
 {
-	return Motor_Union.at(idx)->GetMotor_Torque();
+	return Motor_Union.at(idx)->GetMotor_Accel();
 }
 
 const bool &MotorUnion::GetMotor_TorqueEnable(const unsigned char &idx) const
@@ -268,39 +263,15 @@ const float &MotorUnion::GetMotor_PresentTorque(const unsigned char &idx) const
 	return Motor_Union.at(idx)->GetMotor_PresentTorque();
 }
 
-const int &MotorUnion::GetMotor_Max_Position_Limit(const unsigned char &idx) const
-{
-	return Motor_Union.at(idx)->GetMotor_Max_Position_Limit();
-}
-
-const int &MotorUnion::GetMotor_Min_Position_Limit(const unsigned char &idx) const
-{
-	return Motor_Union.at(idx)->GetMotor_Min_Position_Limit();
-}
-
-const int &MotorUnion::GetMotor_Max_Velocity_Limit(const unsigned char &idx) const
-{
-	return Motor_Union.at(idx)->GetMotor_Max_Velocity_Limit();
-}
-
-const int &MotorUnion::GetMotor_Min_Velocity_Limit(const unsigned char &idx) const
-{
-	return Motor_Union.at(idx)->GetMotor_Min_Velocity_Limit();
-}
-
-const int &MotorUnion::GetMotor_Max_Torque_Limit(const unsigned char &idx) const
-{
-	return Motor_Union.at(idx)->GetMotor_Max_Torque_Limit();
-}
-
-const int &MotorUnion::GetMotor_Min_Torque_Limit(const unsigned char &idx) const
-{
-	return Motor_Union.at(idx)->GetMotor_Min_Torque_Limit();
-}
 //------------------------------------------------------------------------------//
 /*
 	Set Motor Data
 */
+void MotorUnion::SetMotor_Operating_Mode(const unsigned char &idx, const char &mode) const
+{
+	Motor_Union.at(idx)->SetMotor_Operating_Mode(mode);
+}
+
 void MotorUnion::SetMotor_CenterScale(const unsigned char &idx, const short &motor_center_scale) const
 {
 	Motor_Union.at(idx)->SetMotor_CenterScale(motor_center_scale);
@@ -316,14 +287,9 @@ void MotorUnion::SetMotor_Velocity(const unsigned char &idx, const int &velocity
 	Motor_Union.at(idx)->SetMotor_Velocity(velocity);
 }
 
-void MotorUnion::SetMotor_Velocity_withTime(const unsigned char &idx, const short &ms) const
+void MotorUnion::SetMotor_Accel(const unsigned char &idx, const int &accel) const
 {
-	Motor_Union.at(idx)->SetMotor_Velocity(ms);
-}
-
-void MotorUnion::SetMotor_Torque(const unsigned char &idx, const short &torque) const
-{
-	Motor_Union.at(idx)->SetMotor_Torque(torque);
+	Motor_Union.at(idx)->SetMotor_Accel(accel);
 }
 
 void MotorUnion::SetMotor_TorqueEnable(const unsigned char &idx, const bool &enable) const

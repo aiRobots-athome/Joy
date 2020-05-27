@@ -92,10 +92,10 @@ void motor::SetMotor_Velocity(const int &velocity)
 		break;
 	
 	case 3: // Position control mode
-		if (abs(velocity) >= Max_Velocity_Limit)
+		if (std::abs(velocity) >= Max_Velocity_Limit)
 			Motor_Velocity = Max_Velocity_Limit;
 		else
-			Motor_Velocity = abs(velocity);
+			Motor_Velocity = std::abs(velocity);
 		break;
 	}
 	is_Write_Velocity = true;

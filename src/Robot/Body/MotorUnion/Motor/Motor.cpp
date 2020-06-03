@@ -208,13 +208,13 @@ void Motor::AddParamPresentTorque()
 
 void Motor::ReadPresentAngle()
 {
-	int16_t data = groupBulkRead->getData(Motor_ID, ADDR_PRESENT_POSITION, LEN_PRESENT_POSITION);
+	int32_t data = groupBulkRead->getData(Motor_ID, ADDR_PRESENT_POSITION, LEN_PRESENT_POSITION);
 	Motor_Present_Angle = (data - Motor_CenterScale) * MotorScale2Angle;
 }
 
 void Motor::ReadPresentVelocity()
 {
-	int16_t data = groupBulkRead->getData(Motor_ID, ADDR_PRESENT_VELOCITY, LEN_PRESENT_VELOCITY);
+	int32_t data = groupBulkRead->getData(Motor_ID, ADDR_PRESENT_VELOCITY, LEN_PRESENT_VELOCITY);
 	Motor_Present_Velocity = data;
 }
 
@@ -228,9 +228,9 @@ void Motor::WriteScale()
 {
 	uint8_t param_goal_position[LEN_GOAL_POSITION];
 	param_goal_position[0] = DXL_LOBYTE(DXL_LOWORD(Motor_Scale));
-    param_goal_position[1] = DXL_HIBYTE(DXL_LOWORD(Motor_Scale));
-    param_goal_position[2] = DXL_LOBYTE(DXL_HIWORD(Motor_Scale));
-    param_goal_position[3] = DXL_HIBYTE(DXL_HIWORD(Motor_Scale));
+	param_goal_position[1] = DXL_HIBYTE(DXL_LOWORD(Motor_Scale));
+	param_goal_position[2] = DXL_LOBYTE(DXL_HIWORD(Motor_Scale));
+	param_goal_position[3] = DXL_HIBYTE(DXL_HIWORD(Motor_Scale));
 
 	groupBulkWrite->addParam(Motor_ID, ADDR_GOAL_POSITION, LEN_GOAL_POSITION, param_goal_position);
 	is_Write_Scale = false;
@@ -240,9 +240,9 @@ void Motor::WriteVelocity()
 {
 	uint8_t param_goal_velocity[LEN_GOAL_VELOCITY];
 	param_goal_velocity[0] = DXL_LOBYTE(DXL_LOWORD(Motor_Velocity));
-    param_goal_velocity[1] = DXL_HIBYTE(DXL_LOWORD(Motor_Velocity));
-    param_goal_velocity[2] = DXL_LOBYTE(DXL_HIWORD(Motor_Velocity));
-    param_goal_velocity[3] = DXL_HIBYTE(DXL_HIWORD(Motor_Velocity));
+	param_goal_velocity[1] = DXL_HIBYTE(DXL_LOWORD(Motor_Velocity));
+	param_goal_velocity[2] = DXL_LOBYTE(DXL_HIWORD(Motor_Velocity));
+	param_goal_velocity[3] = DXL_HIBYTE(DXL_HIWORD(Motor_Velocity));
 
 	switch (Motor_Operating_Mode)
 	{
@@ -262,9 +262,9 @@ void Motor::WriteAccel()
 {
 	uint8_t param_goal_accel[LEN_PROFILE_ACCEL];
 	param_goal_accel[0] = DXL_LOBYTE(DXL_LOWORD(Motor_Accel));
-    param_goal_accel[1] = DXL_HIBYTE(DXL_LOWORD(Motor_Accel));
+	param_goal_accel[1] = DXL_HIBYTE(DXL_LOWORD(Motor_Accel));
 	param_goal_accel[2] = DXL_LOBYTE(DXL_HIWORD(Motor_Accel));
-    param_goal_accel[3] = DXL_HIBYTE(DXL_HIWORD(Motor_Accel));
+	param_goal_accel[3] = DXL_HIBYTE(DXL_HIWORD(Motor_Accel));
 
 	groupBulkWrite->addParam(Motor_ID, ADDR_PROFILE_ACCEL, LEN_PROFILE_ACCEL, param_goal_accel);
 	is_Write_Torque = false;

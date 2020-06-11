@@ -8,7 +8,7 @@
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/May_project",
+            "program": "${workspaceFolder}/build/Joy",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

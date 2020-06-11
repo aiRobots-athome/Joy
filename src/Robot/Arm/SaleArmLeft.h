@@ -4,9 +4,7 @@
 class SaleArmLeft : public Arm
 {
 public:
-	SaleArmLeft(const vector<unsigned char> &IDArray,
-				const vector<string> &MotorModelArrayList,
-				vector<unsigned char> &AllPortNumber);
+	static SaleArmLeft* getSaleArmLeft();
 	~SaleArmLeft(){};
 
 	/* Kinematics */
@@ -30,6 +28,9 @@ public:
 	void ShoulderTurn(float angle);
 
 private:
+	SaleArmLeft();
+	static SaleArmLeft *inst_;
+
 	float Right_Hand_px, Right_Hand_py, Right_Hand_pz;
 	int dis_CenterZ_To_ShoulderY_Ori;
 	int height_shift_now;

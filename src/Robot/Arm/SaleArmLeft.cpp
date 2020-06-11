@@ -1,9 +1,16 @@
 #include "SaleArmLeft.h"
 
-SaleArmLeft::SaleArmLeft(const vector<unsigned char> &IDArray,
-						 const vector<string> &MotorModelArrayList,
-						 vector<unsigned char> &AllPortNumber)
-	: Arm(IDArray, MotorModelArrayList, AllPortNumber)
+SaleArmLeft *SaleArmLeft::inst_ = nullptr;
+SaleArmLeft *SaleArmLeft::getSaleArmLeft()
+{
+	if (inst_ == nullptr)
+		inst_ = new SaleArmLeft();
+	return inst_;
+}
+
+SaleArmLeft::SaleArmLeft()
+	: Arm({13, 14, 15, 16, 17, 18, 19, 20},
+		  {"Pro200", "Pro200", "Pro200", "Pro20", "Pro20", "Mx106", "Pro20", "Mx106"})
 {
 	// Arm Member
 	this->alength_6 = 170;
@@ -16,6 +23,7 @@ SaleArmLeft::SaleArmLeft(const vector<unsigned char> &IDArray,
 	this->dis_CenterZ_To_ShoulderY_Ori = 170;
 
 	this->InitArmMotor();
+	cout << "\t\tClass constructed: SaleArmLeft" << endl;
 }
 
 cv::Mat *SaleArmLeft::GetKinematics(void)

@@ -10,8 +10,7 @@ class Arm : public MotorUnion
 public:
 	/* Constructor */
 	Arm(const vector<unsigned char> &IDArray,
-		const vector<string> &MotorModelArrayList,
-		vector<unsigned char> &AllPortNumber);
+		const vector<string> &MotorModelArrayList);
 	~Arm(void){};
 
 	/* Initialize Motor Parameters */

@@ -15,8 +15,7 @@ public:
 	@ Port
 	*/
 	MotorUnion(const vector<unsigned char> &IDArray,
-			   const vector<string> &MotorModelArray,
-			   vector<unsigned char> &AllPortNumber);
+			   const vector<string> &MotorModelArray);
 	virtual ~MotorUnion();
 	template <class T>
 	void deleteInVector(vector<T *> );
@@ -89,5 +88,6 @@ private:
 
 private:
 	vector<Motor *> Motor_Union;
+	static vector<unsigned char> allport;
 	const int waiting_frequency;
 };

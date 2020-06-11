@@ -2,6 +2,7 @@
 
 XBoxJoystick::XBoxJoystick()
 {
+    CMobile = Mobile::getMobile();
     is_deleted_thread = false;
     thread_getState = nullptr;
     printf("Class constructed: XBoxJoystick\n");
@@ -49,7 +50,7 @@ void XBoxJoystick::GetState()
             DPadMotion();
             ShoulderMotion();
             if (event->cbutton.type == SDL_CONTROLLERBUTTONUP)
-                CMobilePlatform->Stop();
+                CMobile->Stop();
             this_thread::sleep_for(chrono::milliseconds(100));
         }
     }
@@ -66,7 +67,7 @@ void XBoxJoystick::LeftStickMotion()
         y = copysign(abs(y) - threshold < 0 ? 0 : abs(y) - threshold, y);
         const int angle = atan2f(x, y) * Rad2Angle;
         if (x > 100 && y > 100)
-            CMobilePlatform->Turn(angle);
+            CMobile->Turn(angle);
     }
 }
 
@@ -77,16 +78,16 @@ void XBoxJoystick::DPadMotion()
         switch (event->cbutton.button)
         {
         case SDL_CONTROLLER_BUTTON_DPAD_UP:
-            CMobilePlatform->MoveForward();
+            CMobile->MoveForward();
             break;
         case SDL_CONTROLLER_BUTTON_DPAD_DOWN:
-            CMobilePlatform->MoveBackward();
+            CMobile->MoveBackward();
             break;
         case SDL_CONTROLLER_BUTTON_DPAD_LEFT:
-            CMobilePlatform->MoveLeft();
+            CMobile->MoveLeft();
             break;
         case SDL_CONTROLLER_BUTTON_DPAD_RIGHT:
-            CMobilePlatform->MoveRight();
+            CMobile->MoveRight();
             break;
         default:
             break;
@@ -101,10 +102,10 @@ void XBoxJoystick::ShoulderMotion()
         switch (event->cbutton.button)
         {
         case SDL_CONTROLLER_BUTTON_LEFTSHOULDER:
-            CMobilePlatform->SelfTurn();
+            CMobile->SelfTurn();
             break;
         case SDL_CONTROLLER_BUTTON_RIGHTSHOULDER:
-            CMobilePlatform->SelfTurn(0, -MobilePlatform::default_velocity);
+            CMobile->SelfTurn(0, -Mobile::default_velocity);
             break;
 
         default:

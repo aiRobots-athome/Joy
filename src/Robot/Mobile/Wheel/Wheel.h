@@ -4,14 +4,7 @@
 class Wheel : public MotorUnion
 {
 public:
-	/* 
-	@ ID, 
-	@ MotorModel, 
-	@ Port
-	*/
-	Wheel(const vector<unsigned char> &IDArray,
-		  const vector<string> &MotorModelArray,
-		  vector<unsigned char> &AllPortNumber);
+	static Wheel *getWheel();
 	~Wheel(){};
 
 	/*
@@ -49,6 +42,9 @@ public:
 	void Wait(const int waiting_time_ms) const;
 
 private:
+	Wheel();
+	static Wheel *inst_;
+
 	// Motor ID
 	const unsigned char wheel_LF; // (LF = left front)
 	const unsigned char wheel_RF; // (RF = right front)
@@ -56,7 +52,7 @@ private:
 	const unsigned char wheel_RB; // (RB = right back)
 
 	const float wheel_gear_ratio; // 驅動輪齒輪比
-	const float wheel_radius;	 // 驅動半徑(m)
+	const float wheel_radius;	  // 驅動半徑(m)
 	const float scale2meter_ms;
 
 	const int phase;

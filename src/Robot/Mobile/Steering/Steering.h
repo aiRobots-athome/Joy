@@ -4,14 +4,7 @@
 class Steering : public MotorUnion
 {
 public:
-	/* 
-	@ ID, 
-	@ MotorModel, 
-	@ Port
-	*/
-	Steering(const vector<unsigned char> &IDArray,
-			 const vector<string> &MotorModelArray,
-			 vector<unsigned char> &AllPortNumber);
+	static Steering *getSteering();
 	~Steering(){};
 
 	/*
@@ -51,6 +44,9 @@ public:
 	void Wait();
 
 private:
+	Steering();
+	static Steering *inst_;
+
 	// Motor ID
 	const unsigned char steering_LF; //	(LF = left front)
 	const unsigned char steering_RF; //	(RF = right front)

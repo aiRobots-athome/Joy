@@ -2,14 +2,20 @@
 #define FORM_MOBILE_H
 #include <QtCore/QObject>
 #include "Gui/ui_Form_Body.h"
-#include "Robot/Robot.h"
+#include "Robot/Mobile/Mobile.h"
 
 class Form_Mobile : public QObject
 {
     Q_OBJECT
 
 public:
-    Form_Mobile(Ui::Form_Body *_ui, QObject *parent = nullptr) : QObject(nullptr), torque_threshold(50) { ui = _ui; };
+    Form_Mobile(Ui::Form_Body *_ui, QObject *parent = nullptr) : QObject(nullptr), torque_threshold(50) 
+    { 
+        ui = _ui;
+        CMobile = Mobile::getMobile(); 
+        CSteering = Steering::getSteering();
+        CWheel = Wheel::getWheel();
+    };
     ~Form_Mobile(){};
     void Display();
 
@@ -34,6 +40,9 @@ private:
     void Red(QLabel *label);
     void Green(QLabel *label);
 
+    Mobile* CMobile;
+    Steering* CSteering;
+    Wheel* CWheel;
     const int torque_threshold;
 };
 

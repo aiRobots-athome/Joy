@@ -1,8 +1,15 @@
 #include "Steering.h"
-Steering::Steering(const vector<unsigned char> &IDArray,
-                   const vector<string> &MotorModelArray,
-                   vector<unsigned char> &AllPortNumber)
-    : MotorUnion(IDArray, MotorModelArray, AllPortNumber),
+
+Steering *Steering::inst_ = nullptr;
+Steering *Steering::getSteering()
+{
+    if (inst_ == nullptr)
+        inst_ = new Steering();
+    return inst_;
+}
+
+Steering::Steering()
+    : MotorUnion({0, 1, 2, 3}, {"Pro20", "Pro20", "Pro20", "Pro20"}),
       steering_LF(0),
       steering_RF(1),
       steering_LB(2),

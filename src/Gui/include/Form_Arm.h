@@ -1,14 +1,20 @@
 #ifndef FORM_ARM_H
 #define FORM_ARM_H
 #include "Gui/ui_Form_Body.h"
-#include "Robot/Robot.h"
+#include "Robot/Arm/SaleArmLeft.h"
+#include "Robot/Arm/SaleArmRight.h"
 
 class Form_Arm : public QObject
 {
     Q_OBJECT
 
 public:
-    Form_Arm(Ui::Form_Body *_ui, QObject *parent = nullptr) : QObject(nullptr), torque_threshold(50) { ui = _ui; };
+    Form_Arm(Ui::Form_Body *_ui, QObject *parent = nullptr) : QObject(nullptr), torque_threshold(50)
+    {
+        ui = _ui;
+        CLeftArm = SaleArmLeft::getSaleArmLeft();
+        CRightArm = SaleArmRight::getSaleArmRight();
+    };
     ~Form_Arm(){};
     void Display();
 
@@ -28,6 +34,8 @@ private:
     void Red(QLabel *label);
     void Green(QLabel *label);
 
+    SaleArmLeft *CLeftArm;
+    SaleArmRight *CRightArm;
     const int torque_threshold;
 };
 #endif

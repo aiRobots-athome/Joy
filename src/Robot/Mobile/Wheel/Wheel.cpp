@@ -1,8 +1,15 @@
 #include "Wheel.h"
-Wheel::Wheel(const vector<unsigned char> &IDArray,
-             const vector<string> &MotorModelArray,
-             vector<unsigned char> &AllPortNumber)
-    : MotorUnion(IDArray, MotorModelArray, AllPortNumber),
+
+Wheel *Wheel::inst_ = nullptr;
+Wheel *Wheel::getWheel()
+{
+    if (inst_ == nullptr)
+        inst_ = new Wheel();
+    return inst_;
+}
+
+Wheel::Wheel()
+    : MotorUnion({4, 5, 6, 7}, {"Pro20+", "Pro20+", "Pro20+", "Pro20+"}),
       wheel_LF(0),
       wheel_RF(1),
       wheel_LB(2),

@@ -4,6 +4,9 @@
 #include "Form_Head.h"
 #include "Form_Arm.h"
 #include "Form_Mobile.h"
+#include "Robot/Arm/SaleArmLeft.h"
+#include "Robot/Arm/SaleArmRight.h"
+#include "Robot/Mobile/Wheel/Wheel.h"
 #include "XBoxJoystick/XBoxJoystick.h"
 #include <QtWidgets/QDialog>
 #include <QtCore/QThread>
@@ -34,8 +37,11 @@ private:
 	QThread *thread_head;
 	QThread *thread_arm;
 	QThread *thread_mobile;
+	SaleArmLeft *CLeftArm;
+	SaleArmRight *CRightArm;
+	Wheel *CWheel;
 	XBoxJoystick *CXBoxJoystick;
-	
+
 	// Display
 	std::thread *thread_display;
 	bool _is_deleted_thread_display;

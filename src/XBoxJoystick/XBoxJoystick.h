@@ -9,26 +9,28 @@ How to use?
 
 #include <SDL.h>
 #include <iostream>
-#include "../Robot/Robot.h"
+#include "../Robot/Mobile/Mobile.h"
 #include <thread>
 
 class XBoxJoystick
 {
 public:
-  XBoxJoystick();
-  ~XBoxJoystick(){};
-  void OpenXboxJoystick();
-  void CloseXboxJoystick();
+    XBoxJoystick();
+    ~XBoxJoystick(){};
+    void OpenXboxJoystick();
+    void CloseXboxJoystick();
 
 private:
-  SDL_GameController *controller;
-  SDL_Event *event;
-  std::thread *thread_getState;
-  bool is_deleted_thread;
+    SDL_GameController *controller;
+    SDL_Event *event;
+    std::thread *thread_getState;
+    bool is_deleted_thread;
 
-  void GetState();
-  void LeftStickMotion();
-  void DPadMotion();
-  void ShoulderMotion();
+    void GetState();
+    void LeftStickMotion();
+    void DPadMotion();
+    void ShoulderMotion();
+
+    Mobile *CMobile;
 };
 #endif

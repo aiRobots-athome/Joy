@@ -1,8 +1,8 @@
 #include "MotorUnion.h"
+vector<unsigned char> MotorUnion::allport = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
 
 MotorUnion::MotorUnion(const vector<unsigned char> &IDArray,
-					   const vector<string> &MotorModelArray,
-					   vector<unsigned char> &AllPortNumber)
+					   const vector<string> &MotorModelArray)
 	: waiting_frequency(50)
 {
 	for (unsigned char i = 0; i < IDArray.size(); i++)
@@ -19,7 +19,7 @@ MotorUnion::MotorUnion(const vector<unsigned char> &IDArray,
 			;
 	}
 
-	if (ConnectAllMotors(AllPortNumber))
+	if (ConnectAllMotors(MotorUnion::allport))
 		BGON();
 }
 
@@ -38,10 +38,11 @@ MotorUnion::~MotorUnion()
 template <class T>
 void MotorUnion::deleteInVector(vector<T *> tmp_vector)
 {
-	while(!tmp_vector.empty()) {
-        delete tmp_vector.back();
-        tmp_vector.pop_back();
-    }
+	while (!tmp_vector.empty())
+	{
+		delete tmp_vector.back();
+		tmp_vector.pop_back();
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -57,7 +58,7 @@ const bool MotorUnion::ConnectAllMotors(vector<unsigned char> &AllPortNumber)
 		// Initialize PortHandler & PacketHandler instance
 		dynamixel::PortHandler *tmp_portHandler = dynamixel::PortHandler::getPortHandler(port_path.c_str());
 		packetHandler = dynamixel::PacketHandler::getPacketHandler(2.0);
-		dynamixel::GroupBulkRead *tmp_groupBulkRead = new dynamixel::GroupBulkRead(tmp_portHandler,	packetHandler);
+		dynamixel::GroupBulkRead *tmp_groupBulkRead = new dynamixel::GroupBulkRead(tmp_portHandler, packetHandler);
 		dynamixel::GroupBulkWrite *tmp_groupBulkWrite = new dynamixel::GroupBulkWrite(tmp_portHandler, packetHandler);
 
 		bool port_gate = false;
@@ -157,7 +158,7 @@ void MotorUnion::SetAllMotorsOperatingMode(const unsigned char &mode) const
 	for (int i = 0; i < Motor_Union.size(); i++)
 	{
 		SetMotor_Operating_Mode(i, mode);
-	} 
+	}
 }
 
 void MotorUnion::SetAllMotorsAngle(const float &angle) const
@@ -334,7 +335,7 @@ void MotorUnion::WriteData() const
 		is_Write |= Motor_Union.at(i)->WriteData();
 
 	// Write to motor
-	if(is_Write)
+	if (is_Write)
 	{
 		for (int i = 0; i < groupBulkWrite.size(); i++)
 		{

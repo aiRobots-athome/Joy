@@ -2,26 +2,15 @@
 #include "./Steering/Steering.h"
 #include "./Wheel/Wheel.h"
 
-class MobilePlatform
+class Mobile
 {
 public:
 	Steering *CSteering;
 	Wheel *CWheel;
 	static const int default_velocity;
 
-	/*
-	@ Steering ID List
-	@ Steering Model List
-	@ Wheel ID List
-	@ Wheel Model List
-	@ Port
-	*/
-	MobilePlatform(const vector<unsigned char> &steeringID,
-				   const vector<string> &steeringModel,
-				   const vector<unsigned char> &wheelID,
-				   const vector<string> &wheelModel,
-				   vector<unsigned char> &allPortNumber);
-	~MobilePlatform();
+	static Mobile *getMobile();
+	~Mobile();
 
 	/*
 	@ Distance
@@ -69,7 +58,10 @@ public:
 	void Stop();
 
 private:
-	const float kWheelBase;   // 軸距
+	Mobile();
+	static Mobile *inst_;
+
+	const float kWheelBase;	  // 軸距
 	const float kAxle;		  // 輪距
 	const float kWheelBase_2; // 軸距/2 機器人中心到前(後)輪
 	const float kAxle_2;	  // 輪距/2 機器人中心到左(右)輪

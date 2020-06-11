@@ -1,26 +1,32 @@
-#include "MobilePlatform.h"
-const int MobilePlatform::default_velocity = 400;
-MobilePlatform::MobilePlatform(const vector<unsigned char> &steeringID,
-							   const vector<string> &steeringModel,
-							   const vector<unsigned char> &wheelID,
-							   const vector<string> &wheelModel,
-							   vector<unsigned char> &AllPortNumber)
+#include "Mobile.h"
+
+const int Mobile::default_velocity = 400;
+Mobile *Mobile::inst_ = nullptr;
+Mobile *Mobile::getMobile()
+{
+	if (inst_ == nullptr)
+		inst_ = new Mobile();
+	return inst_;
+}
+
+Mobile::Mobile()
 	: kWheelBase(0.293),
 	  kAxle(0.293),
 	  kWheelBase_2(kWheelBase / 2),
 	  kAxle_2(kAxle / 2)
 {
-	CSteering = new Steering(steeringID, steeringModel, AllPortNumber);
-	CWheel = new Wheel(wheelID, wheelModel, AllPortNumber);
+	CSteering = Steering::getSteering();
+	CWheel = Wheel::getWheel();
+	cout << "\t\tClass constructed: Mobile" << endl;
 }
 
-MobilePlatform::~MobilePlatform()
+Mobile::~Mobile()
 {
 	delete CSteering;
 	delete CWheel;
 }
 
-void MobilePlatform::Move(const float &distance, const int &velocity, const float &direction)
+void Mobile::Move(const float &distance, const int &velocity, const float &direction)
 {
 	float tmp_angle = direction;
 	int tmp_velocity = velocity;
@@ -50,27 +56,27 @@ void MobilePlatform::Move(const float &distance, const int &velocity, const floa
 		;
 }
 
-void MobilePlatform::MoveForward(const float &distance, const int &velocity)
+void Mobile::MoveForward(const float &distance, const int &velocity)
 {
 	Move(distance, abs(velocity), 0);
 }
 
-void MobilePlatform::MoveBackward(const float &distance, const int &velocity)
+void Mobile::MoveBackward(const float &distance, const int &velocity)
 {
 	Move(distance, -abs(velocity), 0);
 }
 
-void MobilePlatform::MoveLeft(const float &distance, const int &velocity)
+void Mobile::MoveLeft(const float &distance, const int &velocity)
 {
 	Move(distance, abs(velocity), 90);
 }
 
-void MobilePlatform::MoveRight(const float &distance, const int &velocity)
+void Mobile::MoveRight(const float &distance, const int &velocity)
 {
 	Move(distance, -abs(velocity), 90);
 }
 
-void MobilePlatform::Turn(const float &direction, const float &distance, const int &velocity)
+void Mobile::Turn(const float &direction, const float &distance, const int &velocity)
 {
 	float tmp_angle = direction;
 	int tmp_velocity = velocity;
@@ -141,7 +147,7 @@ void MobilePlatform::Turn(const float &direction, const float &distance, const i
 		MoveForward(tmp_angle, tmp_velocity);
 }
 
-void MobilePlatform::TurnCircleByRadius(const float &radius, const float &distance, const int &velocity)
+void Mobile::TurnCircleByRadius(const float &radius, const float &distance, const int &velocity)
 {
 	const float inside_theta = atan(kWheelBase_2 / copysignf(abs(radius) - kAxle_2, radius));
 	const float outside_theta = atan(kWheelBase_2 / copysignf(abs(radius) + kAxle_2, radius));
@@ -178,7 +184,7 @@ void MobilePlatform::TurnCircleByRadius(const float &radius, const float &distan
 		;
 }
 
-void MobilePlatform::SelfTurn(const float &distance, const int &velocity)
+void Mobile::SelfTurn(const float &distance, const int &velocity)
 {
 	float coefficient = 2.25; //this coefficient is by testing
 	int tmp_velocity = velocity;
@@ -198,7 +204,7 @@ void MobilePlatform::SelfTurn(const float &distance, const int &velocity)
 		;
 }
 
-void MobilePlatform::Stop()
+void Mobile::Stop()
 {
 	CWheel->Stop();
 }

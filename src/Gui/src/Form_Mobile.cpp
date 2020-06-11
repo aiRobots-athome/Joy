@@ -3,42 +3,42 @@ void Form_Mobile::MoveForward()
 {
 	const float distance = ui->Move_lineEdit_Distance->text().toFloat();
 	const float velocity = ui->MobileControl_lineEdit_Velocity->text().toFloat();
-	CMobilePlatform->MoveForward(distance, velocity);
+	CMobile->MoveForward(distance, velocity);
 }
 
 void Form_Mobile::MoveBackward()
 {
 	const float distance = ui->Move_lineEdit_Distance->text().toFloat();
 	const float velocity = ui->MobileControl_lineEdit_Velocity->text().toFloat();
-	CMobilePlatform->MoveBackward(distance, velocity);
+	CMobile->MoveBackward(distance, velocity);
 }
 
 void Form_Mobile::MoveLeft()
 {
 	const float distance = ui->Move_lineEdit_Distance->text().toFloat();
 	const float velocity = ui->MobileControl_lineEdit_Velocity->text().toFloat();
-	CMobilePlatform->MoveLeft(distance, velocity);
+	CMobile->MoveLeft(distance, velocity);
 }
 
 void Form_Mobile::MoveRight()
 {
 	const float distance = ui->Move_lineEdit_Distance->text().toFloat();
 	const float velocity = ui->MobileControl_lineEdit_Velocity->text().toFloat();
-	CMobilePlatform->MoveRight(distance, velocity);
+	CMobile->MoveRight(distance, velocity);
 }
 
 void Form_Mobile::SelfTurn_Left()
 {
 	const float direction = ui->SelfTurn_lineEdit_Direction->text().toFloat();
 	const float velocity = ui->MobileControl_lineEdit_Velocity->text().toFloat();
-	CMobilePlatform->SelfTurn(abs(direction), abs(velocity));
+	CMobile->SelfTurn(abs(direction), abs(velocity));
 }
 
 void Form_Mobile::SelfTurn_Right()
 {
 	const float direction = ui->SelfTurn_lineEdit_Direction->text().toFloat();
 	const float velocity = ui->MobileControl_lineEdit_Velocity->text().toFloat();
-	CMobilePlatform->SelfTurn(abs(direction), -abs(velocity));
+	CMobile->SelfTurn(abs(direction), -abs(velocity));
 }
 
 void Form_Mobile::Oblique_Forward()
@@ -46,7 +46,7 @@ void Form_Mobile::Oblique_Forward()
 	const float distance = ui->Oblique_lineEdit_Distance->text().toFloat();
 	const float velocity = ui->MobileControl_lineEdit_Velocity->text().toFloat();
 	const float direction = ui->Oblique_lineEdit_Direction->text().toFloat();
-	CMobilePlatform->Move(distance, abs(velocity), direction);
+	CMobile->Move(distance, abs(velocity), direction);
 }
 
 void Form_Mobile::Oblique_Backward()
@@ -54,7 +54,7 @@ void Form_Mobile::Oblique_Backward()
 	const float distance = ui->Oblique_lineEdit_Distance->text().toFloat();
 	const float velocity = ui->MobileControl_lineEdit_Velocity->text().toFloat();
 	const float direction = ui->Oblique_lineEdit_Direction->text().toFloat();
-	CMobilePlatform->Move(distance, -abs(velocity), direction);
+	CMobile->Move(distance, -abs(velocity), direction);
 }
 
 void Form_Mobile::Turn_Forward()
@@ -62,7 +62,7 @@ void Form_Mobile::Turn_Forward()
 	const float direction = ui->Turn_lineEdit_Direction->text().toFloat();
 	const float velocity = ui->MobileControl_lineEdit_Velocity->text().toFloat();
 	const float distance = ui->Turn_lineEdit_Distance->text().toFloat();
-	CMobilePlatform->Turn(direction, distance, abs(velocity));
+	CMobile->Turn(direction, distance, abs(velocity));
 }
 
 void Form_Mobile::Turn_Backward()
@@ -70,7 +70,7 @@ void Form_Mobile::Turn_Backward()
 	const float direction = ui->Turn_lineEdit_Direction->text().toFloat();
 	const float velocity = ui->MobileControl_lineEdit_Velocity->text().toFloat();
 	const float distance = ui->Turn_lineEdit_Distance->text().toFloat();
-	CMobilePlatform->Turn(direction, distance, -abs(velocity));
+	CMobile->Turn(direction, distance, -abs(velocity));
 }
 
 void Form_Mobile::TurnCircleByRadius_Forward()
@@ -78,7 +78,7 @@ void Form_Mobile::TurnCircleByRadius_Forward()
 	const float radius = ui->Circle_lineEdit_Radius->text().toFloat();
 	const float velocity = ui->MobileControl_lineEdit_Velocity->text().toFloat();
 	const float distance = ui->Circle_lineEdit_Distance->text().toFloat();
-	CMobilePlatform->TurnCircleByRadius(radius, distance, abs(velocity));
+	CMobile->TurnCircleByRadius(radius, distance, abs(velocity));
 }
 
 void Form_Mobile::TurnCircleByRadius_Backward()
@@ -86,7 +86,7 @@ void Form_Mobile::TurnCircleByRadius_Backward()
 	const float radius = ui->Circle_lineEdit_Radius->text().toFloat();
 	const float velocity = ui->MobileControl_lineEdit_Velocity->text().toFloat();
 	const float distance = ui->Circle_lineEdit_Distance->text().toFloat();
-	CMobilePlatform->TurnCircleByRadius(radius, distance, -abs(velocity));
+	CMobile->TurnCircleByRadius(radius, distance, -abs(velocity));
 }
 
 void Form_Mobile::Display()

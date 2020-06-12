@@ -1,14 +1,5 @@
 #include "Strategy.h"
 
-Strategy::Strategy()
-{
-    isStrategyRunning = false;
-}
-
-Strategy::~Strategy()
-{
-}
-
 void Strategy::select_strategy(std::string strategy_name)
 {
     isStrategyRunning = true;
@@ -23,9 +14,4 @@ void Strategy::select_strategy(std::string strategy_name)
         else
             ;
     }
-}
-
-void Strategy::terminate_strategy()
-{
-    isStrategyRunning = false;
 }

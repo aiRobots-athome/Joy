@@ -1,13 +1,5 @@
 #include "XBoxJoystick.h"
 
-XBoxJoystick::XBoxJoystick()
-{
-    CMobile = Mobile::getMobile();
-    is_deleted_thread = false;
-    thread_getState = nullptr;
-    printf("Class constructed: XBoxJoystick\n");
-}
-
 void XBoxJoystick::OpenXboxJoystick()
 {
     SDL_Init(SDL_INIT_GAMECONTROLLER);
@@ -17,27 +9,28 @@ void XBoxJoystick::OpenXboxJoystick()
         if (SDL_GameControllerOpen(0))
         {
             controller = SDL_GameControllerOpen(0);
-            printf("Connect to controller successfully\n");
+            CMobile = Mobile::getMobile();
+            is_deleted_thread = false;
+            thread_getState = new thread(&XBoxJoystick::GetState, this);
+            printf("Connect to controller successfully !\n");
         }
-
-        is_deleted_thread = false;
-        thread_getState = new thread(&XBoxJoystick::GetState, this);
     }
     else
-        printf("Could not open gamecontroller\n");
+        printf("Could not open gamecontroller !\n");
 }
 
 void XBoxJoystick::CloseXboxJoystick()
 {
     if (SDL_NumJoysticks() > 0)
     {
-        is_deleted_thread = true;
-        thread_getState->join();
-        delete thread_getState;
-        SDL_GameControllerClose(controller);
+        if(is_deleted_thread == false)
+        {
+            is_deleted_thread = true;
+            thread_getState->join();
+            delete thread_getState;
+            SDL_GameControllerClose(controller);
+        }
     }
-    else
-        ;
 }
 
 void XBoxJoystick::GetState()

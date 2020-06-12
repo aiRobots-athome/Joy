@@ -10,10 +10,6 @@ Robot *Robot::getRobot()
 
 Robot::Robot()
 {
-    int argc = 0;
-    char **argv = nullptr;
-    ros::init(argc, argv, "aiRobots");
-
     CVision = new Vision();
     CSpeech = new Speech();
     HeadandLifting *CHeadandLifting = HeadandLifting::getHeadandLifting();

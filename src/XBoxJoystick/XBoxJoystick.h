@@ -15,7 +15,7 @@ How to use?
 class XBoxJoystick
 {
 public:
-    XBoxJoystick();
+    XBoxJoystick(){};
     ~XBoxJoystick(){};
     void OpenXboxJoystick();
     void CloseXboxJoystick();

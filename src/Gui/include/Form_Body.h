@@ -37,15 +37,18 @@ private:
 	QThread *thread_head;
 	QThread *thread_arm;
 	QThread *thread_mobile;
-	SaleArmLeft *CLeftArm;
-	SaleArmRight *CRightArm;
-	Wheel *CWheel;
-	XBoxJoystick *CXBoxJoystick;
 
 	// Display
 	std::thread *thread_display;
 	bool _is_deleted_thread_display;
 	void Display();
 	void SetupImages();
+
+	HeadandLifting *CHeadandLifting;
+	SaleArmLeft *CLeftArm;
+	SaleArmRight *CRightArm;
+	Mobile *CMobile;
+	Wheel *CWheel;
+	XBoxJoystick *CXBoxJoystick;
 };
 #endif // FORM_BODY_H

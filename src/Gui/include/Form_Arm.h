@@ -9,14 +9,14 @@ class Form_Arm : public QObject
     Q_OBJECT
 
 public:
-    Form_Arm(Ui::Form_Body *_ui, QObject *parent = nullptr) : QObject(nullptr), torque_threshold(50)
-    {
-        ui = _ui;
-        CLeftArm = SaleArmLeft::getSaleArmLeft();
-        CRightArm = SaleArmRight::getSaleArmRight();
-    };
+    Form_Arm(Ui::Form_Body *_ui, QObject *parent = nullptr) : QObject(nullptr), torque_threshold(50) { ui = _ui; };
     ~Form_Arm(){};
     void Display();
+    void SetArm(SaleArmLeft *_LeftArm, SaleArmRight *_RightArm)
+    {
+        CLeftArm = _LeftArm;
+        CRightArm = _RightArm;
+    };
 
 public slots:
     void LeftArm_PosGo();

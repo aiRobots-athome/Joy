@@ -31,7 +31,7 @@
       <string notr="true">background-color: rgb(255, 255, 255);</string>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>1</number>
      </property>
      <property name="iconSize">
       <size>
@@ -3063,7 +3063,7 @@
        </widget>
       </widget>
      </widget>
-     <widget class="QWidget" name="Tab_MobilePlatform">
+     <widget class="QWidget" name="Tab_Mobile">
       <attribute name="title">
        <string>Mobile</string>
       </attribute>

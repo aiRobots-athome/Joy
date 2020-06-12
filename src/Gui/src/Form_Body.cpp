@@ -79,9 +79,15 @@ void Form_Body::on_Move_btn_Stop_clicked()
 void Form_Body::XBoxJoystick_state(int state)
 {
 	if (state == 0)
+	{
+		delete CXBoxJoystick;
 		CXBoxJoystick->CloseXboxJoystick();
+	}
 	else
+	{
+		CXBoxJoystick = new XBoxJoystick();
 		CXBoxJoystick->OpenXboxJoystick();
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -89,6 +95,14 @@ void Form_Body::XBoxJoystick_state(int state)
 ////////////////////////////////////////////////////////////////////////////////
 void Form_Body::showEvent(QShowEvent *event)
 {
+	CHeadandLifting = HeadandLifting::getHeadandLifting();
+	CLeftArm = SaleArmLeft::getSaleArmLeft();
+	CRightArm = SaleArmRight::getSaleArmRight();
+	CMobile = Mobile::getMobile();
+	CWheel = Wheel::getWheel();
+	form_head->SetHeadandLifting(CHeadandLifting);
+	form_arm->SetArm(CLeftArm, CRightArm);
+	form_mobile->SetMobile(CMobile);
 	_is_deleted_thread_display = false;
 	thread_display = new std::thread(&Form_Body::Display, this);
 }

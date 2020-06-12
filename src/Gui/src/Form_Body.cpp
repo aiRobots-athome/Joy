@@ -79,15 +79,9 @@ void Form_Body::on_Move_btn_Stop_clicked()
 void Form_Body::XBoxJoystick_state(int state)
 {
 	if (state == 0)
-	{
-		delete CXBoxJoystick;
 		CXBoxJoystick->CloseXboxJoystick();
-	}
 	else
-	{
-		CXBoxJoystick = new XBoxJoystick();
 		CXBoxJoystick->OpenXboxJoystick();
-	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////

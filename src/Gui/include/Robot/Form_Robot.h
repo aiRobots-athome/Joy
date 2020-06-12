@@ -1,6 +1,6 @@
-#ifndef FORM_BODY_H
-#define FORM_BODY_H
-#include "Gui/ui_Form_Body.h"
+#ifndef FORM_ROBOT_H
+#define FORM_ROBOT_H
+#include "Gui/ui_Form_Robot.h"
 #include "Form_Head.h"
 #include "Form_Arm.h"
 #include "Form_Mobile.h"
@@ -11,13 +11,13 @@
 #include <QtWidgets/QDialog>
 #include <QtCore/QThread>
 
-class Form_Body : public QDialog
+class Form_Robot : public QDialog
 {
 	Q_OBJECT
 
 public:
-	explicit Form_Body(QWidget *parent = nullptr);
-	virtual ~Form_Body();
+	explicit Form_Robot(QWidget *parent = nullptr);
+	virtual ~Form_Robot();
 
 protected:
 	void showEvent(QShowEvent *event);
@@ -30,7 +30,7 @@ private slots:
 	void XBoxJoystick_state(int state);
 
 private:
-	Ui::Form_Body *ui;
+	Ui::Form_Robot *ui;
 	Form_Head *form_head;
 	Form_Arm *form_arm;
 	Form_Mobile *form_mobile;

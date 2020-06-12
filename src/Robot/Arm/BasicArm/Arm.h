@@ -42,7 +42,6 @@ public:
 	void ReleaseObj();		  // -90 in degree
 
 	/* Sencondary Kinematic Function */
-
 	// Transforming Pitch-Raw-Yaw into Matrix
 	cv::Mat *TransRotate(const float &x_angle, const float &y_angle, const float &z_angle);
 
@@ -63,9 +62,9 @@ protected:
 	float Vitual_Distance6;
 
 	// First ID Setting for General Arm
-	const unsigned char	FIRST_SHOULDER_ID;
+	const unsigned char FIRST_SHOULDER_ID;
 	const unsigned char FIRST_HAND_ID;
-	const unsigned char	FIRST_FINGER_ID;
+	const unsigned char FIRST_FINGER_ID;
 
 	// Amount Setting
 	const unsigned char HAND_AMOUNT;

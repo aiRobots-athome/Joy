@@ -49,9 +49,9 @@ cv::Mat *SaleArmRight::Calculate_ArmForwardKinematics(float J1, float J2, float 
 		0, 0, 0, 1);
 
 	cv::Matx44f Shoulder_Turn(
-		cos(-shoulder_angle * 3.14 / 180), 0, sin(-shoulder_angle * 3.14 / 180), 0,
+		cos(-shoulder_angle * Angle2Rad), 0, sin(-shoulder_angle * Angle2Rad), 0,
 		0, 1, 0, 0,
-		-sin(-shoulder_angle * 3.14 / 180), 0, cos(-shoulder_angle * 3.14 / 180), 0,
+		-sin(-shoulder_angle * Angle2Rad), 0, cos(-shoulder_angle * Angle2Rad), 0,
 		0, 0, 0, 1);
 
 	cv::Matx44f Shoulder2Base(
@@ -108,9 +108,9 @@ cv::Mat *SaleArmRight::Calculate_ArmForwardKinematics(float pre_angle, float J1,
 		0, 0, 0, 1);
 
 	cv::Matx44f Shoulder_Turn(
-		cos(-shoulder_angle * 3.14 / 180), 0, sin(-shoulder_angle * 3.14 / 180), 0,
+		cos(-shoulder_angle * Angle2Rad), 0, sin(-shoulder_angle * Angle2Rad), 0,
 		0, 1, 0, 0,
-		-sin(-shoulder_angle * 3.14 / 180), 0, cos(-shoulder_angle * 3.14 / 180), 0,
+		-sin(-shoulder_angle * Angle2Rad), 0, cos(-shoulder_angle * Angle2Rad), 0,
 		0, 0, 0, 1);
 
 	cv::Matx44f Shoulder2Base(
@@ -199,9 +199,9 @@ float *SaleArmRight::Arm_InverseKinematics(cv::Mat *&T)
 	T_OriArm2Shoulder->at<float>(3, 3) = 1;
 
 	//===========================================
-	T_ShoulderTurn->at<float>(0, 0) = cos(shoulder_angle * 3.14 / 180); //shoulder_angle�S���["-"�O�]���t�t�o��
+	T_ShoulderTurn->at<float>(0, 0) = cos(shoulder_angle * Angle2Rad); //shoulder_angle�S���["-"�O�]���t�t�o��
 	T_ShoulderTurn->at<float>(0, 1) = 0;
-	T_ShoulderTurn->at<float>(0, 2) = -sin(shoulder_angle * 3.14 / 180);
+	T_ShoulderTurn->at<float>(0, 2) = -sin(shoulder_angle * Angle2Rad);
 	T_ShoulderTurn->at<float>(0, 3) = 0;
 
 	T_ShoulderTurn->at<float>(1, 0) = 0;
@@ -209,9 +209,9 @@ float *SaleArmRight::Arm_InverseKinematics(cv::Mat *&T)
 	T_ShoulderTurn->at<float>(1, 2) = 0;
 	T_ShoulderTurn->at<float>(1, 3) = 0;
 
-	T_ShoulderTurn->at<float>(2, 0) = sin(shoulder_angle * 3.14 / 180);
+	T_ShoulderTurn->at<float>(2, 0) = sin(shoulder_angle * Angle2Rad);
 	T_ShoulderTurn->at<float>(2, 1) = 0;
-	T_ShoulderTurn->at<float>(2, 2) = cos(shoulder_angle * 3.14 / 180);
+	T_ShoulderTurn->at<float>(2, 2) = cos(shoulder_angle * Angle2Rad);
 	T_ShoulderTurn->at<float>(2, 3) = 0;
 
 	T_ShoulderTurn->at<float>(3, 0) = 0;
@@ -362,14 +362,6 @@ float *SaleArmRight::Arm_InverseKinematics(cv::Mat *&T)
 		theta4[1] = atan2(ts, tc) / Angle2Rad;
 		theta4[2] = -(atan2(ts, -tc) / Angle2Rad);
 		theta4[3] = -(atan2(ts, tc) / Angle2Rad);
-
-		//System::Console::WriteLine(k);
-		//System::Console::WriteLine(a);
-		//System::Console::WriteLine(b);
-		//System::Console::WriteLine(ts);
-		//System::Console::WriteLine(tc);
-		//System::Console::WriteLine(theta3[0]*180/M_PI);
-		//System::Console::WriteLine(theta3[1]*180/M_PI);
 	}
 	for (int i = 0; i < 4; i++)
 	{
@@ -748,9 +740,9 @@ float *SaleArmRight::Arm_InverseKinematics(const float &pre_angle, cv::Mat *&T)
 	T_OriArm2Shoulder->at<float>(3, 3) = 1;
 
 	//===========================================
-	T_ShoulderTurn->at<float>(0, 0) = cos(shoulder_angle * 3.14 / 180); //shoulder_angle�S���["-"�O�]���t�t�o��
+	T_ShoulderTurn->at<float>(0, 0) = cos(shoulder_angle * Angle2Rad); //shoulder_angle�S���["-"�O�]���t�t�o��
 	T_ShoulderTurn->at<float>(0, 1) = 0;
-	T_ShoulderTurn->at<float>(0, 2) = -sin(shoulder_angle * 3.14 / 180);
+	T_ShoulderTurn->at<float>(0, 2) = -sin(shoulder_angle * Angle2Rad);
 	T_ShoulderTurn->at<float>(0, 3) = 0;
 
 	T_ShoulderTurn->at<float>(1, 0) = 0;
@@ -758,9 +750,9 @@ float *SaleArmRight::Arm_InverseKinematics(const float &pre_angle, cv::Mat *&T)
 	T_ShoulderTurn->at<float>(1, 2) = 0;
 	T_ShoulderTurn->at<float>(1, 3) = 0;
 
-	T_ShoulderTurn->at<float>(2, 0) = sin(shoulder_angle * 3.14 / 180);
+	T_ShoulderTurn->at<float>(2, 0) = sin(shoulder_angle * Angle2Rad);
 	T_ShoulderTurn->at<float>(2, 1) = 0;
-	T_ShoulderTurn->at<float>(2, 2) = cos(shoulder_angle * 3.14 / 180);
+	T_ShoulderTurn->at<float>(2, 2) = cos(shoulder_angle * Angle2Rad);
 	T_ShoulderTurn->at<float>(2, 3) = 0;
 
 	T_ShoulderTurn->at<float>(3, 0) = 0;
@@ -911,14 +903,6 @@ float *SaleArmRight::Arm_InverseKinematics(const float &pre_angle, cv::Mat *&T)
 		theta4[1] = atan2(ts, tc) / Angle2Rad;
 		theta4[2] = -(atan2(ts, -tc) / Angle2Rad);
 		theta4[3] = -(atan2(ts, tc) / Angle2Rad);
-
-		//System::Console::WriteLine(k);
-		//System::Console::WriteLine(a);
-		//System::Console::WriteLine(b);
-		//System::Console::WriteLine(ts);
-		//System::Console::WriteLine(tc);
-		//System::Console::WriteLine(theta3[0]*180/M_PI);
-		//System::Console::WriteLine(theta3[1]*180/M_PI);
 	}
 	for (int i = 0; i < 4; i++)
 	{
@@ -1282,11 +1266,11 @@ float *SaleArmRight::ShoulderToArm(float x, float y, float z)
 	cv::Mat Coordinate_Old = cv::Mat(4, 1, CV_32FC1, cv::Scalar::all(0));
 	cv::Mat Coordinate_New = cv::Mat(4, 1, CV_32FC1, cv::Scalar::all(0));
 
-	double temp = cos(shoulder_angle * 3.14 / 180);
+	double temp = cos(shoulder_angle * Angle2Rad);
 
-	T_Turn.at<float>(0, 0) = cos(shoulder_angle * 3.14 / 180);
+	T_Turn.at<float>(0, 0) = cos(shoulder_angle * Angle2Rad);
 	T_Turn.at<float>(0, 1) = 0;
-	T_Turn.at<float>(0, 2) = sin(shoulder_angle * 3.14 / 180);
+	T_Turn.at<float>(0, 2) = sin(shoulder_angle * Angle2Rad);
 	T_Turn.at<float>(0, 3) = 0;
 
 	T_Turn.at<float>(1, 0) = 0;
@@ -1294,9 +1278,9 @@ float *SaleArmRight::ShoulderToArm(float x, float y, float z)
 	T_Turn.at<float>(1, 2) = 0;
 	T_Turn.at<float>(1, 3) = 0;
 
-	T_Turn.at<float>(2, 0) = -sin(shoulder_angle * 3.14 / 180);
+	T_Turn.at<float>(2, 0) = -sin(shoulder_angle * Angle2Rad);
 	T_Turn.at<float>(2, 1) = 0;
-	T_Turn.at<float>(2, 2) = cos(shoulder_angle * 3.14 / 180);
+	T_Turn.at<float>(2, 2) = cos(shoulder_angle * Angle2Rad);
 	T_Turn.at<float>(2, 3) = 0;
 
 	T_Turn.at<float>(3, 0) = 0;
@@ -1307,7 +1291,7 @@ float *SaleArmRight::ShoulderToArm(float x, float y, float z)
 	T_Shift.at<float>(0, 0) = 1;
 	T_Shift.at<float>(0, 1) = 0;
 	T_Shift.at<float>(0, 2) = 0;
-	T_Shift.at<float>(0, 3) = -b * sin(shoulder_angle * 3.14 / 180);
+	T_Shift.at<float>(0, 3) = -b * sin(shoulder_angle * Angle2Rad);
 
 	T_Shift.at<float>(1, 0) = 0;
 	T_Shift.at<float>(1, 1) = 1;
@@ -1317,7 +1301,7 @@ float *SaleArmRight::ShoulderToArm(float x, float y, float z)
 	T_Shift.at<float>(2, 0) = 0;
 	T_Shift.at<float>(2, 1) = 0;
 	T_Shift.at<float>(2, 2) = 1;
-	T_Shift.at<float>(2, 3) = -b * cos(shoulder_angle * 3.14 / 180);
+	T_Shift.at<float>(2, 3) = -b * cos(shoulder_angle * Angle2Rad);
 
 	T_Shift.at<float>(3, 3) = 0;
 	T_Shift.at<float>(3, 3) = 0;

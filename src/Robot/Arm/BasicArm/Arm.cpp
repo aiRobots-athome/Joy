@@ -30,8 +30,8 @@ void Arm::InitArmMotor()
 
 void Arm::ResetAllMotorAngle()
 {
-	SetAllMotorsTorqueEnable(true);
 	InitArmMotor();
+	SetAllMotorsTorqueEnable(true);
 }
 void Arm::SetSixLength(float length)
 {
@@ -367,6 +367,13 @@ cv::Mat *Arm::Jacobian(float J1, float J2, float J3, float J4, float J5, float J
 	J->at<float>(5, 4) = (delta_angle[4][2]) * pow((float)10, a);
 	J->at<float>(5, 5) = (delta_angle[5][2]) * pow((float)10, a);
 
+	delete tmpT0;
+	delete tmpT1;
+	delete tmpT2;
+	delete tmpT3;
+	delete tmpT4;
+	delete tmpT5;
+	delete tmpT6;
 	return J;
 }
 float *Arm::CalculateRotateAngle(cv::Mat *T)

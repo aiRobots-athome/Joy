@@ -1,7 +1,7 @@
-#include "../include/Form_Body.h"
+#include "Robot/Form_Robot.h"
 
-Form_Body::Form_Body(QWidget *parent) : QDialog(parent),
-										ui(new Ui::Form_Body),
+Form_Robot::Form_Robot(QWidget *parent) : QDialog(parent),
+										ui(new Ui::Form_Robot),
 										thread_display(nullptr)
 {
 	ui->setupUi(this);
@@ -20,11 +20,9 @@ Form_Body::Form_Body(QWidget *parent) : QDialog(parent),
 	form_arm = new Form_Arm(ui);
 	thread_arm = new QThread();
 	QObject::connect(ui->LeftHand_btn_PosGo, SIGNAL(clicked()), form_arm, SLOT(LeftArm_PosGo()));
-	QObject::connect(ui->LeftHand_btn_Initial, SIGNAL(clicked()), form_arm, SLOT(LeftArm_Initial()));
 	QObject::connect(ui->LeftGripper_btn_Hold, SIGNAL(clicked()), form_arm, SLOT(LeftGripper_Hold()));
 	QObject::connect(ui->LeftGripper_btn_Release, SIGNAL(clicked()), form_arm, SLOT(LeftGripper_Release()));
 	QObject::connect(ui->RightHand_btn_PosGo, SIGNAL(clicked()), form_arm, SLOT(RightArm_PosGo()));
-	QObject::connect(ui->RightHand_btn_Initial, SIGNAL(clicked()), form_arm, SLOT(RightArm_Initial()));
 	QObject::connect(ui->RightGripper_btn_Hold, SIGNAL(clicked()), form_arm, SLOT(RightGripper_Hold()));
 	QObject::connect(ui->RightGripper_btn_Release, SIGNAL(clicked()), form_arm, SLOT(RightGripper_Release()));
 	form_arm->moveToThread(thread_arm);
@@ -51,7 +49,7 @@ Form_Body::Form_Body(QWidget *parent) : QDialog(parent),
 	QObject::connect(ui->Xbox_Enable, SIGNAL(stateChanged(int)), this, SLOT(XBoxJoystick_state(int)));
 }
 
-Form_Body::~Form_Body()
+Form_Robot::~Form_Robot()
 {
 	form_head->deleteLater();
 	form_arm->deleteLater();
@@ -61,22 +59,23 @@ Form_Body::~Form_Body()
 	thread_mobile->deleteLater();
 }
 
-void Form_Body::on_LeftHand_btn_Stop_clicked()
+void Form_Robot::on_LeftHand_btn_Stop_clicked()
 {
 	CLeftArm->Stop();
+	CLeftArm->ResetAllMotorAngle();
 }
 
-void Form_Body::on_RightHand_btn_Stop_clicked()
+void Form_Robot::on_RightHand_btn_Stop_clicked()
 {
 	CRightArm->Stop();
 }
 
-void Form_Body::on_Move_btn_Stop_clicked()
+void Form_Robot::on_Move_btn_Stop_clicked()
 {
 	CWheel->Stop();
 }
 
-void Form_Body::XBoxJoystick_state(int state)
+void Form_Robot::XBoxJoystick_state(int state)
 {
 	if (state == 0)
 		CXBoxJoystick->CloseXboxJoystick();
@@ -87,8 +86,9 @@ void Form_Body::XBoxJoystick_state(int state)
 ////////////////////////////////////////////////////////////////////////////////
 ///  Display   /////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-void Form_Body::showEvent(QShowEvent *event)
+void Form_Robot::showEvent(QShowEvent *event)
 {
+	// Initialize instace and then turn on display
 	CHeadandLifting = HeadandLifting::getHeadandLifting();
 	CLeftArm = SaleArmLeft::getSaleArmLeft();
 	CRightArm = SaleArmRight::getSaleArmRight();
@@ -97,11 +97,12 @@ void Form_Body::showEvent(QShowEvent *event)
 	form_head->SetHeadandLifting(CHeadandLifting);
 	form_arm->SetArm(CLeftArm, CRightArm);
 	form_mobile->SetMobile(CMobile);
+
 	_is_deleted_thread_display = false;
-	thread_display = new std::thread(&Form_Body::Display, this);
+	thread_display = new std::thread(&Form_Robot::Display, this);
 }
 
-void Form_Body::closeEvent(QCloseEvent *event)
+void Form_Robot::closeEvent(QCloseEvent *event)
 {
 	_is_deleted_thread_display = true;
 	if (thread_display != nullptr)
@@ -111,7 +112,7 @@ void Form_Body::closeEvent(QCloseEvent *event)
 	}
 }
 
-void Form_Body::Display()
+void Form_Robot::Display()
 {
 	while (!_is_deleted_thread_display)
 	{
@@ -127,7 +128,7 @@ void Form_Body::Display()
 	}
 }
 
-void Form_Body::SetupImages()
+void Form_Robot::SetupImages()
 {
 	string path = string(getenv("PWD")) + "/src/Gui/images/";
 	QIcon up = QIcon(string(path + "up.png").c_str());
@@ -141,8 +142,6 @@ void Form_Body::SetupImages()
 	QPixmap turn = QPixmap(string(path + "turn.png").c_str());
 	QPixmap turncircle = QPixmap(string(path + "turncircle.png").c_str());
 
-	ui->LeftHand_btn_Stop->setIcon(stop);
-	ui->RightHand_btn_Stop->setIcon(stop);
 	ui->Move_btn_Forward->setIcon(up);
 	ui->Move_btn_Backward->setIcon(down);
 	ui->Move_btn_Left->setIcon(left);

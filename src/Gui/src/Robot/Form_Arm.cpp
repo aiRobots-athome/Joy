@@ -1,12 +1,12 @@
-#include "Form_Arm.h"
+#include "Robot/Form_Arm.h"
 // Left Arm
 void Form_Arm::LeftArm_PosGo()
 {
 	const float Axis0 = ui->LeftHand_lineEdit_Axis0->text().toFloat();
 
-	const float ox = ui->LeftHand_lineEdit_RX->text().toFloat();
-	const float oy = ui->LeftHand_lineEdit_RY->text().toFloat();
-	const float oz = ui->LeftHand_lineEdit_RZ->text().toFloat();
+	const float ox = ui->LeftHand_lineEdit_Ox->text().toFloat();
+	const float oy = ui->LeftHand_lineEdit_Oy->text().toFloat();
+	const float oz = ui->LeftHand_lineEdit_Oz->text().toFloat();
 
 	const float px = ui->LeftHand_lineEdit_X->text().toFloat();
 	const float py = ui->LeftHand_lineEdit_Y->text().toFloat();
@@ -36,9 +36,9 @@ void Form_Arm::RightArm_PosGo()
 {
 	const float Axis0 = ui->RightHand_lineEdit_Axis0->text().toFloat();
 
-	const float ox = ui->RightHand_lineEdit_RX->text().toFloat();
-	const float oy = ui->RightHand_lineEdit_RY->text().toFloat();
-	const float oz = ui->RightHand_lineEdit_RZ->text().toFloat();
+	const float ox = ui->RightHand_lineEdit_Ox->text().toFloat();
+	const float oy = ui->RightHand_lineEdit_Oy->text().toFloat();
+	const float oz = ui->RightHand_lineEdit_Oz->text().toFloat();
 
 	const float px = ui->RightHand_lineEdit_X->text().toFloat();
 	const float py = ui->RightHand_lineEdit_Y->text().toFloat();

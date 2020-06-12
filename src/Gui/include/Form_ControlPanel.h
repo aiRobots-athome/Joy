@@ -2,10 +2,9 @@
 #define FORM_CONTROLPANEL_H
 #include <QtWidgets/QMainWindow>
 #include "Gui/ui_Form_ControlPanel.h"
-#include "Form_Body.h"
+#include "Robot/Form_Robot.h"
 #include "Form_Network.h"
 #include "Form_Strategy.h"
-// #include "Form_Vision.h"
 
 class Form_ControlPanel : public QMainWindow
 {
@@ -19,15 +18,13 @@ protected:
     void closeEvent(QCloseEvent *event);
 
 private slots:
-    void on_pB_Form_Vision_clicked();
-    void on_pB_Form_Body_clicked();
+    void on_pB_Form_Robot_clicked();
     void on_pB_Form_Strategy_clicked();
     void on_pB_Form_Network_clicked();
 
 private:
     Ui::Form_ControlPanel *ui;
-    // Form_Vision *form_vision;
-    Form_Body *form_body;
+    Form_Robot *form_body;
     Form_Strategy *form_strategy;
     Form_Network *form_network;
 };

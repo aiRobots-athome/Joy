@@ -4,10 +4,9 @@ Form_ControlPanel::Form_ControlPanel(QWidget *parent) : QMainWindow(parent),
 														ui(new Ui::Form_ControlPanel)
 {
 	ui->setupUi(this);
-	form_body = new Form_Body(this);
+	form_body = new Form_Robot(this);
 	form_network = new Form_Network();
 	form_strategy = new Form_Strategy(this);
-	// form_vision = new Form_Vision();
 }
 
 Form_ControlPanel::~Form_ControlPanel()
@@ -15,13 +14,10 @@ Form_ControlPanel::~Form_ControlPanel()
 	form_body->deleteLater();
 	form_network->deleteLater();
 	form_strategy->deleteLater();
-	// form_vision->deleteLater();
 }
 
 void Form_ControlPanel::closeEvent(QCloseEvent *event)
 {
-	// if (form_vision->isVisible())
-	// 	form_vision->close();
 	if (form_body->isVisible())
 		form_body->close();
 	if (form_strategy->isVisible())
@@ -30,15 +26,7 @@ void Form_ControlPanel::closeEvent(QCloseEvent *event)
 		form_network->close();
 }
 
-void Form_ControlPanel::on_pB_Form_Vision_clicked()
-{
-	// if (form_vision->isHidden())
-	// 	form_vision->show();
-	// else
-	// 	form_vision->hide();
-}
-
-void Form_ControlPanel::on_pB_Form_Body_clicked()
+void Form_ControlPanel::on_pB_Form_Robot_clicked()
 {
 	if (form_body->isHidden())
 		form_body->show();

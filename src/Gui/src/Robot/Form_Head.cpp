@@ -1,4 +1,4 @@
-#include "../include/Form_Head.h"
+#include "Robot/Form_Head.h"
 void Form_Head::HeadReset()
 {
 	ui->HeadHorizontal_label_value->setText(QString::number(0));

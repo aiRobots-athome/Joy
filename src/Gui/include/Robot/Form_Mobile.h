@@ -1,7 +1,7 @@
 #ifndef FORM_MOBILE_H
 #define FORM_MOBILE_H
 #include <QtCore/QObject>
-#include "Gui/ui_Form_Body.h"
+#include "Gui/ui_Form_Robot.h"
 #include "Robot/Mobile/Mobile.h"
 
 class Form_Mobile : public QObject
@@ -9,7 +9,7 @@ class Form_Mobile : public QObject
     Q_OBJECT
 
 public:
-    Form_Mobile(Ui::Form_Body *_ui, QObject *parent = nullptr) : QObject(nullptr), torque_threshold(50) { ui = _ui; };
+    Form_Mobile(Ui::Form_Robot *_ui, QObject *parent = nullptr) : QObject(nullptr), torque_threshold(50) { ui = _ui; };
     ~Form_Mobile(){};
     void Display();
     void SetMobile(Mobile *_Mobile)
@@ -35,7 +35,7 @@ public slots:
     void SelfTurn_Right();
 
 private:
-    Ui::Form_Body *ui;
+    Ui::Form_Robot *ui;
     void isOK(bool checked_thing, QLabel *label);
     void Red(QLabel *label);
     void Green(QLabel *label);

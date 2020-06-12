@@ -11,7 +11,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/..)
 
 set(ui
-ui/Form_Body.ui 
+ui/Form_Robot.ui 
 ui/Form_ControlPanel.ui 
 ui/Form_Network.ui 
 ui/Form_Strategy.ui
@@ -19,25 +19,25 @@ ui/Form_Strategy.ui
 )
 
 set(headers
-include/Form_Arm.h
-include/Form_Body.h
+include/Robot/Form_Arm.h
+include/Robot/Form_Head.h
+include/Robot/Form_Mobile.h
+include/Robot/Form_Robot.h
+# include/Robot/Form_Vision.h
 include/Form_ControlPanel.h
-include/Form_Head.h
-include/Form_Mobile.h
 include/Form_Network.h
 include/Form_Strategy.h
-# include/Form_Vision.h
 )
 
 set(src
-src/Form_Arm.cpp
-src/Form_Body.cpp
+src/Robot/Form_Arm.cpp
+src/Robot/Form_Head.cpp
+src/Robot/Form_Mobile.cpp
+src/Robot/Form_Robot.cpp
+# src/Robot/Form_Vision.cpp
 src/Form_ControlPanel.cpp
-src/Form_Head.cpp
-src/Form_Mobile.cpp
 src/Form_Network.cpp
 src/Form_Strategy.cpp
-# src/Form_Vision.cpp
 )
 
 qt5_wrap_ui(ui_headers ${ui})

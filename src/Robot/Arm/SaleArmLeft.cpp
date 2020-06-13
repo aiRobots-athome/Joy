@@ -13,33 +13,32 @@ SaleArmLeft::SaleArmLeft()
 		  {"Pro200", "Pro200", "Pro200", "Pro20", "Pro20", "Mx106", "Pro20", "Mx106"})
 {
 	// Arm Member
-	this->alength_6 = 170;
-	this->Motor_Distance_3 = -250;
-	this->Motor_Distance_5 = 250;
+	alength_6 = 170;
+	Motor_Distance_3 = -250;
+	Motor_Distance_5 = 250;
 
-	this->F_SholderCenter = 1793;
-	this->B_SholderCenter = 2070;
+	F_SholderCenter = 1793;
+	B_SholderCenter = 2070;
 
-	this->dis_CenterZ_To_ShoulderY_Ori = 170;
+	dis_CenterZ_To_ShoulderY_Ori = 170;
 
-	this->InitArmMotor();
 	cout << "\t\tClass constructed: SaleArmLeft" << endl;
 }
 
 cv::Mat *SaleArmLeft::GetKinematics(void)
 {																				 
-	float fRadian1 = this->GetMotor_PresentAngle(FIRST_HAND_ID) * Angle2Rad;	 //��쩷��
-	float fRadian2 = this->GetMotor_PresentAngle(FIRST_HAND_ID + 1) * Angle2Rad; //��쩷��
-	float fRadian3 = this->GetMotor_PresentAngle(FIRST_HAND_ID + 2) * Angle2Rad; //��쩷��
-	float fRadian4 = this->GetMotor_PresentAngle(FIRST_HAND_ID + 3) * Angle2Rad; //��쩷��
-	float fRadian5 = this->GetMotor_PresentAngle(FIRST_HAND_ID + 4) * Angle2Rad; //��쩷��
-	float fRadian6 = this->GetMotor_PresentAngle(FIRST_HAND_ID + 5) * Angle2Rad; //��쩷��
+	float fRadian1 = GetMotor_PresentAngle(FIRST_HAND_ID) * Angle2Rad;	 //��쩷��
+	float fRadian2 = GetMotor_PresentAngle(FIRST_HAND_ID + 1) * Angle2Rad; //��쩷��
+	float fRadian3 = GetMotor_PresentAngle(FIRST_HAND_ID + 2) * Angle2Rad; //��쩷��
+	float fRadian4 = GetMotor_PresentAngle(FIRST_HAND_ID + 3) * Angle2Rad; //��쩷��
+	float fRadian5 = GetMotor_PresentAngle(FIRST_HAND_ID + 4) * Angle2Rad; //��쩷��
+	float fRadian6 = GetMotor_PresentAngle(FIRST_HAND_ID + 5) * Angle2Rad; //��쩷��
 	return Calculate_ArmForwardKinematics(fRadian1, fRadian2, fRadian3, fRadian4, fRadian5, fRadian6);
 }
 cv::Mat *SaleArmLeft::Calculate_ArmForwardKinematics(float J1, float J2, float J3, float J4, float J5, float J6)
 {
 	float b = 120;
-	double shoulder_angle = this->GetMotor_PresentAngle(FIRST_SHOULDER_ID);
+	double shoulder_angle = GetMotor_PresentAngle(FIRST_SHOULDER_ID);
 
 	cv::Matx44f Ref2Shoulder(
 		1, 0, 0, 0,
@@ -69,7 +68,7 @@ cv::Mat *SaleArmLeft::Calculate_ArmForwardKinematics(float J1, float J2, float J
 					  0, 0, 0, 1);
 	cv::Matx44f Tz_L3(cos(J3), 0, sin(J3), 0,
 					  sin(J3), 0, -cos(J3), 0,
-					  0, 1, 0, this->Motor_Distance_3,
+					  0, 1, 0, Motor_Distance_3,
 					  0, 0, 0, 1);
 	cv::Matx44f Tz_L4(cos(J4), 0, sin(J4), 0,
 					  sin(J4), 0, -cos(J4), 0,
@@ -77,7 +76,7 @@ cv::Mat *SaleArmLeft::Calculate_ArmForwardKinematics(float J1, float J2, float J
 					  0, 0, 0, 1);
 	cv::Matx44f Tz_L5(cos(J5), 0, sin(J5), 0,
 					  sin(J5), 0, -cos(J5), 0,
-					  0, 1, 0, this->Motor_Distance_5,
+					  0, 1, 0, Motor_Distance_5,
 					  0, 0, 0, 1);
 	cv::Matx44f Tz_L6(cos(J6), -sin(J6), 0, alength_6 * cos(J6),
 					  sin(J6), cos(J6), 0, alength_6 * sin(J6),
@@ -89,10 +88,10 @@ cv::Mat *SaleArmLeft::Calculate_ArmForwardKinematics(float J1, float J2, float J
 	{
 		for (int j = 0; j < 4; j++)
 		{
-			this->ArmForward->at<float>(i, j) = Temp(i, j);
+			ArmForward->at<float>(i, j) = Temp(i, j);
 		}
 	}
-	return this->ArmForward;
+	return ArmForward;
 }
 cv::Mat *SaleArmLeft::Calculate_ArmForwardKinematics(float pre_angle, float J1, float J2, float J3, float J4, float J5, float J6)
 {
@@ -127,7 +126,7 @@ cv::Mat *SaleArmLeft::Calculate_ArmForwardKinematics(float pre_angle, float J1, 
 					  0, 0, 0, 1);
 	cv::Matx44f Tz_L3(cos(J3), 0, sin(J3), 0,
 					  sin(J3), 0, -cos(J3), 0,
-					  0, 1, 0, this->Motor_Distance_3,
+					  0, 1, 0, Motor_Distance_3,
 					  0, 0, 0, 1);
 	cv::Matx44f Tz_L4(cos(J4), 0, sin(J4), 0,
 					  sin(J4), 0, -cos(J4), 0,
@@ -135,7 +134,7 @@ cv::Mat *SaleArmLeft::Calculate_ArmForwardKinematics(float pre_angle, float J1, 
 					  0, 0, 0, 1);
 	cv::Matx44f Tz_L5(cos(J5), 0, sin(J5), 0,
 					  sin(J5), 0, -cos(J5), 0,
-					  0, 1, 0, this->Motor_Distance_5,
+					  0, 1, 0, Motor_Distance_5,
 					  0, 0, 0, 1);
 	cv::Matx44f Tz_L6(cos(J6), -sin(J6), 0, alength_6 * cos(J6),
 					  sin(J6), cos(J6), 0, alength_6 * sin(J6),
@@ -147,10 +146,10 @@ cv::Mat *SaleArmLeft::Calculate_ArmForwardKinematics(float pre_angle, float J1, 
 	{
 		for (int j = 0; j < 4; j++)
 		{
-			this->ArmForward->at<float>(i, j) = Temp(i, j);
+			ArmForward->at<float>(i, j) = Temp(i, j);
 		}
 	}
-	return this->ArmForward;
+	return ArmForward;
 }
 
 // 6 DOFs
@@ -160,7 +159,7 @@ float *SaleArmLeft::Arm_InverseKinematics(cv::Mat *&T)
 	cv::Mat *T_ShoulderTurn = new cv::Mat(4, 4, CV_32FC1, cv::Scalar::all(0));
 	cv::Mat *T_Shoulder2Arm = new cv::Mat(4, 4, CV_32FC1, cv::Scalar::all(0));
 	float b = 120;
-	double shoulder_angle = this->GetMotor_PresentAngle(FIRST_SHOULDER_ID);
+	double shoulder_angle = GetMotor_PresentAngle(FIRST_SHOULDER_ID);
 
 	//---------------------------------------Original Arm Position to Shouler
 	T_OriArm2Shoulder->at<float>(0, 0) = 1;
@@ -225,7 +224,7 @@ float *SaleArmLeft::Arm_InverseKinematics(cv::Mat *&T)
 	T_Shoulder2Arm->at<float>(3, 2) = 0;
 	T_Shoulder2Arm->at<float>(3, 3) = 1;
 
-	this->ArmMotionEnable = false;
+	ArmMotionEnable = false;
 
 	float J1, J2, J3, J4, J5, J6;
 
@@ -282,9 +281,9 @@ float *SaleArmLeft::Arm_InverseKinematics(cv::Mat *&T)
 	{
 		//k = a6 ^ 2 + 2 * a6*px1 + px1 ^ 2 + py1 ^ 2 + pz1 ^ 2 - d3 ^ 2 - d5 ^ 2;
 
-		float k = pow(alength_6, 2) + 2 * alength_6 * px1 + pow(px1, 2) + pow(py1, 2) + pow(pz1, 2) - pow(this->Motor_Distance_3, 2) - pow(this->Motor_Distance_5, 2);
+		float k = pow(alength_6, 2) + 2 * alength_6 * px1 + pow(px1, 2) + pow(py1, 2) + pow(pz1, 2) - pow(Motor_Distance_3, 2) - pow(Motor_Distance_5, 2);
 
-		float a = -2 * this->Motor_Distance_3 * this->Motor_Distance_5;
+		float a = -2 * Motor_Distance_3 * Motor_Distance_5;
 		float tc = (k / a);
 
 		if (tc > 1)
@@ -329,7 +328,7 @@ float *SaleArmLeft::Arm_InverseKinematics(cv::Mat *&T)
 			//J5-----------------------------------------------------------------------------
 			//Matlab
 			//ts= (pz1)/(-d3*sin(J4));
-			float ts = (pz1 / (-this->Motor_Distance_3 * sin(J4)));
+			float ts = (pz1 / (-Motor_Distance_3 * sin(J4)));
 			if (ts > 1)
 				ts = 1;
 			else if (ts < -1)
@@ -375,7 +374,7 @@ float *SaleArmLeft::Arm_InverseKinematics(cv::Mat *&T)
 				//IK_J6 = ( atan2( ( d3*cos( J4 ) - d5 ), ( -d3*cos( J5 )*sin( J4 ) ) ) - phi ) * 180 / pi;
 				float phi = atan2(py1, (px1 + alength_6));
 
-				theta6 = (atan2((this->Motor_Distance_3 * cos(J4) - this->Motor_Distance_5), (-this->Motor_Distance_3 * cos(J5) * sin(J4))) - phi) / Angle2Rad;
+				theta6 = (atan2((Motor_Distance_3 * cos(J4) - Motor_Distance_5), (-Motor_Distance_3 * cos(J5) * sin(J4))) - phi) / Angle2Rad;
 			}
 			//���ץ��W��
 
@@ -548,7 +547,7 @@ float *SaleArmLeft::Arm_InverseKinematics(cv::Mat *&T)
 											for (int p = 0; p < 4; p++)
 											{
 
-												if (round(this->round_value * tmpT->at<float>(o, p)) != round(this->round_value * T->at<float>(o, p)))
+												if (round(round_value * tmpT->at<float>(o, p)) != round(round_value * T->at<float>(o, p)))
 												{
 
 													check = false;
@@ -600,7 +599,7 @@ float *SaleArmLeft::Arm_InverseKinematics(cv::Mat *&T)
 											temp_theta[5] = (temp_theta[5]);
 
 											int tmp_delta_Ang =
-												abs(temp_theta[0] - this->GetMotor_PresentAngle(FIRST_HAND_ID)) + abs(temp_theta[1] - this->GetMotor_PresentAngle(FIRST_HAND_ID + 1)) + abs(temp_theta[2] - this->GetMotor_PresentAngle(FIRST_HAND_ID + 2)) + abs(temp_theta[3] - this->GetMotor_PresentAngle(FIRST_HAND_ID + 3)) + abs(temp_theta[4] - this->GetMotor_PresentAngle(FIRST_HAND_ID + 4)) + abs(temp_theta[5] - this->GetMotor_PresentAngle(FIRST_HAND_ID + 5));
+												abs(temp_theta[0] - GetMotor_PresentAngle(FIRST_HAND_ID)) + abs(temp_theta[1] - GetMotor_PresentAngle(FIRST_HAND_ID + 1)) + abs(temp_theta[2] - GetMotor_PresentAngle(FIRST_HAND_ID + 2)) + abs(temp_theta[3] - GetMotor_PresentAngle(FIRST_HAND_ID + 3)) + abs(temp_theta[4] - GetMotor_PresentAngle(FIRST_HAND_ID + 4)) + abs(temp_theta[5] - GetMotor_PresentAngle(FIRST_HAND_ID + 5));
 
 											if (tmp_delta_Ang < delta_Ang)
 											{
@@ -643,7 +642,7 @@ float *SaleArmLeft::Arm_InverseKinematics(const float &pre_angle, cv::Mat *&T)
 
 	float nx1, ny1, nz1, ox1, oy1, oz1, ax1, ay1, az1, px1, py1, pz1;
 
-	this->ArmMotionEnable = false;
+	ArmMotionEnable = false;
 
 	float J1, J2, J3, J4, J5, J6;
 
@@ -760,9 +759,9 @@ float *SaleArmLeft::Arm_InverseKinematics(const float &pre_angle, cv::Mat *&T)
 	{
 		//k = a6 ^ 2 + 2 * a6*px1 + px1 ^ 2 + py1 ^ 2 + pz1 ^ 2 - d3 ^ 2 - d5 ^ 2;
 
-		float k = pow(alength_6, 2) + 2 * alength_6 * px1 + pow(px1, 2) + pow(py1, 2) + pow(pz1, 2) - pow(this->Motor_Distance_3, 2) - pow(this->Motor_Distance_5, 2);
+		float k = pow(alength_6, 2) + 2 * alength_6 * px1 + pow(px1, 2) + pow(py1, 2) + pow(pz1, 2) - pow(Motor_Distance_3, 2) - pow(Motor_Distance_5, 2);
 
-		float a = -2 * this->Motor_Distance_3 * this->Motor_Distance_5;
+		float a = -2 * Motor_Distance_3 * Motor_Distance_5;
 		float tc = (k / a);
 
 		if (tc > 1)
@@ -806,7 +805,7 @@ float *SaleArmLeft::Arm_InverseKinematics(const float &pre_angle, cv::Mat *&T)
 			//J5-----------------------------------------------------------------------------
 			//Matlab
 			//ts= (pz1)/(-d3*sin(J4));
-			float ts = (pz1 / (-this->Motor_Distance_3 * sin(J4)));
+			float ts = (pz1 / (-Motor_Distance_3 * sin(J4)));
 			if (ts > 1)
 				ts = 1;
 			else if (ts < -1)
@@ -852,7 +851,7 @@ float *SaleArmLeft::Arm_InverseKinematics(const float &pre_angle, cv::Mat *&T)
 				//IK_J6 = ( atan2( ( d3*cos( J4 ) - d5 ), ( -d3*cos( J5 )*sin( J4 ) ) ) - phi ) * 180 / pi;
 				float phi = atan2(py1, (px1 + alength_6));
 
-				theta6 = (atan2((this->Motor_Distance_3 * cos(J4) - this->Motor_Distance_5), (-this->Motor_Distance_3 * cos(J5) * sin(J4))) - phi) / Angle2Rad;
+				theta6 = (atan2((Motor_Distance_3 * cos(J4) - Motor_Distance_5), (-Motor_Distance_3 * cos(J5) * sin(J4))) - phi) / Angle2Rad;
 			}
 			//���ץ��W��
 
@@ -1024,7 +1023,7 @@ float *SaleArmLeft::Arm_InverseKinematics(const float &pre_angle, cv::Mat *&T)
 											for (int p = 0; p < 4; p++)
 											{
 
-												if (round(this->round_value * tmpT->at<float>(o, p)) != round(this->round_value * T->at<float>(o, p)))
+												if (round(round_value * tmpT->at<float>(o, p)) != round(round_value * T->at<float>(o, p)))
 												{
 
 													check = false;
@@ -1076,12 +1075,12 @@ float *SaleArmLeft::Arm_InverseKinematics(const float &pre_angle, cv::Mat *&T)
 											temp_theta[5] = temp_theta[5];
 
 											int tmp_delta_Ang =
-												10 * abs(temp_theta[0] - this->GetMotor_PresentAngle(FIRST_HAND_ID)) +
-												1 * abs(temp_theta[1] - this->GetMotor_PresentAngle(FIRST_HAND_ID + 1)) +
-												1 * abs(temp_theta[2] - this->GetMotor_PresentAngle(FIRST_HAND_ID + 2)) +
-												abs(temp_theta[3] - this->GetMotor_PresentAngle(FIRST_HAND_ID + 3)) +
-												abs(temp_theta[4] - this->GetMotor_PresentAngle(FIRST_HAND_ID + 4)) +
-												abs(temp_theta[5] - this->GetMotor_PresentAngle(FIRST_HAND_ID + 5));
+												10 * abs(temp_theta[0] - GetMotor_PresentAngle(FIRST_HAND_ID)) +
+												1 * abs(temp_theta[1] - GetMotor_PresentAngle(FIRST_HAND_ID + 1)) +
+												1 * abs(temp_theta[2] - GetMotor_PresentAngle(FIRST_HAND_ID + 2)) +
+												abs(temp_theta[3] - GetMotor_PresentAngle(FIRST_HAND_ID + 3)) +
+												abs(temp_theta[4] - GetMotor_PresentAngle(FIRST_HAND_ID + 4)) +
+												abs(temp_theta[5] - GetMotor_PresentAngle(FIRST_HAND_ID + 5));
 
 											if (tmp_delta_Ang < delta_Ang)
 											{
@@ -1311,5 +1310,5 @@ float SaleArmLeft::Get_Scrw_Shift()
 
 void SaleArmLeft::ShoulderTurn(float angle)
 {
-	this->SetMotor_Angle(FIRST_SHOULDER_ID, angle);
+	SetMotor_Angle(FIRST_SHOULDER_ID, angle);
 }

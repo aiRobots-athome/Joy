@@ -5,7 +5,7 @@ class Wheel : public MotorUnion
 {
 public:
 	static Wheel *getWheel();
-	~Wheel(){};
+	~Wheel() { inst_ = nullptr; };
 
 	/*
 	@ All velocity

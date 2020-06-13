@@ -3,7 +3,8 @@ vector<unsigned char> MotorUnion::allport = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1
 
 MotorUnion::MotorUnion(const vector<unsigned char> &IDArray,
 					   const vector<string> &MotorModelArray)
-	: waiting_frequency(50)
+	: _is_deleted_thread_BG(true),
+	  waiting_frequency(50)
 {
 	for (unsigned char i = 0; i < IDArray.size(); i++)
 	{
@@ -25,9 +26,12 @@ MotorUnion::MotorUnion(const vector<unsigned char> &IDArray,
 
 MotorUnion::~MotorUnion()
 {
-	_is_deleted_thread_BG = true;
-	thread_BG->join();
-	delete thread_BG;
+	if (!_is_deleted_thread_BG)
+	{
+		_is_deleted_thread_BG = true;
+		thread_BG->join();
+		delete thread_BG;
+	}
 
 	deleteInVector(Motor_Union);
 	deleteInVector(portHandler);
@@ -115,6 +119,15 @@ const bool MotorUnion::CheckAllMotorsArrival() const
 	return arrival;
 }
 
+void MotorUnion::RecoveryState() const
+{
+	for (int i = 0; i < Motor_Union.size(); i++)
+	{
+		SetMotor_Velocity(i, Motor_Union.at(i)->GetMotor_Velocity());
+		SetMotor_Accel(i, Motor_Union.at(i)->GetMotor_Accel());
+	}
+}
+
 void MotorUnion::WaitAllMotorsArrival() const
 {
 	while (!CheckAllMotorsArrival())
@@ -190,15 +203,6 @@ void MotorUnion::SetAllMotorsTorqueEnable(const bool &enable) const
 	for (int i = 0; i < Motor_Union.size(); i++)
 	{
 		SetMotor_TorqueEnable(i, enable);
-	}
-}
-
-void MotorUnion::RecoveryState() const
-{
-	for (int i = 0; i < Motor_Union.size(); i++)
-	{
-		SetMotor_Accel(i, Motor_Union.at(i)->GetMotor_Accel());
-		SetMotor_TorqueEnable(i, Motor_Union.at(i)->GetMotor_TorqueEnable());
 	}
 }
 

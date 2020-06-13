@@ -18,16 +18,23 @@ public:
 			   const vector<string> &MotorModelArray);
 	virtual ~MotorUnion();
 	template <class T>
-	void deleteInVector(vector<T *> );
+	void deleteInVector(vector<T *>);
 
 	////////////////////////////////////////////////////////////////////////////////
 	///  All Motors   //////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////
-protected:
+private:
 	/* Control All Motors */
 	const bool ConnectAllMotors(vector<unsigned char> &AllPortNumber);
 	const bool CheckAllMotorsConnected() const;
 	const bool CheckAllMotorsArrival() const;
+	void RecoveryState() const;
+
+	/* Get All Motors Data */
+	const bool GetAllMotorsTorqueEnable() const;
+
+protected:
+	/* Wait */
 	void WaitAllMotorsArrival() const;
 	void WaitAllMotorsArrival(const int &total_waiting_time_ms) const;
 
@@ -38,9 +45,6 @@ protected:
 	void SetAllMotorsAccel(const int &accel) const;
 	void SetAllMotorsTorqueEnable(const bool &enable) const;
 
-private:
-	void RecoveryState() const;
-	const bool GetAllMotorsTorqueEnable() const;
 	////////////////////////////////////////////////////////////////////////////////
 	///   Motor   //////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////
@@ -52,7 +56,7 @@ public:
 	const float &GetMotor_PresentTorque(const unsigned char &idx) const;
 	const int &GetMotor_Velocity(const unsigned char &idx) const;
 
-// protected:
+protected:
 	const float &GetMotor_Scale2RPM(const unsigned char &idx) const;
 	const short &GetMotor_CenterScale(const unsigned char &idx) const;
 	const float &GetMotor_Angle(const unsigned char &idx) const;
@@ -67,10 +71,10 @@ public:
 	void SetMotor_Accel(const unsigned char &idx, const int &accel) const;
 	void SetMotor_TorqueEnable(const unsigned char &idx, const bool &enable) const;
 
-private:
 	////////////////////////////////////////////////////////////////////////////////
 	///   Background   /////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////
+private:
 	//Background is used for reading & writing data to motor
 	thread *thread_BG;
 	bool _is_deleted_thread_BG;
@@ -88,6 +92,8 @@ private:
 
 private:
 	vector<Motor *> Motor_Union;
-	static vector<unsigned char> allport;
 	const int waiting_frequency;
+
+public:
+	static vector<unsigned char> allport;
 };

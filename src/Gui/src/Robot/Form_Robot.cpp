@@ -1,8 +1,8 @@
 #include "Robot/Form_Robot.h"
 
 Form_Robot::Form_Robot(QWidget *parent) : QDialog(parent),
-										ui(new Ui::Form_Robot),
-										thread_display(nullptr)
+										  ui(new Ui::Form_Robot),
+										  thread_display(nullptr)
 {
 	ui->setupUi(this);
 	SetupImages();
@@ -59,10 +59,47 @@ Form_Robot::~Form_Robot()
 	thread_mobile->deleteLater();
 }
 
+void Form_Robot::on_Robot_btn_Reconnect_clicked()
+{
+	_is_deleted_thread_display = true;
+	if (thread_display != nullptr)
+	{
+		thread_display->join();
+		delete thread_display;
+	}
+
+	delete CHeadandLifting;
+	delete CLeftArm;
+	delete CRightArm;
+	delete CMobile;
+	
+	MotorUnion::allport = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+	CHeadandLifting = HeadandLifting::getHeadandLifting();
+	CLeftArm = SaleArmLeft::getSaleArmLeft();
+	CRightArm = SaleArmRight::getSaleArmRight();
+	CMobile = Mobile::getMobile();
+	CWheel = Wheel::getWheel();
+	form_head->SetHeadandLifting(CHeadandLifting);
+	form_arm->SetArm(CLeftArm, CRightArm);
+	form_mobile->SetMobile(CMobile);
+
+	_is_deleted_thread_display = false;
+	thread_display = new std::thread(&Form_Robot::Display, this);
+}
+
+void Form_Robot::on_LeftHand_btn_Start_clicked()
+{
+	CLeftArm->Start();
+}
+
 void Form_Robot::on_LeftHand_btn_Stop_clicked()
 {
 	CLeftArm->Stop();
-	CLeftArm->ResetAllMotorAngle();
+}
+
+void Form_Robot::on_RightHand_btn_Start_clicked()
+{
+	CRightArm->Start();
 }
 
 void Form_Robot::on_RightHand_btn_Stop_clicked()

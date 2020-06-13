@@ -14,10 +14,7 @@ Arm::Arm(const vector<unsigned char> &IDArray,
 	Motor_Distance6_ini = 187.98;
 	alength6_ini = 200;
 	round_value = 10;
-}
 
-void Arm::InitArmMotor()
-{
 	SetMotor_Velocity(FIRST_SHOULDER_ID, 1000); // Pro200
 	SetMotor_Velocity(FIRST_HAND_ID, 1000);		// Pro200
 	SetMotor_Velocity(FIRST_HAND_ID + 1, 1000); // Pro200
@@ -28,11 +25,6 @@ void Arm::InitArmMotor()
 	SetMotor_Velocity(FIRST_HAND_ID + 6, 500);	// Mx106
 }
 
-void Arm::ResetAllMotorAngle()
-{
-	InitArmMotor();
-	SetAllMotorsTorqueEnable(true);
-}
 void Arm::SetSixLength(float length)
 {
 	Motor_Distance_6 = length;
@@ -44,6 +36,10 @@ void Arm::GraspObj(int angle)
 void Arm::ReleaseObj()
 {
 	SetMotor_Angle(FIRST_FINGER_ID, -90);
+}
+void Arm::Start()
+{
+	SetAllMotorsTorqueEnable(true);
 }
 void Arm::Stop()
 {

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>200</width>
-    <height>380</height>
+    <width>209</width>
+    <height>353</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,89 +17,11 @@
    <string notr="true">background-color: rgb(240, 240, 240);</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="2" column="0">
-     <widget class="QPushButton" name="pB_Form_Strategy">
-      <property name="minimumSize">
-       <size>
-        <width>150</width>
-        <height>60</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <family>微軟正黑體</family>
-        <pointsize>16</pointsize>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="mouseTracking">
-       <bool>true</bool>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">background-color: rgb(246, 219, 255);</string>
-      </property>
-      <property name="text">
-       <string>Strategy</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="0">
-     <widget class="QPushButton" name="pB_Form_Network">
-      <property name="minimumSize">
-       <size>
-        <width>150</width>
-        <height>60</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <family>微軟正黑體</family>
-        <pointsize>16</pointsize>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="mouseTracking">
-       <bool>true</bool>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">background-color: rgb(239, 245, 213);</string>
-      </property>
-      <property name="text">
-       <string>Network</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QPushButton" name="pB_Form_Scara">
-      <property name="minimumSize">
-       <size>
-        <width>150</width>
-        <height>60</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <family>微軟正黑體</family>
-        <pointsize>16</pointsize>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="mouseTracking">
-       <bool>true</bool>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">background-color: rgb(211, 231, 255);</string>
-      </property>
-      <property name="text">
-       <string>Scara</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="spacing">
+     <number>12</number>
+    </property>
+    <item>
      <widget class="QPushButton" name="pB_Form_Robot">
       <property name="minimumSize">
        <size>
@@ -126,6 +48,87 @@
       </property>
      </widget>
     </item>
+    <item>
+     <widget class="QPushButton" name="pB_Form_Scara">
+      <property name="minimumSize">
+       <size>
+        <width>150</width>
+        <height>60</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>微軟正黑體</family>
+        <pointsize>16</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="mouseTracking">
+       <bool>true</bool>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(211, 231, 255);</string>
+      </property>
+      <property name="text">
+       <string>Scara</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="pB_Form_Strategy">
+      <property name="minimumSize">
+       <size>
+        <width>150</width>
+        <height>60</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>微軟正黑體</family>
+        <pointsize>16</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="mouseTracking">
+       <bool>true</bool>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(246, 219, 255);</string>
+      </property>
+      <property name="text">
+       <string>Strategy</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="pB_Form_Network">
+      <property name="minimumSize">
+       <size>
+        <width>150</width>
+        <height>60</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>微軟正黑體</family>
+        <pointsize>16</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="mouseTracking">
+       <bool>true</bool>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(239, 245, 213);</string>
+      </property>
+      <property name="text">
+       <string>Network</string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -133,7 +136,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>200</width>
+     <width>209</width>
      <height>20</height>
     </rect>
    </property>

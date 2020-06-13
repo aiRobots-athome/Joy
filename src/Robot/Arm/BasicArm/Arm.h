@@ -11,15 +11,11 @@ public:
 	/* Constructor */
 	Arm(const vector<unsigned char> &IDArray,
 		const vector<string> &MotorModelArrayList);
-	~Arm(void){};
-
-	/* Initialize Motor Parameters */
-	void InitArmMotor();
-	void ResetAllMotorAngle();
+	~Arm(){};
 
 	/* Virtual Function */
 	// Caculate Forward Kinematics
-	virtual cv::Mat *GetKinematics(void) = 0;
+	virtual cv::Mat *GetKinematics() = 0;
 	virtual cv::Mat *Calculate_ArmForwardKinematics(float J1, float J2, float J3, float J4, float J5, float J6) = 0;
 	virtual cv::Mat *Calculate_ArmForwardKinematics(float pre_angle, float J1, float J2, float J3, float J4, float J5, float J6) = 0;
 
@@ -47,8 +43,9 @@ public:
 
 	// Six length may differ as the end-effector changes, which is used in inverse kinematics
 	void SetSixLength(float length);
+	void Start();
 	void Stop();
-	void VitualGrippingJaw(void);
+	void VitualGrippingJaw();
 
 	// Used in InverseKinematics
 	cv::Mat *Jacobian(float J1, float J2, float J3, float J4, float J5, float J6, cv::Mat *T0);

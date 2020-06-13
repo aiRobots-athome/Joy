@@ -34,25 +34,39 @@ HeadandLifting::HeadandLifting()
 	this->InitHeadMotorVelocity();
 	cout << "\t\tClass constructed: HeadandLifting" << endl;
 }
-HeadandLifting::~HeadandLifting(void)
+
+HeadandLifting::~HeadandLifting()
 {
+	delete R_ID8;
+	delete R_ID9; 
+	delete T_DisID8_ID9;
+	delete T_DisCamera2ID8;
+	delete T_Lens2CameraCenter;
+	delete T_CamCoord2RobotCoord;
+	delete T_CamCoord2RobotCoord_inv;
+	inst_ = nullptr;
 }
+
 void HeadandLifting::InitHeadMotorVelocity(void)
 {
 	this->SetMotor_Velocity(FIRST_HEAD_MOTOR_ID, 200);	   // Mx64
 	this->SetMotor_Velocity(FIRST_HEAD_MOTOR_ID + 1, 200); // Mx64
 }
+
 void HeadandLifting::HeadMotorCommand(const int &MotorID, const float &Angle)
 {
 	// Bcuz SetMotor_Angle is protected in MotorUnion, it must be implemented in HeadandLifting
 	this->SetMotor_Angle(MotorID, Angle);
 }
+
 void HeadandLifting::ResetAllMotorAngle()
 {
+	this->SetAllMotorsTorqueEnable(true);
 	this->SetMotor_Angle(FIRST_HEAD_MOTOR_ID, 0);
 	this->SetMotor_Angle(FIRST_HEAD_MOTOR_ID + 1, 0);
 	this->WaitAllMotorsArrival();
 }
+
 void HeadandLifting::HeadCoordinate(float X_kinect, float Y_kinect, float depth, float &X_real, float &Y_real, float &Z_real)
 {
 	int type = 1;
@@ -153,6 +167,7 @@ void HeadandLifting::RobotToCamera(float X_real, float Y_real, float Z_real, flo
 	Y_kinect = ky / 1000;
 	depth = kz / 1000;
 }
+
 void HeadandLifting::Get_T_CamCoord2RobotCoord()
 {
 	float J1 = this->GetMotor_PresentAngle(FIRST_HEAD_MOTOR_ID);
@@ -263,6 +278,7 @@ void HeadandLifting::Get_T_CamCoord2RobotCoord()
 
 	*this->T_CamCoord2RobotCoord = (*R_ID9) * (*T_DisID8_ID9) * (*R_ID8) * (*T_DisCamera2ID8) * (*T_Lens2CameraCenter);
 }
+
 void HeadandLifting::HeadCoordinateKJ(float X_kinect, float Y_kinect, float depth, float &X_real, float &Y_real, float &Z_real)
 {
 	float J1, J2, J3, Kx, Ky;
@@ -304,6 +320,7 @@ void HeadandLifting::HeadCoordinateKJ(float X_kinect, float Y_kinect, float dept
 		Z_real = -1;
 	}
 }
+
 void HeadandLifting::GetObjectRotate_JU()
 {
 	float J1 = this->GetMotor_PresentAngle(FIRST_HEAD_MOTOR_ID);

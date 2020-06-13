@@ -4,8 +4,8 @@
 class SaleArmLeft : public Arm
 {
 public:
-	static SaleArmLeft* getSaleArmLeft();
-	~SaleArmLeft(){};
+	static SaleArmLeft *getSaleArmLeft();
+	~SaleArmLeft() { inst_ = nullptr; };
 
 	/* Kinematics */
 	cv::Mat *GetKinematics();

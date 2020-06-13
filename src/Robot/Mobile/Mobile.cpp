@@ -24,6 +24,7 @@ Mobile::~Mobile()
 {
 	delete CSteering;
 	delete CWheel;
+	inst_ = nullptr;
 }
 
 void Mobile::Move(const float &distance, const int &velocity, const float &direction)

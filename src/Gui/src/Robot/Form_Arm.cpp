@@ -15,11 +15,6 @@ void Form_Arm::LeftArm_PosGo()
 	CLeftArm->GotoPosition(Axis0, ox, oy, oz, px, py, pz);
 }
 
-void Form_Arm::LeftArm_Initial()
-{
-	CLeftArm->ResetAllMotorAngle();
-}
-
 void Form_Arm::LeftGripper_Hold()
 {
 	const float Angle = ui->LeftGripper_lineEdit_Angle->text().toFloat();
@@ -45,11 +40,6 @@ void Form_Arm::RightArm_PosGo()
 	const float pz = ui->RightHand_lineEdit_Z->text().toFloat();
 
 	CRightArm->GotoPosition(Axis0, ox, oy, oz, px, py, pz);
-}
-
-void Form_Arm::RightArm_Initial()
-{
-	CRightArm->ResetAllMotorAngle();
 }
 
 void Form_Arm::RightGripper_Hold()

@@ -7,6 +7,11 @@ Form_ControlPanel::Form_ControlPanel(QWidget *parent) : QMainWindow(parent),
 	form_body = new Form_Robot(this);
 	form_network = new Form_Network();
 	form_strategy = new Form_Strategy(this);
+	// string path = string(getenv("PWD")) + "/src/Gui/images/";
+	// QIcon connect = QIcon(string(path + "connect.png").c_str());
+
+	// ui->pB_Robot_Connect->setIcon(connect);
+	// ui->pB_Scara_Connect->setIcon(connect);
 }
 
 Form_ControlPanel::~Form_ControlPanel()

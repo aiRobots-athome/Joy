@@ -5,7 +5,7 @@ class SaleArmRight : public Arm
 {
 public:
 	static SaleArmRight *getSaleArmRight();
-	~SaleArmRight(){};
+	~SaleArmRight() { inst_ = nullptr; };
 
 	/* Kinematics */
 	cv::Mat *GetKinematics();

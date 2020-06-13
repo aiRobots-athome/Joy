@@ -20,11 +20,9 @@ public:
 
 public slots:
     void LeftArm_PosGo();
-    void LeftArm_Initial();
     void LeftGripper_Hold();
     void LeftGripper_Release();
     void RightArm_PosGo();
-    void RightArm_Initial();
     void RightGripper_Hold();
     void RightGripper_Release();
 

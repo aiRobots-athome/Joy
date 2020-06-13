@@ -22,7 +22,6 @@ SaleArmRight::SaleArmRight()
 
 	dis_CenterZ_To_ShoulderY_Ori = 170;
 
-	InitArmMotor();
 	cout << "\t\tClass constructed: SaleArmRight" << endl;
 }
 

@@ -105,6 +105,5 @@ protected:
 	const uint16_t LEN_PRESENT_POSITION;
 
 	bool connected;
-	char write_count;
 	char read_count;
 };

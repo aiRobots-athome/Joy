@@ -5,7 +5,7 @@ class Steering : public MotorUnion
 {
 public:
 	static Steering *getSteering();
-	~Steering(){};
+	~Steering() { inst_ = nullptr; };
 
 	/*
 	! No argument (angle = 0)

@@ -22,7 +22,6 @@ Motor::Motor()
 	  LEN_PRESENT_POSITION(0)
 {
 	connected = false;
-	write_count = 0;
 	read_count = 0;
 }
 
@@ -66,7 +65,6 @@ Motor::Motor(
 	  LEN_PRESENT_POSITION(len_present_position)
 {
 	connected = false;
-	write_count = 0;
 	read_count = 0;
 }
 
@@ -120,36 +118,28 @@ void Motor::ConnectDynamixel()
 
 bool Motor::WriteData()
 {
-	bool is_Write = false;
 	// !!!!!! Must write torque enable first
-	switch (write_count)
+	if (is_Write_TorqueEnable)
 	{
-	case 0:
-		is_Write = is_Write_TorqueEnable;
-		if (is_Write_TorqueEnable)
-			WriteTorqueEnable();
-		write_count = 1;
-		break;
-	case 1:
-		is_Write = is_Write_Torque;
-		if (is_Write_Torque)
-			WriteAccel();
-		write_count = 2;
-		break;
-	case 2:
-		is_Write = is_Write_Velocity;
-		if (is_Write_Velocity)
-			WriteVelocity();
-		write_count = 3;
-		break;
-	case 3:
-		is_Write = is_Write_Scale;
-		if (is_Write_Scale)
-			WriteScale();
-		write_count = 0;
-		break;
+		WriteTorqueEnable();
+		return !is_Write_TorqueEnable;
+	}		
+	if (is_Write_Torque)
+	{
+		WriteAccel();
+		return !is_Write_Torque;
 	}
-	return is_Write;
+	if (is_Write_Velocity)
+	{
+		WriteVelocity();
+		return !is_Write_Velocity;
+	}
+	if (is_Write_Scale)
+	{
+		WriteScale();
+		return !is_Write_Scale;
+	}
+	return false;
 }
 
 void Motor::AddParam()

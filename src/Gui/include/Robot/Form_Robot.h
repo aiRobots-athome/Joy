@@ -24,7 +24,10 @@ protected:
 	void closeEvent(QCloseEvent *event);
 
 private slots:
+	void on_Robot_btn_Reconnect_clicked();
+	void on_LeftHand_btn_Start_clicked();
 	void on_LeftHand_btn_Stop_clicked();
+	void on_RightHand_btn_Start_clicked();
 	void on_RightHand_btn_Stop_clicked();
 	void on_Move_btn_Stop_clicked();
 	void XBoxJoystick_state(int state);

@@ -1,50 +1,56 @@
 #pragma once
 #include <fstream>
-#include<iostream>
+#include <iostream>
 #include <opencv2/opencv.hpp>
-#include <opencv2/core/core.hpp>
-#include "../../Robot/Body/MotorUnion/MotorUnion.h"
+#include "../../Robot/MotorUnion/MotorUnion.h"
 
 class ScaraArm : public MotorUnion
 {
 public:
-    ScaraArm(const vector<unsigned char> &IDArray,
-				 const vector<string> &MotorModelArrayList,
-				 vector<unsigned char> &AllPortNumber);
-    ~ScaraArm(){};
+    static ScaraArm *getScaraArm();
+    ~ScaraArm() { inst_ = nullptr; };
 
-    cv::Mat *GetKinematics();
-    cv::Mat *Calculate_ArmForwardKinematics(float J1, float J2, float J3);
-    cv::Mat *TransRotate(const float &x_angle, const float &y_angle, const float &z_angle);
-    float *Arm_InverseKinematics(cv::Mat* T);
-    void GOScrewHeight(float goal_height);
-    float ReadSaveHeight();
-    void WriteSaceHeight(float dat);
-    void GotoPosition(cv::Mat *&T);
+    // Arm
+    cv::Mat GetKinematics();
+    float &GetPresentHeight();
     void GotoPosition(const int &ox, const int &oy, const int &oz, const int &x, const int &y, const int &z);
-    void ScaraGO(float ox, float oy, float oz, float x, float y, float z);
-    void StopScrew();
-    void InitArmMotor();
-    void Reset();
-    void AllmoterTorque(bool torque);
-    void GOHeight1mm(bool direction);
-    
+    void GotoPosition(const int &height,
+                      const int &ox,
+                      const int &oy,
+                      const int &oz,
+                      const int &x,
+                      const int &y,
+                      const int &z);
 
+    // Screw
+    void GoScrewHeight(const float &goal_height);
+
+    // All Motors
+    void SetAllMotorsTorqueEnable(const bool &torque);
 
 private:
-    float alength1_ini;
-    float alength2_ini;
-    float alength3_ini;
-    float alength4_ini;
-    float tmp_height;
-    float delta_height_f;
-    int need_position;
+    // Arm
+    cv::Mat Calculate_ArmForwardKinematics(const float &J1, const float &J2, const float &J3);
+    cv::Mat TransRotate(const float &ox, const float &oy, const float &oz);
+    float *Arm_InverseKinematics(const cv::Mat &T);
+    void GotoPosition(const cv::Mat &T);
 
-protected:
+    // Screw
+    void ReadHeight();
+    void WriteHeight(const float &height) const;
+
+private:
+    ScaraArm();
+    static ScaraArm *inst_;
+
     const unsigned char FIRST_HAND_ID;
-    const unsigned char HAND_AMOUNT;
-    int round_value;
+
+    const float Arm1_Length;
+    const float Arm2_Length;
+    const float Arm3_Length;
+    const float Arm4_Length;
+    const float Degree2Resolution;
+
+    float now_height;
     bool ScaraArmMotionEnable;
-    cv::Mat *ArmForward;
-    
 };

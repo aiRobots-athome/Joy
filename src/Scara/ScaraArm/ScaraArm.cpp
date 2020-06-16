@@ -1,138 +1,114 @@
 #include "ScaraArm.h"
 
-ScaraArm::ScaraArm(const vector<unsigned char>& IDArray,
-						   const vector<string>& MotorModelArrayList,
-						   vector<unsigned char>& AllPortNumber)
-:MotorUnion(IDArray, MotorModelArrayList, AllPortNumber),
+ScaraArm *ScaraArm::inst_ = nullptr;
+ScaraArm *ScaraArm::getScaraArm()
+{
+	if (inst_ == nullptr)
+		inst_ = new ScaraArm();
+	return inst_;
+}
+
+ScaraArm::ScaraArm()
+	: MotorUnion({0, 1, 2, 3}, {"Pro200", "Pro200", "Pro20", "Pro20"}),
 	  FIRST_HAND_ID(0),
-	  HAND_AMOUNT(3)
+	  Arm1_Length(168), // 53-small
+	  Arm2_Length(390), // 92
+	  Arm3_Length(238), // 92
+	  Arm4_Length(242), // 69
+	  Degree2Resolution(1003846 / 360)
 {
-	// Scara Arm Length
-    //BIG
-	alength1_ini = 168;
-    alength2_ini = 390;
-    alength3_ini = 238;
-    alength4_ini = 242;
-	//total = 1038
+	ReadHeight();
 
-    //SMALL
-    // alength1_ini = 53;
-    // alength2_ini = 92;
-    // alength3_ini = 92;
-    // alength4_ini = 69;
-	int FIRST_HAND_ID = 0;
-	ArmForward = new cv::Mat(4, 4, CV_32FC1);
-	InitArmMotor();
-}
-
-void ScaraArm::InitArmMotor()
-{
-	SetMotor_Operating_Mode(FIRST_HAND_ID, 1);  //Pro 200 change operating mode to velocity mode
+	SetMotor_Operating_Mode(FIRST_HAND_ID, 1);	//Pro 200 change operating mode to velocity mode
+	SetMotor_Accel(FIRST_HAND_ID, 200);			//because of setting velocity in GOScrewHeight to reduce the raising time
 	SetMotor_Velocity(FIRST_HAND_ID, 0);		// Pro200 if set velocity motor will operate, because of velocity mode
-	SetMotor_Accel(FIRST_HAND_ID, 200);         //because of setting velocity in GOScrewHeight to reduce the raising time
-	SetMotor_Velocity(FIRST_HAND_ID + 1, 1500); // Pro200 initial
-	SetMotor_Velocity(FIRST_HAND_ID + 2, 1500); // Pro20 initial
+	SetMotor_Velocity(FIRST_HAND_ID + 1, 500);	// Pro200 initial
+	SetMotor_Velocity(FIRST_HAND_ID + 2, 1000); // Pro20 initial
 	SetMotor_Velocity(FIRST_HAND_ID + 3, 1500); // Pro20 initial
+
+	cout << "\t\tClass constructed: ScaraArm" << endl;
 }
 
-cv::Mat* ScaraArm::GetKinematics(void)
+cv::Mat ScaraArm::GetKinematics()
 {
-    float fRadian1 = GetMotor_PresentAngle(FIRST_HAND_ID + 1) * Angle2Rad; 
+	float fRadian1 = GetMotor_PresentAngle(FIRST_HAND_ID + 1) * Angle2Rad;
 	float fRadian2 = -GetMotor_PresentAngle(FIRST_HAND_ID + 2) * Angle2Rad;
 	float fRadian3 = GetMotor_PresentAngle(FIRST_HAND_ID + 3) * Angle2Rad;
 
-    return Calculate_ArmForwardKinematics(fRadian1, fRadian2, fRadian3);
+	return Calculate_ArmForwardKinematics(fRadian1, fRadian2, fRadian3);
 }
 
-cv::Mat* ScaraArm::Calculate_ArmForwardKinematics(float J1, float J2, float J3)
+float &ScaraArm::GetPresentHeight()
 {
-	cv::Matx44f TransMatrix_01(1, 0, 0, alength1_ini,
-					           0, 1, 0, 0,
-					           0, 0, 1, 0,
-					           0, 0, 0, 1 );
-	cv::Matx44f TransMatrix_12( cos( J1 ), -sin( J1 ), 0, alength2_ini*cos( J1 ),
-					            sin( J1 ), cos( J1 ), 0, alength2_ini*sin( J1 ),
-		                        0, 0, 1, 0,
-		                        0, 0, 0, 1 );
-	cv::Matx44f TransMatrix_23(cos(J2), -sin(J2), 0, alength3_ini*cos(J2),
-		                       sin( J2 ), cos( J2 ),0, alength3_ini*sin( J2 ),
-		                       0, 0, 1, 0,
-		                       0, 0, 0, 1 );
-	cv::Matx44f TransMatrix_34(cos(J3), -sin(J3), 0, alength4_ini*cos(J3),
-		                       sin(J3), cos(J3), 0, alength4_ini*sin(J3),
-		                       0, 0, 1, 0,
-		                       0, 0, 0, 1);
-	
-	cv::Matx44f Temp( TransMatrix_01*TransMatrix_12*TransMatrix_23*TransMatrix_34 );
-
-	
-	for (int i = 0; i < 4; i++)
-	{
-		for (int j = 0; j < 4; j++)
-		{
-			this->ArmForward->at<float>( i, j ) = Temp( i, j );
-		}
-	}
-	return this->ArmForward;
+	return now_height;
 }
 
-float* ScaraArm::Arm_InverseKinematics(cv::Mat* T)
+cv::Mat ScaraArm::Calculate_ArmForwardKinematics(const float &J1, const float &J2, const float &J3)
 {
+	cv::Matx44f TransMatrix_01(1, 0, 0, Arm1_Length,
+							   0, 1, 0, 0,
+							   0, 0, 1, 0,
+							   0, 0, 0, 1);
+	cv::Matx44f TransMatrix_12(cos(J1), -sin(J1), 0, Arm2_Length * cos(J1),
+							   sin(J1), cos(J1), 0, Arm2_Length * sin(J1),
+							   0, 0, 1, 0,
+							   0, 0, 0, 1);
+	cv::Matx44f TransMatrix_23(cos(J2), -sin(J2), 0, Arm3_Length * cos(J2),
+							   sin(J2), cos(J2), 0, Arm3_Length * sin(J2),
+							   0, 0, 1, 0,
+							   0, 0, 0, 1);
+	cv::Matx44f TransMatrix_34(cos(J3), -sin(J3), 0, Arm4_Length * cos(J3),
+							   sin(J3), cos(J3), 0, Arm4_Length * sin(J3),
+							   0, 0, 1, 0,
+							   0, 0, 0, 1);
+
+	cv::Mat Temp(TransMatrix_01 * TransMatrix_12 * TransMatrix_23 * TransMatrix_34);
+	return Temp.clone();
+}
+
+float *ScaraArm::Arm_InverseKinematics(const cv::Mat &T)
+{
+	ScaraArmMotionEnable = false;
+	float J1, J2, J3;
+	float delta_Pos = 150000 * 2 + 250950 * 4; // default value for calculate delta solution(very large scale)
+
 	float nx, ny, nz, ox, oy, oz, ax, ay, az, px, py, pz;
+	nx = T.at<float>(0, 0);
+	ny = T.at<float>(1, 0);
+	nz = T.at<float>(2, 0);
+	ox = T.at<float>(0, 1);
+	oy = T.at<float>(1, 1);
+	oz = T.at<float>(2, 1);
+	ax = T.at<float>(0, 2);
+	ay = T.at<float>(1, 2);
+	az = T.at<float>(2, 2);
+	px = T.at<float>(0, 3);
+	py = T.at<float>(1, 3);
+	pz = T.at<float>(2, 3);
 
-	cv::Mat* tempT = T;
-	nx = T->at<float>( 0, 0 );
-	ny = T->at<float>( 1, 0 );
-	nz = T->at<float>( 2, 0 );
-	ox = T->at<float>( 0, 1 );
-	oy = T->at<float>( 1, 1 );
-	oz = T->at<float>( 2, 1 );
-	ax = T->at<float>( 0, 2 );
-	ay = T->at<float>( 1, 2 );
-	az = T->at<float>( 2, 2 );
-	px = T->at<float>( 0, 3 );
-	py = T->at<float>( 1, 3 );
-	pz = T->at<float>( 2, 3 );
+	float theta2[2] = {-999, -999}; // J1
+	float theta3[2] = {-999, -999}; // J2
+	float theta4[2] = {-999, -999}; // J3
 
-	this->ScaraArmMotionEnable = false;
-	float J1, J2, J3 ;
-
-	float delta_Pos = 150000 * 2 + 250950 * 4;  // default value for calculate delta solution(very large scale)                  
-
-	float theta2[2];  // J1
-	float theta3[2];  // J2
-	float theta4[2];  // J3
-
-	for (int i = 0; i < 2; i++)
-	{
-		theta2[i] = -999;  // J1
-		theta3[i] = -999;  // J2
-		theta4[i] = -999;  // J3
-	}
-
-	float* Solution = new float[3];  // J1 J2 J3
+	float *Solution = new float[3]; // J1 J2 J3
 	for (int i = 0; i < 3; i++)
 	{
 		Solution[i] = 0;
 	}
 
 	// J2 solution have two
-	float J2_1 = acos((pow((px - (alength4_ini*nx) - alength1_ini), 2) + pow(py - (alength4_ini*ny), 2) - pow(alength3_ini, 2) - pow(alength2_ini, 2)) / (alength3_ini * alength2_ini * 2));
-	theta3[0] = (J2_1) / Angle2Rad; //positive solution
-	theta3[1] = - theta3[0]; //nagetive solution
+	float J2_1 = acos((pow(px - (Arm4_Length * nx) - Arm1_Length, 2) +
+					   pow(py - (Arm4_Length * ny), 2) -
+					   pow(Arm3_Length, 2) -
+					   pow(Arm2_Length, 2)) /
+					  Arm3_Length * Arm2_Length * 2);
+
+	theta3[0] = (J2_1)*Rad2Angle; //positive solution
+	theta3[1] = -theta3[0];		  //nagetive solution
 
 	//angel normalization
 	for (int i = 0; i < 2; i++)
 	{
-		if (theta3[i] > 180)
-		{
-			theta3[i] = theta3[i] - 360;
-		}
-		if (theta3[i] < -180)
-		{
-			theta3[i] = theta3[i] + 360;
-		}
-
 		if ((theta3[i] > -180) && (theta3[i] < -155)) //critical point
 		{
 			theta3[i] = -999;
@@ -143,14 +119,17 @@ float* ScaraArm::Arm_InverseKinematics(cv::Mat* T)
 		}
 	}
 
-	for (int i = 0; i < 2; i++)  /* two solution */
+	for (int i = 0; i < 2; i++) /* two solution */
 	{
-		if (theta3[i] != -999)  // J2 sol
+		// J2 sol
+		if (theta3[i] != -999)
 		{
-			J2 = theta3[i] * Angle2Rad;  
-			float J1_r = pow((pow((alength3_ini*cos(J2) + alength2_ini), 2) + pow((alength3_ini*sin(J2)), 2)), 0.5);
-			float J1_phi = atan2((alength3_ini*sin(J2)), (alength3_ini*cos(J2) + alength2_ini));
-			theta2[i] = (-J1_phi + atan2(((py - (alength4_ini*ny)) / J1_r), pow((1 - (pow(((py - (alength4_ini*ny)) / J1_r), 2))), 0.5))) * Rad2Angle;
+			J2 = theta3[i] * Angle2Rad;
+			float J1_r = sqrt(pow(Arm3_Length * cos(J2) + Arm2_Length, 2) + pow(Arm3_Length * sin(J2), 2));
+			float J1_phi = atan2(Arm3_Length * sin(J2), Arm3_Length * cos(J2) + Arm2_Length);
+			theta2[i] = (-J1_phi + atan2((py - Arm4_Length * ny) / J1_r,
+										 sqrt(1 - pow((py - Arm4_Length * ny) / J1_r, 2)))) *
+						Rad2Angle;
 
 			if (theta2[i] > 180)
 			{
@@ -160,7 +139,6 @@ float* ScaraArm::Arm_InverseKinematics(cv::Mat* T)
 			{
 				theta2[i] = theta2[i] + 360;
 			}
-
 			if ((theta2[i] > -180) && (theta2[i] < -155)) //limit
 			{
 				theta2[i] = -999;
@@ -170,65 +148,41 @@ float* ScaraArm::Arm_InverseKinematics(cv::Mat* T)
 				theta2[i] = -999;
 			}
 		}
-		if (theta2[i] != -999)  // J1 sol
+
+		// J1 sol
+		if (theta2[i] != -999)
 		{
-			J1 = theta2[i] * Angle2Rad;  // change to radius
-			theta4[i] = atan2((py*cos(J1 + J2) + alength1_ini*sin(J1 + J2) - px*sin(J1 + J2) + alength2_ini*sin(J2)), px*cos(J1 + J2) - alength1_ini*cos(J1 + J2) - alength3_ini + py*sin(J1 + J2) - alength2_ini*cos(J2)) * Rad2Angle;
-
-			//angel normalize
-			if (theta4[i] > 180)
-			{
-				theta4[i] = theta4[i] - 360;
-			}
-			if (theta4[i] < -180)
-			{
-				theta4[i] = theta4[i] + 360;
-			}
-
-			if ((theta4[i] > -180) && (theta4[i] < -155)) //limit
-			{
-				theta4[i] = -999;
-			}
-			else if ((theta4[i] > 155) && (theta4[i] < 180)) //limit
-			{
-				theta4[i] = -999;
-			}
+			J1 = theta2[i] * Angle2Rad; // change to radius
+			theta4[i] = atan2(
+							py * cos(J1 + J2) + Arm1_Length * sin(J1 + J2) - px * sin(J1 + J2) + Arm2_Length * sin(J2),
+							px * cos(J1 + J2) - Arm1_Length * cos(J1 + J2) - Arm3_Length + py * sin(J1 + J2) - Arm2_Length * cos(J2)) *
+						Rad2Angle;
 		}
 
-		if (theta4[i] != -999)  // J3 sol
+		// J3 sol
+		if (theta4[i] != -999)
 		{
-			J3 = theta4[i] * Angle2Rad;  //change to radius
+			J3 = theta4[i] * Angle2Rad; //change to radius
 
 			bool check = true;
-			//check kinematics
-			float  j1, j2, j3;
-			// solution change to degree
-			j1 = J1*Rad2Angle;
-			j2 = J2*Rad2Angle;
-			j3 = J3*Rad2Angle;
 
-			cv::Mat* tmpT = Calculate_ArmForwardKinematics(J1, J2, J3);  // use inverse kinematics solution to get forward kinematics
+			cv::Mat tmpT = Calculate_ArmForwardKinematics(J1, J2, J3); // use inverse kinematics solution to get forward kinematics
 
 			for (int o = 0; o < 4; o++)
 			{
 				for (int p = 0; p < 4; p++)
 				{
 					// check does it same inverse and forward
-					if (round(round_value*tmpT->at<float>(o, p)) != round(round_value*T->at<float>(o, p)))
+					if (abs(round(tmpT.at<float>(o, p)) - round(T.at<float>(o, p))) > 1)
 					{
-						if (std::abs(round(round_value*tmpT->at<float>(o, p)) - round(round_value*T->at<float>(o, p))) > 1)
-						{
-							check = false;
-						}
+						check = false;
 					}
 				}
 			}
-			if (check)  
+
+			if (check)
 			{
-				float temp_theta[3]; //re_theta[4]
-				temp_theta[0] = J1 * Rad2Angle;
-				temp_theta[1] = J2 * Rad2Angle;
-				temp_theta[2] = J3 * Rad2Angle;
+				double temp_theta[3] = {J1 * Rad2Angle, J2 * Rad2Angle, J3 * Rad2Angle};
 				for (int o = 0; o < 3; o++)
 				{
 					if (temp_theta[o] > 180)
@@ -241,15 +195,15 @@ float* ScaraArm::Arm_InverseKinematics(cv::Mat* T)
 					}
 				}
 
-				temp_theta[0] = (temp_theta[0]);
-				temp_theta[1] = -(temp_theta[1]);
-				temp_theta[2] = (temp_theta[2]);
+				temp_theta[0] = temp_theta[0];
+				temp_theta[1] = -temp_theta[1];
+				temp_theta[2] = temp_theta[2];
 
 				// get delta angle
 				int tmp_delta_Ang =
-					std::abs(temp_theta[0] - GetMotor_PresentAngle(FIRST_HAND_ID + 1))
-					+ std::abs(temp_theta[1] - GetMotor_PresentAngle(FIRST_HAND_ID + 2))
-					+ std::abs(temp_theta[2] - GetMotor_PresentAngle(FIRST_HAND_ID + 3));
+					abs(temp_theta[0] - GetMotor_PresentAngle(FIRST_HAND_ID + 1)) +
+					abs(temp_theta[1] - GetMotor_PresentAngle(FIRST_HAND_ID + 2)) +
+					abs(temp_theta[2] - GetMotor_PresentAngle(FIRST_HAND_ID + 3));
 
 				// check delta limit
 				if (tmp_delta_Ang < delta_Pos)
@@ -260,68 +214,56 @@ float* ScaraArm::Arm_InverseKinematics(cv::Mat* T)
 					{
 						Solution[o] = temp_theta[o];
 					}
-					this->ScaraArmMotionEnable = true;  // let torque enable be true
+					ScaraArmMotionEnable = true; // let torque enable be true
 				}
 			}
 		}
 	}
 
-	if (Solution[0] == 0 && Solution[1] == 0 && Solution[2] == 0 )
+	// Is it possible?
+	if (Solution[0] == 0 && Solution[1] == 0 && Solution[2] == 0)
 	{
-		this->ScaraArmMotionEnable = false;  
+		ScaraArmMotionEnable = false;
 	}
-    
+
 	return Solution;
 }
 
-void ScaraArm::GotoPosition(cv::Mat *&T)
+void ScaraArm::GotoPosition(const cv::Mat &T)
 {
-	float *temp = Arm_InverseKinematics(T);
+	float *tmp = Arm_InverseKinematics(T);
 	if (ScaraArmMotionEnable)
 	{
 		SetMotor_Angle(FIRST_HAND_ID, GetMotor_PresentAngle(FIRST_HAND_ID));
-		SetMotor_Angle(FIRST_HAND_ID + 1, temp[0]);
-		SetMotor_Angle(FIRST_HAND_ID + 2, temp[1]);
-		SetMotor_Angle(FIRST_HAND_ID + 3, temp[2]);
+		SetMotor_Angle(FIRST_HAND_ID + 1, tmp[0]);
+		SetMotor_Angle(FIRST_HAND_ID + 2, tmp[1]);
+		SetMotor_Angle(FIRST_HAND_ID + 3, tmp[2]);
 		WaitAllMotorsArrival();
+		delete tmp;
 	}
 	else
 	{
-		cout << "Fail to arrive" << endl;
+		cout << "[ScaraArm] Fail to arrive" << endl;
 	}
 }
 
 void ScaraArm::GotoPosition(const int &ox, const int &oy, const int &oz, const int &x, const int &y, const int &z)
 {
-	cv::Mat *tmp = new cv::Mat(4, 4, CV_32FC1, cv::Scalar::all(0));
-	cv::Mat *T = TransRotate(ox, oy, oz);
-
-	tmp->at<float>(0, 0) = T->at<float>(0, 0);
-	tmp->at<float>(0, 1) = T->at<float>(0, 1);
-	tmp->at<float>(0, 2) = T->at<float>(0, 2);
-	tmp->at<float>(0, 3) = x;
-	tmp->at<float>(1, 0) = T->at<float>(1, 0);
-	tmp->at<float>(1, 1) = T->at<float>(1, 1);
-	tmp->at<float>(1, 2) = T->at<float>(1, 2);
-	tmp->at<float>(1, 3) = y;
-	tmp->at<float>(2, 0) = T->at<float>(2, 0);
-	tmp->at<float>(2, 1) = T->at<float>(2, 1);
-	tmp->at<float>(2, 2) = T->at<float>(2, 2);
-	tmp->at<float>(2, 3) = z;
-	tmp->at<float>(3, 0) = 0;
-	tmp->at<float>(3, 1) = 0;
-	tmp->at<float>(3, 2) = 0;
-	tmp->at<float>(3, 3) = 1;
+	cv::Mat T = TransRotate(ox, oy, oz);
+	float data[16] = {T.at<float>(0, 0), T.at<float>(0, 1), T.at<float>(0, 2), float(x),
+					  T.at<float>(1, 0), T.at<float>(1, 1), T.at<float>(1, 2), float(y),
+					  T.at<float>(2, 0), T.at<float>(2, 1), T.at<float>(2, 2), float(z),
+					  0, 0, 0, 1};
+	cv::Mat tmp = cv::Mat(4, 4, CV_32FC1, data);
 	GotoPosition(tmp);
-	
-	delete tmp;
 }
 
-cv::Mat *ScaraArm::TransRotate(const float &x, const float &y, const float &z)
+cv::Mat ScaraArm::TransRotate(const float &ox, const float &oy, const float &oz)
 {
-	float x_angle = x * Angle2Rad;
-	float y_angle = y * Angle2Rad;
-	float z_angle = z * Angle2Rad;
+	float x_angle = ox * Angle2Rad;
+	float y_angle = oy * Angle2Rad;
+	float z_angle = oz * Angle2Rad;
+
 	float temp_nx = cos(z_angle) * cos(y_angle);
 	float temp_ny = sin(z_angle) * cos(y_angle);
 	float temp_nz = -sin(y_angle);
@@ -331,93 +273,69 @@ cv::Mat *ScaraArm::TransRotate(const float &x, const float &y, const float &z)
 	float temp_ax = cos(z_angle) * sin(y_angle) * cos(x_angle) + sin(z_angle) * sin(x_angle);
 	float temp_ay = sin(z_angle) * sin(y_angle) * cos(x_angle) - cos(z_angle) * sin(x_angle);
 	float temp_az = cos(y_angle) * cos(x_angle);
-	cv::Mat *tmpMat = new cv::Mat(3, 3, CV_32FC1, cv::Scalar::all(0));
-	tmpMat->at<float>(0, 0) = temp_nx;
-	tmpMat->at<float>(0, 1) = temp_ox;
-	tmpMat->at<float>(0, 2) = temp_ax;
-	tmpMat->at<float>(1, 0) = temp_ny;
-	tmpMat->at<float>(1, 1) = temp_oy;
-	tmpMat->at<float>(1, 2) = temp_ay;
-	tmpMat->at<float>(2, 0) = temp_nz;
-	tmpMat->at<float>(2, 1) = temp_oz;
-	tmpMat->at<float>(2, 2) = temp_az;
 
-	return tmpMat;
+	float data[9] = {temp_nx, temp_ox, temp_ax,
+					 temp_ny, temp_oy, temp_ay,
+					 temp_nz, temp_oz, temp_az};
+	cv::Mat tmpMat = cv::Mat(3, 3, CV_32FC1, data);
+	return tmpMat.clone();
 }
 
-void ScaraArm::StopScrew()
+void ScaraArm::ReadHeight()
 {
-	SetMotor_Velocity(FIRST_HAND_ID, 0);
-	// SetMotor_TorqueEnable(FIRST_HAND_ID, false);
-}
-
-float ScaraArm::ReadSaveHeight()
-{
-	char save_height[200];
-	float now_height;
-	std::fstream heightfile;
-	std::string homepath = getenv("HOME");
-	std::string filepath = "/Joy/src/Scara/ScaraArm/Height.txt";
-	std::string path = homepath + filepath;
-	heightfile.open(path,ios::in);
-	if (!heightfile)
-		std::cout<< "Can't open" << std::endl;
+	// Read Height
+	char height[200];
+	fstream heightfile;
+	string path = string(getenv("PWD")) + "/src/Scara/ScaraArm/Height.txt";
+	heightfile.open(path, ios::in);
+	if (heightfile.fail())
+		cout << "[ScaraArm] Cannot open Height.txt" << endl;
 	else
 	{
-		heightfile.read(save_height, sizeof(save_height));
+		heightfile.read(height, sizeof(height));
 		heightfile.close();
-		now_height = std::stof(save_height);
+		now_height = stof(height);
 	}
-
-	return now_height;
 }
 
-void ScaraArm::WriteSaceHeight(float data)
+void ScaraArm::WriteHeight(const float &height) const
 {
 	fstream heightfile;
-	std::string homepath = getenv("HOME");
-	std::string filepath = "/Joy/src/Scara/ScaraArm/Height.txt";
-	std::string path = homepath + filepath;
-	heightfile.open(path,ios::out);
+	string path = string(getenv("PWD")) + "/src/Scara/ScaraArm/Height.txt";
+	heightfile.open(path, ios::trunc);
 	if (heightfile.fail())
-		std::cout<< "Can't open" << std::endl;
+		cout << "[ScaraArm] Cannot open Height.txt" << endl;
 	else
 	{
-		heightfile << data;
+		heightfile << height;
 		heightfile.close();
 	}
 }
-
-void ScaraArm::GOScrewHeight(float goal_height) //unit : mm
+// Need to check
+void ScaraArm::GoScrewHeight(const float &goal_height) //unit : mm
 {
-	tmp_height = 0;
-	float degreetoresolution =  1003846 / 360;
-	if (goal_height >=400)
+	if (goal_height >= 400)
 	{
-		std::cout << "Too high" << std::endl;
-		StopScrew();
+		cout << "[ScaraArm] Too high" << endl;
 	}
-	else if (goal_height <=20)
+	else if (goal_height <= 20)
 	{
-		std::cout << "Too low" << std::endl;
-		StopScrew();
+		cout << "[ScaraArm] Too low" << endl;
 	}
-	else
-	{
-		tmp_height = ReadSaveHeight();
-	}
-	
-	float delta_height = goal_height - tmp_height;
-	int now_position = GetMotor_PresentAngle(FIRST_HAND_ID) * degreetoresolution;
-	int delta_postion = round(delta_height / 226 * 1003846); //224(Speed ​​increaser ratio 1:11.05, Pro200 1rev = Screw 224mm)  1003846(Pro200 resolution)
-	need_position = now_position + delta_postion;
-	if (delta_height > 10 || delta_height <-10)
+
+	float delta_height = goal_height - now_height;
+	int now_position = GetMotor_PresentAngle(FIRST_HAND_ID) * Degree2Resolution; //!!!!! Present angle isn't accuracy
+	// 224(Speed ​​increaser ratio 1:11.05, Pro200 1rev = Screw 224mm)  1003846(Pro200 resolution)
+	int delta_postion = round(delta_height / 224 * 1003846);
+	int need_position = now_position + delta_postion;
+	int delta_height_f = 0;
+	if (abs(delta_height) > 10)
 	{
 		if (delta_height > 0)
 			delta_height_f = delta_height - 5;
-		else if(delta_height < 0)
-			delta_height_f = delta_height + 5; 
-		float motorspeed = 200*0.01/60*226;  //Velocity(set 400) * Scale(rev/min) / 60(to 1sec) * 226(mm) (Pro200 1rev = Screw 226)
+		else if (delta_height < 0)
+			delta_height_f = delta_height + 5;
+		float motorspeed = 200 * 0.01 / 60 * 226;					//Velocity(set 400) * Scale(rev/min) / 60(to 1sec) * 226(mm) (Pro200 1rev = Screw 226)
 		float waittime = (abs(delta_height_f) / motorspeed) * 1000; //unit:milliseconds
 		if (delta_height < 0)
 		{
@@ -431,54 +349,35 @@ void ScaraArm::GOScrewHeight(float goal_height) //unit : mm
 		SetMotor_Velocity(FIRST_HAND_ID, 0);
 		this_thread::sleep_for(chrono::milliseconds(500));
 	}
-	int present_position = GetMotor_PresentAngle(FIRST_HAND_ID) * degreetoresolution;
+	int present_position = GetMotor_PresentAngle(FIRST_HAND_ID) * Degree2Resolution;
 	int delta_resolution = need_position - present_position;
-	if(delta_resolution > 0)
+
+	for (int j = 0;; j++)
 	{
-		for (int j = 0; ; j++)
-		{
-			SetMotor_Velocity(FIRST_HAND_ID, 20);
-			this_thread::sleep_for(chrono::milliseconds(100));
-			int changing_position2 = GetMotor_PresentAngle(FIRST_HAND_ID) * degreetoresolution;
-			if (changing_position2 > (need_position-2500) && changing_position2 < (need_position+2500))
-			{
-				break;
-			}
-		}
-	}
-	else if (delta_resolution < 0)
-	{
-		for (int i = 0; ; i++)
-		{
-			SetMotor_Velocity(FIRST_HAND_ID, -20);
-			this_thread::sleep_for(chrono::milliseconds(100));
-			int changing_position2 = GetMotor_PresentAngle(FIRST_HAND_ID) * degreetoresolution;
-			if (changing_position2 > (need_position-2500) && changing_position2 < (need_position+2500))
-			{
-				break;
-			}
-		}
+		SetMotor_Velocity(FIRST_HAND_ID, copysign(20, delta_resolution));
+		this_thread::sleep_for(chrono::milliseconds(100));
+		int changing_position2 = GetMotor_PresentAngle(FIRST_HAND_ID) * Degree2Resolution;
+
+		if (abs(changing_position2 - need_position) < 2500)
+			break;
 	}
 	SetMotor_Velocity(FIRST_HAND_ID, 0);
-	WriteSaceHeight(goal_height);
+	WriteHeight(goal_height);
 }
 
-void ScaraArm::ScaraGO(float ox, float oy, float oz, float x, float y, float z)
+void ScaraArm::GotoPosition(const int &height,
+							const int &ox,
+							const int &oy,
+							const int &oz,
+							const int &x,
+							const int &y,
+							const int &z)
 {
-	GOScrewHeight(z);
-	GotoPosition(ox, oy, oz, x, y, 0);
+	GoScrewHeight(height);
+	GotoPosition(ox, oy, oz, x, y, 0); //Can we input z?
 }
 
-void ScaraArm::Reset()
+void ScaraArm::SetAllMotorsTorqueEnable(const bool &torque)
 {
-	GOScrewHeight(224);
-	GotoPosition(0,0,0,0,700,0);
-}
-
-void ScaraArm::AllmoterTorque(bool torque)
-{
-	if (torque == true)
-		SetAllMotorsTorqueEnable(true);
-	else if (torque == false)
-		SetAllMotorsTorqueEnable(false);
+	SetAllMotorsTorqueEnable(torque);
 }

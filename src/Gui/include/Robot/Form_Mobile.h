@@ -9,7 +9,7 @@ class Form_Mobile : public QObject
     Q_OBJECT
 
 public:
-    Form_Mobile(Ui::Form_Robot *_ui, QObject *parent = nullptr) : QObject(nullptr), torque_threshold(50) { ui = _ui; };
+    Form_Mobile(Ui::Form_Robot *_ui, QObject *parent = nullptr) : QObject(parent), torque_threshold(50) { ui = _ui; };
     ~Form_Mobile(){};
     void Display();
     void SetMobile(Mobile *_Mobile)

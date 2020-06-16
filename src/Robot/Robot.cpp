@@ -31,4 +31,5 @@ Robot::~Robot()
     delete CLeftArm;
     delete CRightArm;
     delete CMobile;
+    inst_ = nullptr;
 }

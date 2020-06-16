@@ -13,6 +13,3 @@ private:
     static Scara *inst_;
     Scara();
 };
-
-extern Scara *CScara;
-extern ScaraArm *CScaraArm;

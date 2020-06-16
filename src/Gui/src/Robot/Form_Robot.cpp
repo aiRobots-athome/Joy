@@ -57,6 +57,7 @@ Form_Robot::~Form_Robot()
 	thread_head->deleteLater();
 	thread_arm->deleteLater();
 	thread_mobile->deleteLater();
+	delete ui;
 }
 
 void Form_Robot::on_Robot_btn_Reconnect_clicked()
@@ -146,6 +147,7 @@ void Form_Robot::closeEvent(QCloseEvent *event)
 	{
 		thread_display->join();
 		delete thread_display;
+		thread_display = nullptr;
 	}
 }
 

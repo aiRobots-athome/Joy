@@ -4,27 +4,28 @@ Form_ControlPanel::Form_ControlPanel(QWidget *parent) : QMainWindow(parent),
 														ui(new Ui::Form_ControlPanel)
 {
 	ui->setupUi(this);
-	form_body = new Form_Robot(this);
-	form_network = new Form_Network();
+	form_robot = new Form_Robot(this);
+	form_scara = new Form_Scara(this);
+	form_network = new Form_Network(this);
 	form_strategy = new Form_Strategy(this);
-	// string path = string(getenv("PWD")) + "/src/Gui/images/";
-	// QIcon connect = QIcon(string(path + "connect.png").c_str());
 
-	// ui->pB_Robot_Connect->setIcon(connect);
-	// ui->pB_Scara_Connect->setIcon(connect);
 }
 
 Form_ControlPanel::~Form_ControlPanel()
 {
-	form_body->deleteLater();
+	form_robot->deleteLater();
+	form_scara->deleteLater();
 	form_network->deleteLater();
 	form_strategy->deleteLater();
+	delete ui;
 }
 
 void Form_ControlPanel::closeEvent(QCloseEvent *event)
 {
-	if (form_body->isVisible())
-		form_body->close();
+	if (form_robot->isVisible())
+		form_robot->close();
+	if(form_scara->isVisible())
+		form_scara->close();
 	if (form_strategy->isVisible())
 		form_strategy->close();
 	if (form_network->isVisible())
@@ -33,10 +34,18 @@ void Form_ControlPanel::closeEvent(QCloseEvent *event)
 
 void Form_ControlPanel::on_pB_Form_Robot_clicked()
 {
-	if (form_body->isHidden())
-		form_body->show();
+	if (form_robot->isHidden())
+		form_robot->show();
 	else
-		form_body->hide();
+		form_robot->hide();
+}
+
+void Form_ControlPanel::on_pB_Form_Scara_clicked()
+{
+	if (form_scara->isHidden())
+		form_scara->show();
+	else
+		form_scara->hide();
 }
 
 void Form_ControlPanel::on_pB_Form_Strategy_clicked()

@@ -9,7 +9,7 @@ class Form_Head : public QObject
     Q_OBJECT
 
 public:
-    Form_Head(Ui::Form_Robot *_ui, QObject *parent = nullptr) : QObject(nullptr) { ui = _ui; };
+    Form_Head(Ui::Form_Robot *_ui, QObject *parent = nullptr) : QObject(parent) { ui = _ui; };
     ~Form_Head(){};
     void Display();
     void SetHeadandLifting(HeadandLifting *_HeadandLifting)

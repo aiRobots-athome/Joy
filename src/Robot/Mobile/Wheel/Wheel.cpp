@@ -19,6 +19,7 @@ Wheel::Wheel()
       scale2meter_ms(GetMotor_Scale2RPM(wheel_LF) * wheel_gear_ratio * (1.667 * 1e-5) * 2 * M_PI * wheel_radius),
       phase(50)
 {
+    SetAllMotorsOperatingMode(1);
     SetAllMotorsTorqueEnable(false);
     delay = 0;
     softstart_distance = 0.0f;

@@ -72,7 +72,7 @@ const unsigned char &Motor::GetMotorID() const { return Motor_ID; }
 const bool &Motor::GetMotorConnected() const { return connected; }
 
 void Motor::ConnectDynamixel(
-	dynamixel::PortHandler *portHandler, 
+	dynamixel::PortHandler *portHandler,
 	dynamixel::PacketHandler *packetHandler,
 	dynamixel::GroupBulkRead *groupBulkRead,
 	dynamixel::GroupBulkWrite *groupBulkWrite)
@@ -123,7 +123,7 @@ bool Motor::WriteData()
 	{
 		WriteTorqueEnable();
 		return !is_Write_TorqueEnable;
-	}		
+	}
 	if (is_Write_Torque)
 	{
 		WriteAccel();
@@ -164,7 +164,7 @@ void Motor::ReadData()
 	{
 	case 0:
 		ReadPresentAngle();
-		if (abs(Motor_Angle - Motor_Present_Angle) < 1.0)
+		if (abs(Motor_Angle - Motor_Present_Angle) < 1.0 || Motor_Operating_Mode == 1)
 			is_Arrival = true;
 		else
 			is_Arrival = false;
@@ -193,7 +193,7 @@ void Motor::AddParamPresentVelocity()
 
 void Motor::AddParamPresentTorque()
 {
- 	groupBulkRead->addParam(Motor_ID, ADDR_PRESENT_TORQUE, LEN_PRESENT_TORQUE);
+	groupBulkRead->addParam(Motor_ID, ADDR_PRESENT_TORQUE, LEN_PRESENT_TORQUE);
 }
 
 void Motor::ReadPresentAngle()
@@ -239,7 +239,7 @@ void Motor::WriteVelocity()
 	case 1:
 		groupBulkWrite->addParam(Motor_ID, ADDR_GOAL_VELOCITY, LEN_GOAL_VELOCITY, param_goal_velocity);
 		break;
-	
+
 	case 3:
 		groupBulkWrite->addParam(Motor_ID, ADDR_PROFILE_VELOCITY, LEN_PROFILE_VELOCITY, param_goal_velocity);
 		break;

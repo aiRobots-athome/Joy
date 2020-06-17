@@ -30,7 +30,7 @@ motor::motor()
 	is_Write_TorqueEnable = false;
 }
 //-----------------------------------------------------//
-const unsigned char &motor::GetMotor_Operating_Mode() const { return Motor_Operating_Mode;; } 
+const unsigned char &motor::GetMotor_Operating_Mode() const { return Motor_Operating_Mode; }
 
 const float &motor::GetMotor_Scale2RPM() const { return Scale2RPM; }
 
@@ -62,9 +62,9 @@ void motor::SetMotor_CenterScale(const short &centerscale)
 	Motor_CenterScale = centerscale;
 }
 
-void motor::SetMotor_Angle(const float &fAngle)
+void motor::SetMotor_Angle(const float &angle)
 {
-	Motor_Scale = fAngle * Angle2MotorScale + Motor_CenterScale;
+	Motor_Scale = angle * Angle2MotorScale + Motor_CenterScale;
 
 	if (Motor_Scale >= Max_Position_Limit)
 		Motor_Scale = Max_Position_Limit;
@@ -90,7 +90,7 @@ void motor::SetMotor_Velocity(const int &velocity)
 		else
 			Motor_Velocity = velocity;
 		break;
-	
+
 	case 3: // Position control mode
 		if (std::abs(velocity) >= Max_Velocity_Limit)
 			Motor_Velocity = Max_Velocity_Limit;

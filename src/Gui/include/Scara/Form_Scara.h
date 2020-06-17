@@ -18,6 +18,7 @@ protected:
 	void closeEvent(QCloseEvent *event);
 
 private slots:
+	void on_Scara_btn_Reconnect_clicked();
 	void on_ScaraArm_btn_Start_clicked();
 	void on_ScaraArm_btn_Stop_clicked();
 
@@ -26,7 +27,7 @@ private:
 	Form_ScaraArm *form_scara_arm;
 	QThread *thread_scara_arm;
 	
-	ScaraArm *CScaraArm;
+	Scara *CScara;
 	
 	//Display
 	std::thread *thread_display;

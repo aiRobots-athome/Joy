@@ -26,4 +26,5 @@ Scara::Scara()
 Scara::~Scara()
 {
     delete CScaraArm;
+    inst_ = nullptr;
 }

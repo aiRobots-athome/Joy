@@ -37,14 +37,7 @@ void Arm::ReleaseObj()
 {
 	SetMotor_Angle(FIRST_FINGER_ID, -90);
 }
-void Arm::Start()
-{
-	SetAllMotorsTorqueEnable(true);
-}
-void Arm::Stop()
-{
-	SetAllMotorsTorqueEnable(false);
-}
+
 // CORE FUNCTION for 6 DOFs
 void Arm::GotoPosition(cv::Mat *&T)
 {

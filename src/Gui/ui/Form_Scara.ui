@@ -586,36 +586,6 @@
           <property name="spacing">
            <number>0</number>
           </property>
-          <item row="1" column="3">
-           <widget class="QLineEdit" name="ScaraArm_lineEdit_Axis0">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>100</width>
-              <height>90</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <family>微軟正黑體</family>
-              <pointsize>12</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color:rgb(255, 248, 252)</string>
-            </property>
-            <property name="text">
-             <string>0</string>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="1">
            <widget class="QLabel" name="ScaraArm_label_title_Pos">
             <property name="maximumSize">
@@ -636,33 +606,6 @@
             </property>
             <property name="text">
              <string>Pos</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="3">
-           <widget class="QLabel" name="ScaraArm_label_title_Axis0">
-            <property name="maximumSize">
-             <size>
-              <width>100</width>
-              <height>90</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <family>Bitstream Vera Sans</family>
-              <pointsize>12</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color:rgb(232, 255, 229)</string>
-            </property>
-            <property name="text">
-             <string>Axis 0</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -804,7 +747,7 @@
              <string notr="true">background-color:rgb(255, 248, 252)</string>
             </property>
             <property name="text">
-             <string>350</string>
+             <string>900</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -978,7 +921,7 @@
              <string notr="true">background-color:rgb(255, 248, 252)</string>
             </property>
             <property name="text">
-             <string>-300</string>
+             <string>0</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>

@@ -23,8 +23,8 @@ ScaraArm::ScaraArm()
 	SetMotor_Accel(FIRST_HAND_ID, 200);			//because of setting velocity in GOScrewHeight to reduce the raising time
 	SetMotor_Velocity(FIRST_HAND_ID, 0);		// Pro200 if set velocity motor will operate, because of velocity mode
 	SetMotor_Velocity(FIRST_HAND_ID + 1, 500);	// Pro200 initial
-	SetMotor_Velocity(FIRST_HAND_ID + 2, 1000); // Pro20 initial
-	SetMotor_Velocity(FIRST_HAND_ID + 3, 1500); // Pro20 initial
+	SetMotor_Velocity(FIRST_HAND_ID + 2, 2000); // Pro20 initial
+	SetMotor_Velocity(FIRST_HAND_ID + 3, 2000); // Pro20 initial
 
 	cout << "\t\tClass constructed: ScaraArm" << endl;
 }
@@ -101,7 +101,7 @@ float *ScaraArm::Arm_InverseKinematics(const cv::Mat &T)
 					   pow(py - (Arm4_Length * ny), 2) -
 					   pow(Arm3_Length, 2) -
 					   pow(Arm2_Length, 2)) /
-					  Arm3_Length * Arm2_Length * 2);
+					  (Arm3_Length * Arm2_Length * 2));
 
 	theta3[0] = (J2_1)*Rad2Angle; //positive solution
 	theta3[1] = -theta3[0];		  //nagetive solution
@@ -157,6 +157,14 @@ float *ScaraArm::Arm_InverseKinematics(const cv::Mat &T)
 							py * cos(J1 + J2) + Arm1_Length * sin(J1 + J2) - px * sin(J1 + J2) + Arm2_Length * sin(J2),
 							px * cos(J1 + J2) - Arm1_Length * cos(J1 + J2) - Arm3_Length + py * sin(J1 + J2) - Arm2_Length * cos(J2)) *
 						Rad2Angle;
+			if (theta4[i] > 180)
+				theta4[i] = theta4[i] - 360;
+			if (theta4[i] < -180)
+				theta4[i] = theta4[i] + 360;
+			if ((theta4[i] > -180) && (theta4[i] < -118)) //limit
+				theta4[i] = -999;
+			else if ((theta4[i] > 118) && (theta4[i] < 180)) //limit
+				theta4[i] = -999;
 		}
 
 		// J3 sol
@@ -220,13 +228,24 @@ float *ScaraArm::Arm_InverseKinematics(const cv::Mat &T)
 		}
 	}
 
-	// Is it possible?
-	if (Solution[0] == 0 && Solution[1] == 0 && Solution[2] == 0)
-	{
-		ScaraArmMotionEnable = false;
-	}
-
 	return Solution;
+}
+
+void ScaraArm::GotoPosition(const int &ox, const int &oy, const int &oz, const int &x, const int &y, const float &height)
+{
+	GotoPosition(ox, oy, oz, x, y, 0);
+	GoScrewHeight(height);
+}
+
+void ScaraArm::GotoPosition(const int &ox, const int &oy, const int &oz, const int &x, const int &y, const int &z)
+{
+	cv::Mat T = TransRotate(0, 0, oz);
+	float data[16] = {T.at<float>(0, 0), T.at<float>(0, 1), T.at<float>(0, 2), float(x),
+					  T.at<float>(1, 0), T.at<float>(1, 1), T.at<float>(1, 2), float(y),
+					  T.at<float>(2, 0), T.at<float>(2, 1), T.at<float>(2, 2), float(0),
+					  0, 0, 0, 1};
+	cv::Mat tmp = cv::Mat(4, 4, CV_32FC1, data);
+	GotoPosition(tmp);
 }
 
 void ScaraArm::GotoPosition(const cv::Mat &T)
@@ -240,22 +259,12 @@ void ScaraArm::GotoPosition(const cv::Mat &T)
 		SetMotor_Angle(FIRST_HAND_ID + 3, tmp[2]);
 		WaitAllMotorsArrival();
 		delete tmp;
+		cout << "[ScaraArm] Arm arrival !" << endl;
 	}
 	else
 	{
-		cout << "[ScaraArm] Fail to arrive" << endl;
+		cout << "[ScaraArm] Arm fail to arrive !" << endl;
 	}
-}
-
-void ScaraArm::GotoPosition(const int &ox, const int &oy, const int &oz, const int &x, const int &y, const int &z)
-{
-	cv::Mat T = TransRotate(ox, oy, oz);
-	float data[16] = {T.at<float>(0, 0), T.at<float>(0, 1), T.at<float>(0, 2), float(x),
-					  T.at<float>(1, 0), T.at<float>(1, 1), T.at<float>(1, 2), float(y),
-					  T.at<float>(2, 0), T.at<float>(2, 1), T.at<float>(2, 2), float(z),
-					  0, 0, 0, 1};
-	cv::Mat tmp = cv::Mat(4, 4, CV_32FC1, data);
-	GotoPosition(tmp);
 }
 
 cv::Mat ScaraArm::TransRotate(const float &ox, const float &oy, const float &oz)
@@ -302,7 +311,7 @@ void ScaraArm::WriteHeight(const float &height) const
 {
 	fstream heightfile;
 	string path = string(getenv("PWD")) + "/src/Scara/ScaraArm/Height.txt";
-	heightfile.open(path, ios::trunc);
+	heightfile.open(path, ios::out);
 	if (heightfile.fail())
 		cout << "[ScaraArm] Cannot open Height.txt" << endl;
 	else
@@ -314,6 +323,7 @@ void ScaraArm::WriteHeight(const float &height) const
 // Need to check
 void ScaraArm::GoScrewHeight(const float &goal_height) //unit : mm
 {
+	ReadHeight();
 	if (goal_height >= 400)
 	{
 		cout << "[ScaraArm] Too high" << endl;
@@ -324,7 +334,7 @@ void ScaraArm::GoScrewHeight(const float &goal_height) //unit : mm
 	}
 
 	float delta_height = goal_height - now_height;
-	int now_position = GetMotor_PresentAngle(FIRST_HAND_ID) * Degree2Resolution; //!!!!! Present angle isn't accuracy
+	int now_position = GetMotor_PresentAngle(FIRST_HAND_ID) * Degree2Resolution; 
 	// 224(Speed ​​increaser ratio 1:11.05, Pro200 1rev = Screw 224mm)  1003846(Pro200 resolution)
 	int delta_postion = round(delta_height / 224 * 1003846);
 	int need_position = now_position + delta_postion;
@@ -363,21 +373,6 @@ void ScaraArm::GoScrewHeight(const float &goal_height) //unit : mm
 	}
 	SetMotor_Velocity(FIRST_HAND_ID, 0);
 	WriteHeight(goal_height);
-}
-
-void ScaraArm::GotoPosition(const int &height,
-							const int &ox,
-							const int &oy,
-							const int &oz,
-							const int &x,
-							const int &y,
-							const int &z)
-{
-	GoScrewHeight(height);
-	GotoPosition(ox, oy, oz, x, y, 0); //Can we input z?
-}
-
-void ScaraArm::SetAllMotorsTorqueEnable(const bool &torque)
-{
-	SetAllMotorsTorqueEnable(torque);
+	now_height = goal_height;
+	cout << "[ScaraArm] Screw arrival !" << endl;
 }

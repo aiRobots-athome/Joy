@@ -43,6 +43,7 @@ protected:
 	void SetAllMotorsAngle(const float &angle) const;
 	void SetAllMotorsVelocity(const int &velocity) const;
 	void SetAllMotorsAccel(const int &accel) const;
+public:
 	void SetAllMotorsTorqueEnable(const bool &enable) const;
 
 	////////////////////////////////////////////////////////////////////////////////

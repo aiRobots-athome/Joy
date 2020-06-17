@@ -24,11 +24,42 @@ Form_Scara::~Form_Scara()
 	delete ui;
 }
 
+void Form_Scara::on_Scara_btn_Reconnect_clicked()
+{
+	_is_deleted_thread_display = true;
+	if (thread_display != nullptr)
+	{
+		thread_display->join();
+		delete thread_display;
+	}
+
+	delete CScara;
+	MotorUnion::allport = {0, 1};
+	CScara = Scara::getScara();
+
+	form_scara_arm->SetScaraArm(CScara->CScaraArm);
+
+	_is_deleted_thread_display = false;
+	thread_display = new std::thread(&Form_Scara::Display, this);
+}
+
+void Form_Scara::on_ScaraArm_btn_Start_clicked()
+{
+	CScara->CScaraArm->SetAllMotorsTorqueEnable(true);
+}
+void Form_Scara::on_ScaraArm_btn_Stop_clicked()
+{
+	CScara->CScaraArm->SetAllMotorsTorqueEnable(false);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+///  Display   /////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 void Form_Scara::showEvent(QShowEvent *event)
 {
-	CScaraArm = ScaraArm::getScaraArm();
+	CScara = Scara::getScara();
 
-	form_scara_arm->SetScaraArm(CScaraArm);
+	form_scara_arm->SetScaraArm(CScara->CScaraArm);
 	
 	_is_deleted_thread_display = false;
 	thread_display = new std::thread(&Form_Scara::Display, this);
@@ -59,13 +90,4 @@ void Form_Scara::Display()
 			;
 		this_thread::sleep_for(chrono::milliseconds(50));
 	}
-}
-
-void Form_Scara::on_ScaraArm_btn_Start_clicked()
-{
-	CScaraArm->SetAllMotorsTorqueEnable(false);
-}
-void Form_Scara::on_ScaraArm_btn_Stop_clicked()
-{
-	CScaraArm->SetAllMotorsTorqueEnable(true);
 }

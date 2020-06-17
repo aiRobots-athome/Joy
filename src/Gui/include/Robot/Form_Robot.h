@@ -4,9 +4,7 @@
 #include "Form_Head.h"
 #include "Form_Arm.h"
 #include "Form_Mobile.h"
-#include "Robot/Arm/SaleArmLeft.h"
-#include "Robot/Arm/SaleArmRight.h"
-#include "Robot/Mobile/Wheel/Wheel.h"
+#include "Robot/Robot.h"
 #include "XBoxJoystick/XBoxJoystick.h"
 #include <QtWidgets/QDialog>
 #include <QtCore/QThread>
@@ -47,11 +45,7 @@ private:
 	void Display();
 	void SetupImages();
 
-	HeadandLifting *CHeadandLifting;
-	SaleArmLeft *CLeftArm;
-	SaleArmRight *CRightArm;
-	Mobile *CMobile;
-	Wheel *CWheel;
+	Robot *CRobot;
 	XBoxJoystick *CXBoxJoystick;
 };
 #endif // FORM_BODY_H

@@ -2,20 +2,18 @@
 
 void Form_ScaraArm::on_ScaraArm_btn_PosGo_clicked()
 {
-	const float ox = ui->ScaraArm_lineEdit_Ox->text().toFloat();
-	const float oy = ui->ScaraArm_lineEdit_Oy->text().toFloat();
 	const float oz = ui->ScaraArm_lineEdit_Oz->text().toFloat();
 
 	const float px = ui->ScaraArm_lineEdit_X->text().toFloat();
 	const float py = ui->ScaraArm_lineEdit_Y->text().toFloat();
 	const float pz = ui->ScaraArm_lineEdit_Z->text().toFloat();
-
-	CScaraArm->GotoPosition(ox, oy, oz, px, py, pz);
+	
+	CScaraArm->GotoPosition(0, 0, oz, px, py, pz);
 }
 
 void Form_ScaraArm::on_Scara_btn_Reset_clicked()
 {
-	CScaraArm->GotoPosition(0, 0, 0, 0, 700, 0, 224);
+	CScaraArm->GotoPosition(0, 0, 0, 800, 0, 224.0f);
 }
 
 void Form_ScaraArm::on_Screw_btn_Up_clicked()
@@ -37,12 +35,12 @@ void Form_ScaraArm::on_Goal_Height_btn_clicked()
 void Form_ScaraArm::Get_Now_Position()
 {
 	cv::Mat tempT = CScaraArm->GetKinematics();
-	float x = tempT.at<float>(0, 3);
-	float y = tempT.at<float>(1, 3);
-	float z = CScaraArm->GetPresentHeight();
-	float nx = tempT.at<float>(0, 0);
-	float ny = tempT.at<float>(1, 0);
-	float oz = atan2(ny, nx) * Rad2Angle;
+	int x = tempT.at<float>(0, 3);
+	int y = tempT.at<float>(1, 3);
+	int z = CScaraArm->GetPresentHeight();
+	int nx = tempT.at<float>(0, 0);
+	int ny = tempT.at<float>(1, 0);
+	int oz = atan2(ny, nx) * Rad2Angle;
 
 	if (oz < -180)
 		oz = oz + 360;

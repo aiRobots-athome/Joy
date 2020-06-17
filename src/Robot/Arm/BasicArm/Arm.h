@@ -43,8 +43,6 @@ public:
 
 	// Six length may differ as the end-effector changes, which is used in inverse kinematics
 	void SetSixLength(float length);
-	void Start();
-	void Stop();
 	void VitualGrippingJaw();
 
 	// Used in InverseKinematics

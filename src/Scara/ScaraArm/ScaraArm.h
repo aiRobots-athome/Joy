@@ -13,20 +13,10 @@ public:
     // Arm
     cv::Mat GetKinematics();
     float &GetPresentHeight();
-    void GotoPosition(const int &ox, const int &oy, const int &oz, const int &x, const int &y, const int &z);
-    void GotoPosition(const int &height,
-                      const int &ox,
-                      const int &oy,
-                      const int &oz,
-                      const int &x,
-                      const int &y,
-                      const int &z);
+    void GotoPosition(const int &ox, const int &oy, const int &oz, const int &x, const int &y, const float &height);
 
     // Screw
     void GoScrewHeight(const float &goal_height);
-
-    // All Motors
-    void SetAllMotorsTorqueEnable(const bool &torque);
 
 private:
     // Arm
@@ -34,6 +24,7 @@ private:
     cv::Mat TransRotate(const float &ox, const float &oy, const float &oz);
     float *Arm_InverseKinematics(const cv::Mat &T);
     void GotoPosition(const cv::Mat &T);
+    void GotoPosition(const int &ox, const int &oy, const int &oz, const int &x, const int &y, const int &z);
 
     // Screw
     void ReadHeight();

@@ -69,20 +69,13 @@ void Form_Robot::on_Robot_btn_Reconnect_clicked()
 		delete thread_display;
 	}
 
-	delete CHeadandLifting;
-	delete CLeftArm;
-	delete CRightArm;
-	delete CMobile;
-	
+	delete CRobot;
 	MotorUnion::allport = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
-	CHeadandLifting = HeadandLifting::getHeadandLifting();
-	CLeftArm = SaleArmLeft::getSaleArmLeft();
-	CRightArm = SaleArmRight::getSaleArmRight();
-	CMobile = Mobile::getMobile();
-	CWheel = Wheel::getWheel();
-	form_head->SetHeadandLifting(CHeadandLifting);
-	form_arm->SetArm(CLeftArm, CRightArm);
-	form_mobile->SetMobile(CMobile);
+	CRobot = Robot::getRobot();
+
+	form_head->SetHeadandLifting(CRobot->CHeadandLifting);
+	form_arm->SetArm(CRobot->CLeftArm, CRobot->CRightArm);
+	form_mobile->SetMobile(CRobot->CMobile);
 
 	_is_deleted_thread_display = false;
 	thread_display = new std::thread(&Form_Robot::Display, this);
@@ -90,27 +83,27 @@ void Form_Robot::on_Robot_btn_Reconnect_clicked()
 
 void Form_Robot::on_LeftHand_btn_Start_clicked()
 {
-	CLeftArm->Start();
+	CRobot->CLeftArm->SetAllMotorsTorqueEnable(true);
 }
 
 void Form_Robot::on_LeftHand_btn_Stop_clicked()
 {
-	CLeftArm->Stop();
+	CRobot->CLeftArm->SetAllMotorsTorqueEnable(false);
 }
 
 void Form_Robot::on_RightHand_btn_Start_clicked()
 {
-	CRightArm->Start();
+	CRobot->CRightArm->SetAllMotorsTorqueEnable(true);
 }
 
 void Form_Robot::on_RightHand_btn_Stop_clicked()
 {
-	CRightArm->Stop();
+	CRobot->CRightArm->SetAllMotorsTorqueEnable(false);
 }
 
 void Form_Robot::on_Move_btn_Stop_clicked()
 {
-	CWheel->Stop();
+	CRobot->CWheel->Stop();
 }
 
 void Form_Robot::XBoxJoystick_state(int state)
@@ -127,14 +120,10 @@ void Form_Robot::XBoxJoystick_state(int state)
 void Form_Robot::showEvent(QShowEvent *event)
 {
 	// Initialize instace and then turn on display
-	CHeadandLifting = HeadandLifting::getHeadandLifting();
-	CLeftArm = SaleArmLeft::getSaleArmLeft();
-	CRightArm = SaleArmRight::getSaleArmRight();
-	CMobile = Mobile::getMobile();
-	CWheel = Wheel::getWheel();
-	form_head->SetHeadandLifting(CHeadandLifting);
-	form_arm->SetArm(CLeftArm, CRightArm);
-	form_mobile->SetMobile(CMobile);
+	CRobot = Robot::getRobot();
+	form_head->SetHeadandLifting(CRobot->CHeadandLifting);
+	form_arm->SetArm(CRobot->CLeftArm, CRobot->CRightArm);
+	form_mobile->SetMobile(CRobot->CMobile);
 
 	_is_deleted_thread_display = false;
 	thread_display = new std::thread(&Form_Robot::Display, this);

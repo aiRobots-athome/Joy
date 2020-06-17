@@ -18,8 +18,6 @@ public:
 	SaleArmLeft *CLeftArm;
 	SaleArmRight *CRightArm;
 	Mobile *CMobile;
-	Steering *CSteering;
-	Wheel *CWheel;
 
 private:
 	static Robot *inst_;

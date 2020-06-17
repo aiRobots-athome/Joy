@@ -103,7 +103,7 @@ void Form_Robot::on_RightHand_btn_Stop_clicked()
 
 void Form_Robot::on_Move_btn_Stop_clicked()
 {
-	CRobot->CWheel->Stop();
+	CRobot->CMobile->CWheel->Stop();
 }
 
 void Form_Robot::XBoxJoystick_state(int state)
@@ -159,31 +159,34 @@ void Form_Robot::Display()
 void Form_Robot::SetupImages()
 {
 	string path = string(getenv("PWD")) + "/src/Gui/images/";
-	QIcon up = QIcon(string(path + "up.png").c_str());
-	QIcon down = QIcon(string(path + "down.png").c_str());
-	QIcon left = QIcon(string(path + "left.png").c_str());
-	QIcon right = QIcon(string(path + "right.png").c_str());
-	QIcon stop = QIcon(string(path + "stop.png").c_str());
-	QIcon selfturn_left = QIcon(string(path + "selfturn_left.png").c_str());
-	QIcon selfturn_right = QIcon(string(path + "selfturn_right.png").c_str());
-	QPixmap oblique = QPixmap(string(path + "oblique.png").c_str());
-	QPixmap turn = QPixmap(string(path + "turn.png").c_str());
-	QPixmap turncircle = QPixmap(string(path + "turncircle.png").c_str());
+	if (std::fstream(path + "up.png").good())
+	{
+		QIcon up = QIcon(string(path + "up.png").c_str());
+		QIcon down = QIcon(string(path + "down.png").c_str());
+		QIcon left = QIcon(string(path + "left.png").c_str());
+		QIcon right = QIcon(string(path + "right.png").c_str());
+		QIcon stop = QIcon(string(path + "stop.png").c_str());
+		QIcon selfturn_left = QIcon(string(path + "selfturn_left.png").c_str());
+		QIcon selfturn_right = QIcon(string(path + "selfturn_right.png").c_str());
+		QPixmap oblique = QPixmap(string(path + "oblique.png").c_str());
+		QPixmap turn = QPixmap(string(path + "turn.png").c_str());
+		QPixmap turncircle = QPixmap(string(path + "turncircle.png").c_str());
 
-	ui->Move_btn_Forward->setIcon(up);
-	ui->Move_btn_Backward->setIcon(down);
-	ui->Move_btn_Left->setIcon(left);
-	ui->Move_btn_Right->setIcon(right);
-	ui->Move_btn_Stop->setIcon(stop);
-	ui->SelfTurn_btn_Left->setIcon(selfturn_left);
-	ui->SelfTurn_btn_Right->setIcon(selfturn_right);
-	ui->Oblique_btn_Forward->setIcon(up);
-	ui->Oblique_btn_Backward->setIcon(down);
-	ui->Oblique_image->setPixmap(oblique);
-	ui->Circle_btn_Forward->setIcon(up);
-	ui->Circle_btn_Backward->setIcon(down);
-	ui->Circle_image->setPixmap(turncircle);
-	ui->Turn_btn_Forward->setIcon(up);
-	ui->Turn_btn_Backward->setIcon(down);
-	ui->Turn_image->setPixmap(turn);
+		ui->Move_btn_Forward->setIcon(up);
+		ui->Move_btn_Backward->setIcon(down);
+		ui->Move_btn_Left->setIcon(left);
+		ui->Move_btn_Right->setIcon(right);
+		ui->Move_btn_Stop->setIcon(stop);
+		ui->SelfTurn_btn_Left->setIcon(selfturn_left);
+		ui->SelfTurn_btn_Right->setIcon(selfturn_right);
+		ui->Oblique_btn_Forward->setIcon(up);
+		ui->Oblique_btn_Backward->setIcon(down);
+		ui->Oblique_image->setPixmap(oblique);
+		ui->Circle_btn_Forward->setIcon(up);
+		ui->Circle_btn_Backward->setIcon(down);
+		ui->Circle_image->setPixmap(turncircle);
+		ui->Turn_btn_Forward->setIcon(up);
+		ui->Turn_btn_Backward->setIcon(down);
+		ui->Turn_image->setPixmap(turn);
+	}
 }

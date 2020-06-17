@@ -65,7 +65,12 @@
         "unordered_set": "cpp",
         "hash_map": "cpp",
         "hash_set": "cpp",
-        "string_view": "cpp"
+        "string_view": "cpp",
+        "iterator": "cpp",
+        "map": "cpp",
+        "memory_resource": "cpp",
+        "optional": "cpp",
+        "set": "cpp"
     },
     "C_Cpp.dimInactiveRegions": false,
     "git.ignoreLimitWarning": true

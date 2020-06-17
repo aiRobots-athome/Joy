@@ -3,7 +3,7 @@ project(Strategy)
 include_directories(${CMAKE_SOURCE_DIR})
 
 set(ALL_STRATEGES 
-# Strategies/Demo_catch_YOLO/Demo_catch_YOLO.cpp
+# Strategies/Demo/Demo.cpp
 )
 
 add_library(Strategy SHARED Strategy.cpp ${ALL_STRATEGES}) 

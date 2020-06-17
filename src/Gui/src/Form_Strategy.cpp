@@ -18,7 +18,8 @@ Form_Strategy::Form_Strategy(QWidget *parent) : QDialog(parent),
 Form_Strategy::~Form_Strategy()
 {
 	delete strategy;
-	this->deleteLater();
+	this->deleteLater();		
+	delete ui;
 }
 
 void Form_Strategy::on_button_RunStrategy_clicked()

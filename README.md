@@ -1,4 +1,4 @@
 # Robot System
 
 
-Copyright © **NCKU aiRobots lab** and **Hung-Yuan Chang, Carrot Lin**. All rights reserved
+Copyright © **NCKU aiRobots lab**. All rights reserved

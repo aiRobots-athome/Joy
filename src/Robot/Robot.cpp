@@ -1,22 +1,5 @@
 #include "Robot.h"
 Robot *Robot::inst_ = nullptr;
-Robot *CRobot = Robot::getRobot();
-/* Speech */
-Speech *CSpeech = CRobot->CSpeech;
-
-/* Vision */
-Vision *CVision = CRobot->CVision;
-
-/* Body */
-// Head and Lifting
-HeadandLiftingPlatform *CHeadandLifting = CRobot->CBody->CHeadandLifting;
-// Arm
-SaleArmLeft *CLeftArm = CRobot->CBody->CSaleArmLeft;
-SaleArmRight *CRightArm = CRobot->CBody->CSaleArmRight;
-// MobilePlatform
-MobilePlatform *CMobilePlatform = CRobot->CBody->CMobilePlatform;
-Steering *CSteering = CRobot->CBody->CMobilePlatform->CSteering;
-Wheel *CWheel = CRobot->CBody->CMobilePlatform->CWheel;
 
 Robot *Robot::getRobot()
 {
@@ -27,13 +10,12 @@ Robot *Robot::getRobot()
 
 Robot::Robot()
 {
-    int argc = 0;
-    char **argv = nullptr;
-    ros::init(argc, argv, "aiRobots");
-
     CVision = new Vision();
-    CBody = Body::getBody();
     CSpeech = new Speech();
+    CHeadandLifting = HeadandLifting::getHeadandLifting();
+    CLeftArm = SaleArmLeft::getSaleArmLeft();
+    CRightArm = SaleArmRight::getSaleArmRight();
+    CMobile = Mobile::getMobile();
 
     cout << "Class constructed: Robot" << endl;
     cout << "================================================================================" << endl;
@@ -42,6 +24,10 @@ Robot::Robot()
 Robot::~Robot()
 {
     delete CVision;
-    delete CBody;
     delete CSpeech;
+    delete CHeadandLifting;
+    delete CLeftArm;
+    delete CRightArm;
+    delete CMobile;
+    inst_ = nullptr;
 }

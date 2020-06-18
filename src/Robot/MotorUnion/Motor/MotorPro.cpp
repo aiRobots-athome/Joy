@@ -20,7 +20,6 @@ MotorPro::MotorPro(const unsigned char &MotorID, const string &MotorModel)
 		MotorScale2Angle = 1.0 / Angle2MotorScale;
 		Scale2RPM = 0.01;
 
-		SetMotor_Velocity(2000);
 		SetMotor_Accel(64);
 		SetMotor_TorqueEnable(true);
 	}
@@ -38,7 +37,6 @@ MotorPro::MotorPro(const unsigned char &MotorID, const string &MotorModel)
 		MotorScale2Angle = 1.0 / Angle2MotorScale;
 		Scale2RPM = 0.01;
 
-		SetMotor_Velocity(0);
 		SetMotor_Accel(64);
 		SetMotor_TorqueEnable(false);
 	}
@@ -56,7 +54,6 @@ MotorPro::MotorPro(const unsigned char &MotorID, const string &MotorModel)
 		MotorScale2Angle = 1.0 / Angle2MotorScale;
 		Scale2RPM = 0.01;
 
-		SetMotor_Velocity(2000);
 		SetMotor_Accel(64);
 		SetMotor_TorqueEnable(true);
 	}

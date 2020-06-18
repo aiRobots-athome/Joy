@@ -20,7 +20,6 @@ MotorProPlus::MotorProPlus(const unsigned char &MotorID, const string &MotorMode
 		MotorScale2Angle = 1.0 / Angle2MotorScale;
 		Scale2RPM = 0.01;
 
-		SetMotor_Velocity(0);
 		SetMotor_Accel(Max_Torque_Limit);
 		SetMotor_TorqueEnable(false);
 	}

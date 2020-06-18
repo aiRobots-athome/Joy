@@ -1,5 +1,6 @@
 #pragma once
-#include "./ScaraArm/ScaraArm.h"
+#include "ScaraArm/ScaraArm.h"
+#include "XYPlatform/XYPlatform.h"
 
 class Scara
 {
@@ -8,6 +9,7 @@ public:
     ~Scara();
 
     ScaraArm *CScaraArm;
+    XYPlatform *CXYPlatform;
 
 private:
     static Scara *inst_;

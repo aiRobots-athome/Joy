@@ -18,7 +18,7 @@ Scara::Scara()
     /////////////////////////////////////////////////////////////////////
     /// Construct XY Platform ///////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////
-    
+    CXYPlatform = XYPlatform::getXYPlatform();
     
     cout << "\tClass constructed: Scara" << endl;
 }
@@ -26,5 +26,6 @@ Scara::Scara()
 Scara::~Scara()
 {
     delete CScaraArm;
+    delete CXYPlatform;
     inst_ = nullptr;
 }

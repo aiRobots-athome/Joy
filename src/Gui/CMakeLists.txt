@@ -20,9 +20,9 @@ include/Robot/Form_Robot.h
 include/Robot/Form_Arm.h
 include/Robot/Form_Head.h
 include/Robot/Form_Mobile.h
-# include/Robot/Form_Vision.h
 include/Scara/Form_Scara.h
 include/Scara/Form_ScaraArm.h
+include/Scara/Form_XYPlatform.h
 include/Form_ControlPanel.h
 include/Form_Network.h
 include/Form_Strategy.h
@@ -33,9 +33,9 @@ src/Robot/Form_Robot.cpp
 src/Robot/Form_Arm.cpp
 src/Robot/Form_Head.cpp
 src/Robot/Form_Mobile.cpp
-# src/Robot/Form_Vision.cpp
 src/Scara/Form_Scara.cpp
 src/Scara/Form_ScaraArm.cpp
+src/Scara/Form_XYPlatform.cpp
 src/Form_ControlPanel.cpp
 src/Form_Network.cpp
 src/Form_Strategy.cpp

@@ -1,24 +1,20 @@
 #ifndef FORM_SCARAARM_H
 #define FORM_SCARAARM_H
 #include "Gui/ui_Form_Scara.h"
-#include "../../../Scara/Scara.h"
+#include "Scara/Scara.h"
 
 class Form_ScaraArm : public QObject
 {
     Q_OBJECT
 
 public:
-    Form_ScaraArm(Ui::Form_Scara *_ui, QObject *parent = nullptr) : QObject(nullptr), torque_threshold(50) { ui = _ui; };
+    Form_ScaraArm(Ui::Form_Scara *_ui, QObject *parent = nullptr) : QObject(parent), torque_threshold(50) { ui = _ui; };
     ~Form_ScaraArm(){};
     void Display();
     void SetScaraArm(ScaraArm *_ScaraArm)
     {
         CScaraArm = _ScaraArm;
     }
-
-protected:
-    void showEvent(QShowEvent *event);
-    void closeEvent(QCloseEvent *event);
 
 public slots:
     void on_ScaraArm_btn_PosGo_clicked();

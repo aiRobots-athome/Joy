@@ -4,7 +4,7 @@ vector<unsigned char> MotorUnion::allport = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1
 MotorUnion::MotorUnion(const vector<unsigned char> &IDArray,
 					   const vector<string> &MotorModelArray)
 	: _is_deleted_thread_BG(true),
-	  waiting_frequency(50)
+	  waiting_frequency(10)
 {
 	for (unsigned char i = 0; i < IDArray.size(); i++)
 	{

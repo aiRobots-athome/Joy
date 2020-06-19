@@ -9,12 +9,20 @@ ScaraArm *ScaraArm::getScaraArm()
 }
 
 ScaraArm::ScaraArm()
-	: MotorUnion({0, 1, 2, 3}, {"Pro200", "Pro200", "Pro20", "Pro20"}),
+	/* Big */
+	// : MotorUnion({0, 1, 2, 3}, {"Pro200", "Pro200", "Pro20", "Pro20"}),
+	//   Arm1_Length(168),
+	//   Arm2_Length(390),
+	//   Arm3_Length(238),
+	//   Arm4_Length(242),
+
+	/* Small */
+	: MotorUnion({0, 1, 2, 3}, {"Mx106", "Mx106", "Mx106", "Mx106"}),
+	  Arm1_Length(53), 
+	  Arm2_Length(92), 
+	  Arm3_Length(92),
+	  Arm4_Length(69), 
 	  FIRST_HAND_ID(0),
-	  Arm1_Length(168), // 53-small
-	  Arm2_Length(390), // 92
-	  Arm3_Length(238), // 92
-	  Arm4_Length(242), // 69
 	  Degree2Resolution(1003846 / 360)
 {
 	ReadHeight();
@@ -334,7 +342,7 @@ void ScaraArm::GoScrewHeight(const float &goal_height) //unit : mm
 	}
 
 	float delta_height = goal_height - now_height;
-	int now_position = GetMotor_PresentAngle(FIRST_HAND_ID) * Degree2Resolution; 
+	int now_position = GetMotor_PresentAngle(FIRST_HAND_ID) * Degree2Resolution;
 	// 224(Speed ​​increaser ratio 1:11.05, Pro200 1rev = Screw 224mm)  1003846(Pro200 resolution)
 	int delta_postion = round(delta_height / 224 * 1003846);
 	int need_position = now_position + delta_postion;

@@ -9,49 +9,62 @@ XYPlatform *XYPlatform::getXYPlatform()
 }
 
 XYPlatform::XYPlatform()
-    : MotorUnion({0, 1}, {"Mx106", "Mx106"}),
+    : MotorUnion({4, 5}, {"Mx106", "Mx106"}),
       X_Motor(0),
       Y_Motor(1),
-      scale2mm_ms(GetMotor_Scale2RPM(X_Motor) * 2 * M_PI * (1.667 * 1e-5) / (M_PI * 0.5) * 10), //90 degree to 10 mm
-      MAX_X(275),
-      MAX_Y(275)
+      RPM2mm_ms(2 * M_PI * (1.667 * 1e-5) / (M_PI * 0.5) * 10), //90 degree to 10 mm
+      MAX_X(154),
+      MAX_Y(227)
 {
     SetAllMotorsOperatingMode(1);
+    present_x = 0;
+    present_y = 0;
 
-    record_file.open(string(getenv("PWD")) + "/src/Scara/XYPlatform/XYRecord.txt");
-    if (record_file.is_open())
-    {
-        char str[20];
-        record_file.getline(str, sizeof(str), '\n');
-        x = stof(str);
-        record_file.getline(str, sizeof(str), '\n');
-        y = stof(str);
-        record_file.close();
-    }
-    else
-        cout << "[XYPlatform] cannot open XYRecord.txt!" << endl;
+    cout << "\t\tClass constructed: XY_Platform" << endl;
 }
 
-void XYPlatform::GotoPosition(const int &target_x, const int &target_y)
+void XYPlatform::GotoPosition(const unsigned char &MotorID, const int &target_pos, const int &speed)
 {
-    int tmp_target_x = clip(target_x, 0, MAX_X);
-    int tmp_target_y = clip(target_y, 0, MAX_Y);
-    int time_x = abs(tmp_target_x - x) / (GetMotor_Velocity(X_Motor) * scale2mm_ms);
-    int time_y = abs(tmp_target_y - y) / (GetMotor_Velocity(Y_Motor) * scale2mm_ms);
-    x = tmp_target_x;
-    y = tmp_target_y;
-    WaitAllMotorsArrival(max(time_x, time_y));
-    WriteRecord();
+    int displacement = 0;
+    int tmp_target_pos = 0;
+
+    if (MotorID == X_Motor)
+    {
+        tmp_target_pos = clip(target_pos, -MAX_X, MAX_X);
+        displacement = tmp_target_pos - present_x;
+        present_x = tmp_target_pos;
+    }
+    else
+    {
+        tmp_target_pos = clip(target_pos, -MAX_Y, MAX_Y);
+        displacement = tmp_target_pos - present_y;
+        present_y = tmp_target_pos;
+    }
+    int velocity = copysign(speed, displacement);
+    int time = displacement / (velocity * GetMotor_Scale2RPM(MotorID) * RPM2mm_ms);
+
+    SetMotor_Velocity(MotorID, velocity);
+    WaitAllMotorsArrival(time);
+    SetMotor_Velocity(MotorID, 0);
+}
+
+void XYPlatform::GotoPosition(const int &target_x, const int &target_y, const int &speed)
+{
+    void (XYPlatform::*callfunc)(const unsigned char &, const int &, const int &) = &XYPlatform::GotoPosition;
+    thread thread_x = thread(callfunc, this, X_Motor, target_x, speed);
+    thread thread_y = thread(callfunc, this, Y_Motor, target_y, speed);
+    thread_x.join();
+    thread_y.join();
 }
 
 const int &XYPlatform::GetPresentX() const
 {
-    return x;
+    return present_x;
 }
 
 const int &XYPlatform::GetPresentY() const
 {
-    return y;
+    return present_y;
 }
 
 const int &XYPlatform::GetMaxX() const
@@ -68,15 +81,4 @@ template <class T>
 constexpr const T XYPlatform::clip(const T &v, const T &lo, const T &hi)
 {
     return v > hi ? hi : (v < lo ? lo : v);
-}
-
-void XYPlatform::WriteRecord()
-{
-    record_file.open(string(getenv("PWD")) + "/src/Scara/XYPlatform/XYRecord.txt", ios::out);
-    if (record_file.is_open())
-        record_file << x << '\n'
-                    << y << '\n';
-    else
-        cout << "[XYPlatform] cannot open XYRecord.txt!" << endl;
-    record_file.close();
 }

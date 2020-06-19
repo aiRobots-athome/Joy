@@ -18,7 +18,7 @@ public:
 
 public slots:
     void XYPlatformSliderMove();
-    void XYPlatformEditInput();
+    void XYPlatformPosGo();
     void XYPlatformReset();
 
 private:

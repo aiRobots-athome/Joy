@@ -9,30 +9,49 @@ ScaraArm *ScaraArm::getScaraArm()
 }
 
 ScaraArm::ScaraArm()
+	/* Big */
 	: MotorUnion({0, 1, 2, 3}, {"Pro200", "Pro200", "Pro20", "Pro20"}),
+	  J2_sign(-1),
+	  Arm1_Length(168),
+	  Arm2_Length(390),
+	  Arm3_Length(238),
+	  Arm4_Length(242),
 	  FIRST_HAND_ID(0),
-	  Arm1_Length(168), // 53-small
-	  Arm2_Length(390), // 92
-	  Arm3_Length(238), // 92
-	  Arm4_Length(242), // 69
 	  Degree2Resolution(1003846 / 360)
-{
-	ReadHeight();
 
-	SetMotor_Operating_Mode(FIRST_HAND_ID, 1);	//Pro 200 change operating mode to velocity mode
+	// /* Small */
+	// : MotorUnion({0, 1, 2, 3}, {"Mx106", "Mx106", "Mx106", "Mx106"}),
+	//   J2_sign(1),
+	//   Arm1_Length(53), 
+	//   Arm2_Length(92), 
+	//   Arm3_Length(92),
+	//   Arm4_Length(69), 
+	//   FIRST_HAND_ID(0),
+	//   Degree2Resolution(4096 / 360)
+{
+	/* Big */
 	SetMotor_Accel(FIRST_HAND_ID, 200);			//because of setting velocity in GOScrewHeight to reduce the raising time
 	SetMotor_Velocity(FIRST_HAND_ID, 0);		// Pro200 if set velocity motor will operate, because of velocity mode
 	SetMotor_Velocity(FIRST_HAND_ID + 1, 500);	// Pro200 initial
 	SetMotor_Velocity(FIRST_HAND_ID + 2, 2000); // Pro20 initial
 	SetMotor_Velocity(FIRST_HAND_ID + 3, 2000); // Pro20 initial
 
+	/* Small */
+	// SetMotor_Accel(FIRST_HAND_ID, 50);
+	// SetMotor_Velocity(FIRST_HAND_ID, 0);
+	// SetMotor_Velocity(FIRST_HAND_ID + 1, 10);
+	// SetMotor_Velocity(FIRST_HAND_ID + 2, 20);
+	// SetMotor_Velocity(FIRST_HAND_ID + 3, 20);
+
+	ReadHeight();
+	SetMotor_Operating_Mode(FIRST_HAND_ID, 1);	//Pro 200 change operating mode to velocity mode
 	cout << "\t\tClass constructed: ScaraArm" << endl;
 }
 
 cv::Mat ScaraArm::GetKinematics()
 {
 	float fRadian1 = GetMotor_PresentAngle(FIRST_HAND_ID + 1) * Angle2Rad;
-	float fRadian2 = -GetMotor_PresentAngle(FIRST_HAND_ID + 2) * Angle2Rad;
+	float fRadian2 = J2_sign * GetMotor_PresentAngle(FIRST_HAND_ID + 2) * Angle2Rad;
 	float fRadian3 = GetMotor_PresentAngle(FIRST_HAND_ID + 3) * Angle2Rad;
 
 	return Calculate_ArmForwardKinematics(fRadian1, fRadian2, fRadian3);
@@ -204,7 +223,7 @@ float *ScaraArm::Arm_InverseKinematics(const cv::Mat &T)
 				}
 
 				temp_theta[0] = temp_theta[0];
-				temp_theta[1] = -temp_theta[1];
+				temp_theta[1] = J2_sign * temp_theta[1];
 				temp_theta[2] = temp_theta[2];
 
 				// get delta angle
@@ -334,7 +353,7 @@ void ScaraArm::GoScrewHeight(const float &goal_height) //unit : mm
 	}
 
 	float delta_height = goal_height - now_height;
-	int now_position = GetMotor_PresentAngle(FIRST_HAND_ID) * Degree2Resolution; 
+	int now_position = GetMotor_PresentAngle(FIRST_HAND_ID) * Degree2Resolution;
 	// 224(Speed ​​increaser ratio 1:11.05, Pro200 1rev = Screw 224mm)  1003846(Pro200 resolution)
 	int delta_postion = round(delta_height / 224 * 1003846);
 	int need_position = now_position + delta_postion;

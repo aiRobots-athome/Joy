@@ -124,10 +124,10 @@ bool Motor::WriteData()
 		WriteTorqueEnable();
 		return !is_Write_TorqueEnable;
 	}
-	if (is_Write_Torque)
+	if (is_Write_Accel)
 	{
 		WriteAccel();
-		return !is_Write_Torque;
+		return !is_Write_Accel;
 	}
 	if (is_Write_Velocity)
 	{
@@ -211,7 +211,7 @@ void Motor::ReadPresentVelocity()
 void Motor::ReadPresentTorque()
 {
 	int16_t data = groupBulkRead->getData(Motor_ID, ADDR_PRESENT_TORQUE, LEN_PRESENT_TORQUE);
-	Motor_Present_Torque = data / Max_Torque_Limit * 100;
+	Motor_Present_Torque = data * 100.f / Max_Torque_Limit;
 }
 
 void Motor::WriteScale()
@@ -257,7 +257,7 @@ void Motor::WriteAccel()
 	param_goal_accel[3] = DXL_HIBYTE(DXL_HIWORD(Motor_Accel));
 
 	groupBulkWrite->addParam(Motor_ID, ADDR_PROFILE_ACCEL, LEN_PROFILE_ACCEL, param_goal_accel);
-	is_Write_Torque = false;
+	is_Write_Accel = false;
 }
 
 void Motor::WriteTorqueEnable()

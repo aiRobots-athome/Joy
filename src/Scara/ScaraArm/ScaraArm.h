@@ -35,7 +35,8 @@ private:
     static ScaraArm *inst_;
 
     const unsigned char FIRST_HAND_ID;
-
+    
+    const char J2_sign;
     const float Arm1_Length;
     const float Arm2_Length;
     const float Arm3_Length;

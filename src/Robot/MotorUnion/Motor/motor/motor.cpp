@@ -26,7 +26,7 @@ motor::motor()
 	is_Arrival = true;
 	is_Write_Scale = false;
 	is_Write_Velocity = false;
-	is_Write_Torque = false;
+	is_Write_Accel = false;
 	is_Write_TorqueEnable = false;
 }
 //-----------------------------------------------------//
@@ -108,7 +108,7 @@ void motor::SetMotor_Accel(const int &accel)
 	else
 		Motor_Accel = accel;
 
-	is_Write_Torque = true;
+	is_Write_Accel = true;
 }
 
 void motor::SetMotor_TorqueEnable(const bool &enable)

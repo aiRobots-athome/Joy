@@ -60,6 +60,6 @@ protected:
 	bool is_Arrival;
 	bool is_Write_Scale;
 	bool is_Write_Velocity;
-	bool is_Write_Torque;
+	bool is_Write_Accel;
 	bool is_Write_TorqueEnable;
 };

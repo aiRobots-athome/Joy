@@ -19,9 +19,5 @@ MotorMx::MotorMx(const unsigned char &MotorID, const string &MotorModel)
 		Angle2MotorScale = (Max_Position_Limit - Min_Position_Limit) / 360.0;
 		MotorScale2Angle = 1.0 / Angle2MotorScale;
 		Scale2RPM = 0.229;
-
-		SetMotor_Velocity(210);
-		SetMotor_Accel(100);
-		SetMotor_TorqueEnable(true);
 	}
 }

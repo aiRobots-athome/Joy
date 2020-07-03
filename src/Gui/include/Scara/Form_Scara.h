@@ -2,6 +2,7 @@
 #define FORM_SCARA_H
 #include "Gui/ui_Form_Scara.h"
 #include "Form_ScaraArm.h"
+#include "Form_XYPlatform.h"
 #include <QtWidgets/QDialog>
 #include <QtCore/QThread>
 
@@ -25,10 +26,12 @@ private slots:
 private:
 	Ui::Form_Scara *ui;
 	Form_ScaraArm *form_scara_arm;
+	Form_XYPlatform *form_xy_platform;
 	QThread *thread_scara_arm;
+	QThread *thread_xy_platform;
 	
 	Scara *CScara;
-	
+
 	//Display
 	std::thread *thread_display;
 	bool _is_deleted_thread_display;

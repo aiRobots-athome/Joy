@@ -4,6 +4,7 @@ motor::motor()
 	Angle2MotorScale = 0.0f;
 	MotorScale2Angle = 0.0f;
 	Scale2RPM = 0.0f;
+	Scale2RPMM = 0.0f;
 
 	Motor_Operating_Mode = 3;
 	Motor_CenterScale = 0;
@@ -33,6 +34,8 @@ motor::motor()
 const unsigned char &motor::GetMotor_Operating_Mode() const { return Motor_Operating_Mode; }
 
 const float &motor::GetMotor_Scale2RPM() const { return Scale2RPM; }
+
+const float &motor::GetMotor_Scale2RPMM() const { return Scale2RPMM; }
 
 const short &motor::GetMotor_CenterScale() const { return Motor_CenterScale; }
 

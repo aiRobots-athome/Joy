@@ -17,7 +17,6 @@ public:
     }
 
 public slots:
-    void XYPlatformSliderMove();
     void XYPlatformPosGo();
     void XYPlatformReset();
 

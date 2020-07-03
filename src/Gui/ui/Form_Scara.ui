@@ -1616,8 +1616,8 @@
         <rect>
          <x>20</x>
          <y>10</y>
-         <width>521</width>
-         <height>421</height>
+         <width>421</width>
+         <height>171</height>
         </rect>
        </property>
        <property name="font">
@@ -1631,93 +1631,6 @@
         <string>XY_Platform</string>
        </property>
        <layout class="QGridLayout" name="gridLayout_5">
-        <item row="1" column="3">
-         <widget class="QSlider" name="XYPlatform_slider_X">
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="autoFillBackground">
-           <bool>false</bool>
-          </property>
-          <property name="styleSheet">
-           <string notr="true"/>
-          </property>
-          <property name="maximum">
-           <number>154</number>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="tickPosition">
-           <enum>QSlider::NoTicks</enum>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="2">
-         <widget class="QSlider" name="XYPlatform_slider_Y">
-          <property name="minimumSize">
-           <size>
-            <width>60</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>60</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="maximum">
-           <number>227</number>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="3">
-         <widget class="QGraphicsView" name="graphicsView"/>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QGroupBox" name="groupBox_5">
-       <property name="geometry">
-        <rect>
-         <x>670</x>
-         <y>10</y>
-         <width>400</width>
-         <height>321</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>16</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="title">
-        <string>Camera</string>
-       </property>
-       <layout class="QGridLayout" name="gridLayout_4">
-        <item row="0" column="0">
-         <widget class="QGraphicsView" name="XYPlatform_graphicsView_Camera"/>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="layoutWidget">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>450</y>
-         <width>471</width>
-         <height>101</height>
-        </rect>
-       </property>
-       <layout class="QGridLayout" name="gridLayout_6">
         <item row="0" column="0">
          <widget class="QLabel" name="XYPlatform_label_title_X">
           <property name="minimumSize">
@@ -1787,7 +1700,7 @@
            <string>0</string>
           </property>
           <property name="maxLength">
-           <number>3</number>
+           <number>4</number>
           </property>
           <property name="alignment">
            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -1920,7 +1833,7 @@
            <string>0</string>
           </property>
           <property name="maxLength">
-           <number>3</number>
+           <number>4</number>
           </property>
           <property name="alignment">
            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -1994,6 +1907,31 @@
            </size>
           </property>
          </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QGroupBox" name="groupBox_5">
+       <property name="geometry">
+        <rect>
+         <x>490</x>
+         <y>10</y>
+         <width>400</width>
+         <height>321</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>16</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="title">
+        <string>Camera</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_4">
+        <item row="0" column="0">
+         <widget class="QGraphicsView" name="XYPlatform_graphicsView_Camera"/>
         </item>
        </layout>
       </widget>

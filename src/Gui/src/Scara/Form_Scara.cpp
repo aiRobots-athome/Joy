@@ -18,8 +18,6 @@ Form_Scara::Form_Scara(QWidget *parent) : QDialog(parent),
 
 	form_xy_platform = new Form_XYPlatform(ui);
 	thread_xy_platform = new QThread();
-	QObject::connect(ui->XYPlatform_slider_X, SIGNAL(sliderReleased()), form_xy_platform, SLOT(XYPlatformSliderMove()));
-	QObject::connect(ui->XYPlatform_slider_Y, SIGNAL(sliderReleased()), form_xy_platform, SLOT(XYPlatformSliderMove()));
 	QObject::connect(ui->XYPlatform_btn_PosGo, SIGNAL(clicked()), form_xy_platform, SLOT(XYPlatformPosGo()));
 	QObject::connect(ui->XYPlatform_btn_Reset, SIGNAL(clicked()), form_xy_platform, SLOT(XYPlatformReset()));
 	form_xy_platform->moveToThread(thread_xy_platform);

@@ -31,3 +31,16 @@ Robot::~Robot()
     delete CMobile;
     inst_ = nullptr;
 }
+
+void Robot::Reconnect()
+{
+    delete CHeadandLifting;
+	delete CLeftArm;
+	delete CRightArm;
+	delete CMobile;
+	MotorUnion::allport = {0, 1, 2, 3, 4, 5, 6};
+	CHeadandLifting = HeadandLifting::getHeadandLifting();
+	CLeftArm = SaleArmLeft::getSaleArmLeft();
+	CRightArm = SaleArmRight::getSaleArmRight();
+	CMobile = Mobile::getMobile();
+}

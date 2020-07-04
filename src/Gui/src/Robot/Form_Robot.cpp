@@ -69,10 +69,7 @@ void Form_Robot::on_Robot_btn_Reconnect_clicked()
 		delete thread_display;
 	}
 
-	delete CRobot;
-	MotorUnion::allport = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
-	CRobot = Robot::getRobot();
-
+	CRobot->Reconnect();
 	form_head->SetHeadandLifting(CRobot->CHeadandLifting);
 	form_arm->SetArm(CRobot->CLeftArm, CRobot->CRightArm);
 	form_mobile->SetMobile(CRobot->CMobile);

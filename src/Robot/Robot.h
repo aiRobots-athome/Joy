@@ -11,7 +11,8 @@ class Robot
 public:
 	static Robot *getRobot();
 	~Robot();
-
+	void Reconnect();
+	
 	Speech *CSpeech;
 	Vision *CVision;
 	HeadandLifting *CHeadandLifting;

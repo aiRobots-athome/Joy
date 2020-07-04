@@ -9,6 +9,9 @@ public:
     static XYPlatform *getXYPlatform();
     ~XYPlatform() { inst_ = nullptr; };
 
+    void Start();
+    void Stop();
+
     void GotoPosition(const unsigned char &MotorID, const int &target_pos, const int &speed = 100);
     void GotoPosition(const int &target_x, const int &target_y, const int &speed = 100);
     const int &GetPresentX() const;

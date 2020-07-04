@@ -17,10 +17,21 @@ XYPlatform::XYPlatform()
       MAX_Y(227)
 {
     SetAllMotorsOperatingMode(1);
+    SetAllMotorsTorqueEnable(true);
     present_x = 0;
     present_y = 0;
 
     cout << "\t\tClass constructed: XY_Platform" << endl;
+}
+
+void XYPlatform::Start()
+{
+    SetAllMotorsTorqueEnable(true);
+}
+
+void XYPlatform::Stop()
+{
+    SetAllMotorsTorqueEnable(false);
 }
 
 void XYPlatform::GotoPosition(const unsigned char &MotorID, const int &target_pos, const int &speed)

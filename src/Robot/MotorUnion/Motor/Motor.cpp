@@ -93,13 +93,13 @@ void Motor::ConnectDynamixel()
 		int dxl_comm_result = packetHandler->ping(portHandler, Motor_ID, &dxl_model_number, &dxl_error);
 		if (dxl_comm_result != COMM_SUCCESS)
 		{
-			printf("%s\n", packetHandler->getTxRxResult(dxl_comm_result));
+			// printf("%s\n", packetHandler->getTxRxResult(dxl_comm_result));
 			portHandler->closePort();
 			connected = false;
 		}
 		else if (dxl_error != 0)
 		{
-			printf("%s\n", packetHandler->getRxPacketError(dxl_error));
+			// printf("%s\n", packetHandler->getRxPacketError(dxl_error));
 			portHandler->closePort();
 			connected = false;
 		}

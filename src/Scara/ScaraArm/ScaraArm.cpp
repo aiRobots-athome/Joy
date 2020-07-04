@@ -29,23 +29,30 @@ ScaraArm::ScaraArm()
 	//   FIRST_HAND_ID(0),
 	//   Degree2Resolution(4096 / 360)
 {
-	/* Big */
-	SetMotor_Accel(FIRST_HAND_ID, 200);			//because of setting velocity in GOScrewHeight to reduce the raising time
-	SetMotor_Velocity(FIRST_HAND_ID, 0);		// Pro200 if set velocity motor will operate, because of velocity mode
-	SetMotor_Velocity(FIRST_HAND_ID + 1, 500);	// Pro200 initial
-	SetMotor_Velocity(FIRST_HAND_ID + 2, 2000); // Pro20 initial
-	SetMotor_Velocity(FIRST_HAND_ID + 3, 2000); // Pro20 initial
-
-	/* Small */
-	// SetMotor_Accel(FIRST_HAND_ID, 50);
-	// SetMotor_Velocity(FIRST_HAND_ID, 0);
-	// SetMotor_Velocity(FIRST_HAND_ID + 1, 10);
-	// SetMotor_Velocity(FIRST_HAND_ID + 2, 20);
-	// SetMotor_Velocity(FIRST_HAND_ID + 3, 20);
-
+	Start();
 	ReadHeight();
 	SetMotor_Operating_Mode(FIRST_HAND_ID, 1);	//Pro 200 change operating mode to velocity mode
 	cout << "\t\tClass constructed: ScaraArm" << endl;
+}
+
+void ScaraArm::Start()
+{
+	/* Big */
+	SetMotor_Accel(FIRST_HAND_ID, 200);
+	SetMotor_Velocity(FIRST_HAND_ID + 1, 500);
+	SetMotor_Velocity(FIRST_HAND_ID + 2, 2000);
+	SetMotor_Velocity(FIRST_HAND_ID + 3, 2000);
+
+	/* Small */
+	// SetMotor_Accel(FIRST_HAND_ID, 50);
+	// SetMotor_Velocity(FIRST_HAND_ID + 1, 10);
+	// SetMotor_Velocity(FIRST_HAND_ID + 2, 20);
+	// SetMotor_Velocity(FIRST_HAND_ID + 3, 20);
+}
+
+void ScaraArm::Stop()
+{
+	SetAllMotorsTorqueEnable(false);
 }
 
 cv::Mat ScaraArm::GetKinematics()

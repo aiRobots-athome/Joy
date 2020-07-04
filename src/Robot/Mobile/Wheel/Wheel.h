@@ -34,9 +34,7 @@ public:
 	Distance
 	*/
 	void MoveBackward(const int &velocity, const float &distance = 0);
-	/*
-	Stop wheel moving
-	*/
+
 	void Stop();
 
 private:

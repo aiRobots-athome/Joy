@@ -164,8 +164,3 @@ void Mobile::SelfTurn(const float &distance, const int &velocity)
 	CSteering->Wait();
 	CWheel->Move(tmp_velocity, tmp_velocity, tmp_velocity, tmp_velocity, distance * Angle2Rad * radius);
 }
-
-void Mobile::Stop()
-{
-	CWheel->Stop();
-}

@@ -52,11 +52,11 @@ void Form_Scara::on_Scara_btn_Reconnect_clicked()
 
 void Form_Scara::on_ScaraArm_btn_Start_clicked()
 {
-	CScara->CScaraArm->SetAllMotorsTorqueEnable(true);
+	CScara->CScaraArm->Start();
 }
 void Form_Scara::on_ScaraArm_btn_Stop_clicked()
 {
-	CScara->CScaraArm->SetAllMotorsTorqueEnable(false);
+	CScara->CScaraArm->Stop();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

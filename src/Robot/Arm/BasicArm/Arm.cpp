@@ -15,6 +15,11 @@ Arm::Arm(const vector<unsigned char> &IDArray,
 	alength6_ini = 200;
 	round_value = 10;
 
+	Start();
+}
+
+void Arm::Start()
+{
 	SetMotor_Velocity(FIRST_SHOULDER_ID, 1000); // Pro200
 	SetMotor_Velocity(FIRST_HAND_ID, 1000);		// Pro200
 	SetMotor_Velocity(FIRST_HAND_ID + 1, 1000); // Pro200
@@ -24,6 +29,11 @@ Arm::Arm(const vector<unsigned char> &IDArray,
 	SetMotor_Velocity(FIRST_HAND_ID + 5, 1500); // Pro20
 	SetMotor_Velocity(FIRST_HAND_ID + 6, 500);	// Mx106
 	SetAllMotorsTorqueEnable(true);
+}
+
+void Arm::Stop()
+{
+	SetAllMotorsTorqueEnable(false);
 }
 
 void Arm::SetSixLength(float length)

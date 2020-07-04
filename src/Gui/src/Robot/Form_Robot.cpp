@@ -80,22 +80,27 @@ void Form_Robot::on_Robot_btn_Reconnect_clicked()
 
 void Form_Robot::on_LeftHand_btn_Start_clicked()
 {
-	CRobot->CLeftArm->SetAllMotorsTorqueEnable(true);
+	CRobot->CLeftArm->Start();
 }
 
 void Form_Robot::on_LeftHand_btn_Stop_clicked()
 {
-	CRobot->CLeftArm->SetAllMotorsTorqueEnable(false);
+	CRobot->CLeftArm->Stop();
 }
 
 void Form_Robot::on_RightHand_btn_Start_clicked()
 {
-	CRobot->CRightArm->SetAllMotorsTorqueEnable(true);
+	CRobot->CRightArm->Start();
 }
 
 void Form_Robot::on_RightHand_btn_Stop_clicked()
 {
-	CRobot->CRightArm->SetAllMotorsTorqueEnable(false);
+	CRobot->CRightArm->Stop();
+}
+
+void Form_Robot::on_Move_btn_Start_clicked()
+{
+	CRobot->CMobile->CSteering->Start();
 }
 
 void Form_Robot::on_Move_btn_Stop_clicked()
@@ -163,6 +168,7 @@ void Form_Robot::SetupImages()
 		QIcon left = QIcon(string(path + "left.png").c_str());
 		QIcon right = QIcon(string(path + "right.png").c_str());
 		QIcon stop = QIcon(string(path + "stop.png").c_str());
+		QIcon start = QIcon(string(path + "start.png").c_str());
 		QIcon selfturn_left = QIcon(string(path + "selfturn_left.png").c_str());
 		QIcon selfturn_right = QIcon(string(path + "selfturn_right.png").c_str());
 		QPixmap oblique = QPixmap(string(path + "oblique.png").c_str());
@@ -174,6 +180,7 @@ void Form_Robot::SetupImages()
 		ui->Move_btn_Left->setIcon(left);
 		ui->Move_btn_Right->setIcon(right);
 		ui->Move_btn_Stop->setIcon(stop);
+		ui->Move_btn_Start->setIcon(start);
 		ui->SelfTurn_btn_Left->setIcon(selfturn_left);
 		ui->SelfTurn_btn_Right->setIcon(selfturn_right);
 		ui->Oblique_btn_Forward->setIcon(up);

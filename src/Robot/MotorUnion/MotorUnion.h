@@ -17,6 +17,7 @@ public:
 	MotorUnion(const vector<unsigned char> &IDArray,
 			   const vector<string> &MotorModelArray);
 	virtual ~MotorUnion();
+private:
 	template <class T>
 	void deleteInVector(vector<T *>);
 
@@ -42,7 +43,6 @@ protected:
 	void SetAllMotorsAngle(const float &angle) const;
 	void SetAllMotorsVelocity(const int &velocity) const;
 	void SetAllMotorsAccel(const int &accel) const;
-public:
 	void SetAllMotorsTorqueEnable(const bool &enable) const;
 
 	////////////////////////////////////////////////////////////////////////////////

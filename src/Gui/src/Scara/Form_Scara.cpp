@@ -42,10 +42,7 @@ void Form_Scara::on_Scara_btn_Reconnect_clicked()
 		delete thread_display;
 	}
 
-	delete CScara;
-	MotorUnion::allport = {0, 1};
-	CScara = Scara::getScara();
-
+	CScara->Reconnect();
 	form_scara_arm->SetScaraArm(CScara->CScaraArm);
 	form_xy_platform->SetXYPlatform(CScara->CXYPlatform);
 

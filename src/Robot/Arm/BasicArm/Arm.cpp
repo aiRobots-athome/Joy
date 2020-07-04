@@ -23,6 +23,7 @@ Arm::Arm(const vector<unsigned char> &IDArray,
 	SetMotor_Velocity(FIRST_HAND_ID + 4, 500);	// Mx106
 	SetMotor_Velocity(FIRST_HAND_ID + 5, 1500); // Pro20
 	SetMotor_Velocity(FIRST_HAND_ID + 6, 500);	// Mx106
+	SetAllMotorsTorqueEnable(true);
 }
 
 void Arm::SetSixLength(float length)

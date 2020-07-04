@@ -51,6 +51,7 @@ void HeadandLifting::InitHeadMotorVelocity(void)
 {
 	this->SetMotor_Velocity(FIRST_HEAD_MOTOR_ID, 200);	   // Mx64
 	this->SetMotor_Velocity(FIRST_HEAD_MOTOR_ID + 1, 200); // Mx64
+	SetAllMotorsTorqueEnable(true);
 }
 
 void HeadandLifting::HeadMotorCommand(const int &MotorID, const float &Angle)

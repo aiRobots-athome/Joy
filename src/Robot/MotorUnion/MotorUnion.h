@@ -59,6 +59,7 @@ public:
 
 protected:
 	const float &GetMotor_Scale2RPM(const unsigned char &idx) const;
+	const float &GetMotor_Scale2RPMM(const unsigned char &idx) const;
 	const short &GetMotor_CenterScale(const unsigned char &idx) const;
 	const float &GetMotor_Angle(const unsigned char &idx) const;
 	const int &GetMotor_Accel(const unsigned char &idx) const;

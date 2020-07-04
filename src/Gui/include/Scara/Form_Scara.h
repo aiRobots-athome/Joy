@@ -22,6 +22,8 @@ private slots:
 	void on_Scara_btn_Reconnect_clicked();
 	void on_ScaraArm_btn_Start_clicked();
 	void on_ScaraArm_btn_Stop_clicked();
+	void on_XYPlatform_btn_Start_clicked();
+	void on_XYPlatform_btn_Stop_clicked();
 
 private:
 	Ui::Form_Scara *ui;

@@ -18,7 +18,8 @@ Form_Scara::Form_Scara(QWidget *parent) : QDialog(parent),
 
 	form_xy_platform = new Form_XYPlatform(ui);
 	thread_xy_platform = new QThread();
-	QObject::connect(ui->XYPlatform_btn_PosGo, SIGNAL(clicked()), form_xy_platform, SLOT(XYPlatformPosGo()));
+	QObject::connect(ui->XYPlatform_spinBox_X, SIGNAL(valueChanged(int)), form_xy_platform, SLOT(XYPlatformPosGo()));
+	QObject::connect(ui->XYPlatform_spinBox_Y, SIGNAL(valueChanged(int)), form_xy_platform, SLOT(XYPlatformPosGo()));
 	QObject::connect(ui->XYPlatform_btn_Reset, SIGNAL(clicked()), form_xy_platform, SLOT(XYPlatformReset()));
 	form_xy_platform->moveToThread(thread_xy_platform);
 	thread_xy_platform->start();
@@ -59,6 +60,16 @@ void Form_Scara::on_ScaraArm_btn_Stop_clicked()
 	CScara->CScaraArm->Stop();
 }
 
+void Form_Scara::on_XYPlatform_btn_Start_clicked()
+{
+	CScara->CXYPlatform->Start();
+}
+
+void Form_Scara::on_XYPlatform_btn_Stop_clicked()
+{
+	CScara->CXYPlatform->Stop();
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 ///  Display   /////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -67,6 +78,7 @@ void Form_Scara::showEvent(QShowEvent *event)
 	CScara = Scara::getScara();
 	form_scara_arm->SetScaraArm(CScara->CScaraArm);
 	form_xy_platform->SetXYPlatform(CScara->CXYPlatform);
+	form_xy_platform->Initial();
 	
 	_is_deleted_thread_display = false;
 	thread_display = new std::thread(&Form_Scara::Display, this);

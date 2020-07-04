@@ -10,6 +10,7 @@ class Form_XYPlatform : public QObject
 public:
     Form_XYPlatform(Ui::Form_Scara *_ui, QObject *parent = nullptr) : QObject(nullptr) { ui = _ui; };
     ~Form_XYPlatform(){};
+    void Initial();
     void Display();
     void SetXYPlatform(XYPlatform *_XYPlatform)
     {

@@ -22,7 +22,7 @@ SaleArmRight::SaleArmRight()
 
 	dis_CenterZ_To_ShoulderY_Ori = 170;
 
-	cout << "\t\tClass constructed: SaleArmRight" << endl;
+	cout << "\tClass constructed: SaleArmRight" << endl;
 }
 
 cv::Mat *SaleArmRight::GetKinematics(void)

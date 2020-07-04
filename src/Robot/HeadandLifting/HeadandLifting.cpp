@@ -32,7 +32,7 @@ HeadandLifting::HeadandLifting()
 	T_CamCoord2RobotCoord_inv = new cv::Mat(4, 4, CV_32FC1, cv::Scalar::all(0));
 
 	this->InitHeadMotorVelocity();
-	cout << "\t\tClass constructed: HeadandLifting" << endl;
+	cout << "\tClass constructed: HeadandLifting" << endl;
 }
 
 HeadandLifting::~HeadandLifting()

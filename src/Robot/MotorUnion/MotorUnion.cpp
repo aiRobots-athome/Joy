@@ -119,15 +119,6 @@ const bool MotorUnion::CheckAllMotorsArrival() const
 	return arrival;
 }
 
-void MotorUnion::RecoveryState() const
-{
-	for (int i = 0; i < Motor_Union.size(); i++)
-	{
-		SetMotor_Velocity(i, Motor_Union.at(i)->GetMotor_Velocity());
-		SetMotor_Accel(i, Motor_Union.at(i)->GetMotor_Accel());
-	}
-}
-
 void MotorUnion::WaitAllMotorsArrival() const
 {
 	while (!CheckAllMotorsArrival())
@@ -322,16 +313,9 @@ void MotorUnion::BGReadWrite()
 	{
 		if (CheckAllMotorsConnected())
 		{
-			// if (_is_recovery_state)
-			// {
-			// 	RecoveryState();
-			// 	_is_recovery_state = false;
-			// }
 			WriteData();
 			ReadData();
 		}
-		// else
-		// 	_is_recovery_state = true;
 	}
 }
 

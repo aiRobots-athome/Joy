@@ -28,7 +28,6 @@ private:
 	const bool ConnectAllMotors(vector<unsigned char> &AllPortNumber);
 	const bool CheckAllMotorsConnected() const;
 	const bool CheckAllMotorsArrival() const;
-	void RecoveryState() const;
 
 	/* Get All Motors Data */
 	const bool GetAllMotorsTorqueEnable() const;
@@ -80,7 +79,6 @@ private:
 	//Background is used for reading & writing data to motor
 	thread *thread_BG;
 	bool _is_deleted_thread_BG;
-	bool _is_recovery_state;
 
 	vector<dynamixel::PortHandler *> portHandler;
 	dynamixel::PacketHandler *packetHandler;

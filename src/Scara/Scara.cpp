@@ -29,3 +29,12 @@ Scara::~Scara()
     delete CXYPlatform;
     inst_ = nullptr;
 }
+
+void Scara::Reconnect()
+{
+    delete CScaraArm;
+    delete CXYPlatform;
+    MotorUnion::allport = {0, 1};
+    CScaraArm = ScaraArm::getScaraArm();
+    CXYPlatform = XYPlatform::getXYPlatform();
+}

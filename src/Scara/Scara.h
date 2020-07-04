@@ -7,6 +7,7 @@ class Scara
 public:
     static Scara *getScara();
     ~Scara();
+    void Reconnect();
 
     ScaraArm *CScaraArm;
     XYPlatform *CXYPlatform;

@@ -55,7 +55,6 @@ public:
 	@ Velocity
 	*/
 	void SelfTurn(const float &distance = 0.0f, const int &velocity = default_velocity);
-	void Stop();
 
 private:
 	Mobile();

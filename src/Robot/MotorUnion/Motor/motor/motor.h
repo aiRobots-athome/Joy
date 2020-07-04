@@ -12,6 +12,7 @@ public:
 	//-----------------------------------------------------//
 	const unsigned char &GetMotor_Operating_Mode() const;
 	const float &GetMotor_Scale2RPM() const;
+	const float &GetMotor_Scale2RPMM() const;
 	const short &GetMotor_CenterScale() const;
 	const float &GetMotor_Angle() const;
 	const int &GetMotor_Velocity() const;
@@ -35,6 +36,7 @@ protected:
 	float Angle2MotorScale;
 	float MotorScale2Angle;
 	float Scale2RPM;
+	float Scale2RPMM;
 
 	/* Motor basic attributes */
 	unsigned char Motor_Operating_Mode;

@@ -23,7 +23,7 @@ void XBoxJoystick::CloseXboxJoystick()
 {
     if (SDL_NumJoysticks() > 0)
     {
-        if(is_deleted_thread == false)
+        if (is_deleted_thread == false)
         {
             is_deleted_thread = true;
             thread_getState->join();
@@ -43,7 +43,7 @@ void XBoxJoystick::GetState()
             DPadMotion();
             ShoulderMotion();
             if (event->cbutton.type == SDL_CONTROLLERBUTTONUP)
-                CMobile->Stop();
+                CMobile->CWheel->Stop();
             this_thread::sleep_for(chrono::milliseconds(100));
         }
     }

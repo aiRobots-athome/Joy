@@ -12,6 +12,9 @@ public:
 	Arm(const vector<unsigned char> &IDArray,
 		const vector<string> &MotorModelArrayList);
 	~Arm(){};
+	
+	void Start();
+	void Stop();
 
 	/* Virtual Function */
 	// Caculate Forward Kinematics

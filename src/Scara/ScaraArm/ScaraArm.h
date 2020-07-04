@@ -9,7 +9,10 @@ class ScaraArm : public MotorUnion
 public:
     static ScaraArm *getScaraArm();
     ~ScaraArm() { inst_ = nullptr; };
-
+    
+    void Start();
+    void Stop();
+    
     // Arm
     cv::Mat GetKinematics();
     float &GetPresentHeight();

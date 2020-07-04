@@ -1,5 +1,5 @@
 #include "MotorUnion.h"
-vector<unsigned char> MotorUnion::allport = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+vector<unsigned char> MotorUnion::allport = {0, 1, 2, 3, 4, 5, 6};
 
 MotorUnion::MotorUnion(const vector<unsigned char> &IDArray,
 					   const vector<string> &MotorModelArray)
@@ -119,15 +119,6 @@ const bool MotorUnion::CheckAllMotorsArrival() const
 	return arrival;
 }
 
-void MotorUnion::RecoveryState() const
-{
-	for (int i = 0; i < Motor_Union.size(); i++)
-	{
-		SetMotor_Velocity(i, Motor_Union.at(i)->GetMotor_Velocity());
-		SetMotor_Accel(i, Motor_Union.at(i)->GetMotor_Accel());
-	}
-}
-
 void MotorUnion::WaitAllMotorsArrival() const
 {
 	while (!CheckAllMotorsArrival())
@@ -228,6 +219,11 @@ const float &MotorUnion::GetMotor_Scale2RPM(const unsigned char &idx) const
 	return Motor_Union.at(idx)->GetMotor_Scale2RPM();
 }
 
+const float &MotorUnion::GetMotor_Scale2RPMM(const unsigned char &idx) const
+{
+	return Motor_Union.at(idx)->GetMotor_Scale2RPMM();
+}
+
 const short &MotorUnion::GetMotor_CenterScale(const unsigned char &idx) const
 {
 	return Motor_Union.at(idx)->GetMotor_CenterScale();
@@ -317,17 +313,9 @@ void MotorUnion::BGReadWrite()
 	{
 		if (CheckAllMotorsConnected())
 		{
-			if (_is_recovery_state)
-			{
-				RecoveryState();
-				_is_recovery_state = false;
-			}
-			this_thread::sleep_for(chrono::milliseconds(100));
 			WriteData();
 			ReadData();
 		}
-		else
-			_is_recovery_state = true;
 	}
 }
 

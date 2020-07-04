@@ -20,7 +20,7 @@ Steering::Steering()
     SetMotor_CenterScale(steering_RF, 0);
     SetMotor_CenterScale(steering_LB, 0);
     SetMotor_CenterScale(steering_RB, 0);
-    SetAllMotorsVelocity(200);
+    Start();
 }
 
 void Steering::TurnStraight()
@@ -99,4 +99,10 @@ void Steering::Self_Turn()
 void Steering::Wait()
 {
     WaitAllMotorsArrival();
+}
+
+void Steering::Start()
+{
+    SetAllMotorsVelocity(500);
+    SetAllMotorsTorqueEnable(true);
 }

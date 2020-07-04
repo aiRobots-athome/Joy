@@ -42,6 +42,7 @@ public:
 	void Self_Turn();
 
 	void Wait();
+	void Start();
 
 private:
 	Steering();

@@ -5306,8 +5306,8 @@
           </rect>
          </property>
          <layout class="QGridLayout" name="gridLayout_Move">
-          <item row="1" column="2">
-           <widget class="QPushButton" name="Move_btn_Right">
+          <item row="2" column="1">
+           <widget class="QPushButton" name="Move_btn_Backward">
             <property name="minimumSize">
              <size>
               <width>50</width>
@@ -5327,9 +5327,6 @@
               <kerning>false</kerning>
              </font>
             </property>
-            <property name="layoutDirection">
-             <enum>Qt::LeftToRight</enum>
-            </property>
             <property name="styleSheet">
              <string notr="true"/>
             </property>
@@ -5338,7 +5335,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../../../../123/src/Gui/images/right.png</normaloff>../../../../123/src/Gui/images/right.png</iconset>
+              <normaloff>../images/down.png</normaloff>../images/down.png</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -5380,7 +5377,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../../../../123/src/Gui/images/up.png</normaloff>../../../../123/src/Gui/images/up.png</iconset>
+              <normaloff>../images/up.png</normaloff>../images/up.png</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -5390,8 +5387,8 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
-           <widget class="QPushButton" name="Move_btn_Backward">
+          <item row="1" column="2">
+           <widget class="QPushButton" name="Move_btn_Right">
             <property name="minimumSize">
              <size>
               <width>50</width>
@@ -5411,6 +5408,9 @@
               <kerning>false</kerning>
              </font>
             </property>
+            <property name="layoutDirection">
+             <enum>Qt::LeftToRight</enum>
+            </property>
             <property name="styleSheet">
              <string notr="true"/>
             </property>
@@ -5419,7 +5419,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../../../../123/src/Gui/images/down.png</normaloff>../../../../123/src/Gui/images/down.png</iconset>
+              <normaloff>../images/right.png</normaloff>../images/right.png</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -5458,7 +5458,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../../../../123/src/Gui/images/stop.png</normaloff>../../../../123/src/Gui/images/stop.png</iconset>
+              <normaloff>../images/stop.png</normaloff>../images/stop.png</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -5500,7 +5500,46 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../../../../123/src/Gui/images/left.png</normaloff>../../../../123/src/Gui/images/left.png</iconset>
+              <normaloff>../images/left.png</normaloff>../images/left.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>80</width>
+              <height>80</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2">
+           <widget class="QPushButton" name="Move_btn_Start">
+            <property name="minimumSize">
+             <size>
+              <width>50</width>
+              <height>50</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>150</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <family>Noto Sans CJK JP DemiLight</family>
+              <pointsize>12</pointsize>
+              <kerning>false</kerning>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>../images/start.png</normaloff>../images/start.png</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -5675,7 +5714,7 @@
           </property>
           <property name="icon">
            <iconset>
-            <normaloff>../../../../123/src/Gui/images/selfturn_left.png</normaloff>../../../../123/src/Gui/images/selfturn_left.png</iconset>
+            <normaloff>../images/selfturn_left.png</normaloff>../images/selfturn_left.png</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -5709,7 +5748,7 @@
           </property>
           <property name="icon">
            <iconset>
-            <normaloff>../../../../123/src/Gui/images/selfturn_right.png</normaloff>../../../../123/src/Gui/images/selfturn_right.png</iconset>
+            <normaloff>../images/selfturn_right.png</normaloff>../images/selfturn_right.png</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -5751,7 +5790,7 @@
           <enum>Qt::RichText</enum>
          </property>
          <property name="pixmap">
-          <pixmap>../../../../123/src/Gui/images/oblique.png</pixmap>
+          <pixmap>../images/oblique.png</pixmap>
          </property>
          <property name="scaledContents">
           <bool>true</bool>
@@ -5779,7 +5818,7 @@
           <string/>
          </property>
          <property name="pixmap">
-          <pixmap>../../../../123/src/Gui/images/turncircle.png</pixmap>
+          <pixmap>../images/turncircle.png</pixmap>
          </property>
          <property name="scaledContents">
           <bool>true</bool>
@@ -5804,7 +5843,7 @@
           <string/>
          </property>
          <property name="pixmap">
-          <pixmap>../../../../123/src/Gui/images/turn.png</pixmap>
+          <pixmap>../images/turn.png</pixmap>
          </property>
          <property name="scaledContents">
           <bool>true</bool>
@@ -5976,7 +6015,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../../../../123/src/Gui/images/up.png</normaloff>../../../../123/src/Gui/images/up.png</iconset>
+              <normaloff>../images/up.png</normaloff>../images/up.png</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -6015,7 +6054,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../../../../123/src/Gui/images/down.png</normaloff>../../../../123/src/Gui/images/down.png</iconset>
+              <normaloff>../images/down.png</normaloff>../images/down.png</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -6166,7 +6205,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../../../../123/src/Gui/images/up.png</normaloff>../../../../123/src/Gui/images/up.png</iconset>
+              <normaloff>../images/up.png</normaloff>../images/up.png</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -6205,7 +6244,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../../../../123/src/Gui/images/down.png</normaloff>../../../../123/src/Gui/images/down.png</iconset>
+              <normaloff>../images/down.png</normaloff>../images/down.png</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -6356,7 +6395,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../../../../123/src/Gui/images/up.png</normaloff>../../../../123/src/Gui/images/up.png</iconset>
+              <normaloff>../images/up.png</normaloff>../images/up.png</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -6395,7 +6434,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../../../../123/src/Gui/images/down.png</normaloff>../../../../123/src/Gui/images/down.png</iconset>
+              <normaloff>../images/down.png</normaloff>../images/down.png</iconset>
             </property>
             <property name="iconSize">
              <size>

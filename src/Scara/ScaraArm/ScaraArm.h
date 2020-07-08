@@ -12,7 +12,7 @@ public:
     
     void Start();
     void Stop();
-    
+
     // Arm
     cv::Mat GetKinematics();
     float &GetPresentHeight();
@@ -20,6 +20,8 @@ public:
 
     // Screw
     void GoScrewHeight(const float &goal_height);
+
+    void Reset();
 
 private:
     // Arm
@@ -39,7 +41,7 @@ private:
 
     const unsigned char FIRST_HAND_ID;
     
-    const char J2_sign;
+    const float J2_sign;
     const float Arm1_Length;
     const float Arm2_Length;
     const float Arm3_Length;

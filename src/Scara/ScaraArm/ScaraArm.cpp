@@ -39,15 +39,17 @@ void ScaraArm::Start()
 {
 	/* Big */
 	SetMotor_Accel(FIRST_HAND_ID, 200);
-	SetMotor_Velocity(FIRST_HAND_ID + 1, 500);
-	SetMotor_Velocity(FIRST_HAND_ID + 2, 2000);
-	SetMotor_Velocity(FIRST_HAND_ID + 3, 2000);
+	SetMotor_Velocity(FIRST_HAND_ID + 1, 100);
+	SetMotor_Velocity(FIRST_HAND_ID + 2, 500);
+	SetMotor_Velocity(FIRST_HAND_ID + 3, 500);
+	SetAllMotorsTorqueEnable(true);
 
 	/* Small */
 	// SetMotor_Accel(FIRST_HAND_ID, 50);
 	// SetMotor_Velocity(FIRST_HAND_ID + 1, 10);
 	// SetMotor_Velocity(FIRST_HAND_ID + 2, 20);
 	// SetMotor_Velocity(FIRST_HAND_ID + 3, 20);
+	// SetAllMotorsTorqueEnable(true);
 }
 
 void ScaraArm::Stop()
@@ -60,7 +62,6 @@ cv::Mat ScaraArm::GetKinematics()
 	float fRadian1 = GetMotor_PresentAngle(FIRST_HAND_ID + 1) * Angle2Rad;
 	float fRadian2 = J2_sign * GetMotor_PresentAngle(FIRST_HAND_ID + 2) * Angle2Rad;
 	float fRadian3 = GetMotor_PresentAngle(FIRST_HAND_ID + 3) * Angle2Rad;
-
 	return Calculate_ArmForwardKinematics(fRadian1, fRadian2, fRadian3);
 }
 
@@ -259,8 +260,8 @@ float *ScaraArm::Arm_InverseKinematics(const cv::Mat &T)
 
 void ScaraArm::GotoPosition(const int &ox, const int &oy, const int &oz, const int &x, const int &y, const float &height)
 {
-	GotoPosition(ox, oy, oz, x, y, 0);
 	GoScrewHeight(height);
+	GotoPosition(ox, oy, oz, x, y, 0);
 }
 
 void ScaraArm::GotoPosition(const int &ox, const int &oy, const int &oz, const int &x, const int &y, const int &z)
@@ -401,4 +402,9 @@ void ScaraArm::GoScrewHeight(const float &goal_height) //unit : mm
 	WriteHeight(goal_height);
 	now_height = goal_height;
 	cout << "[ScaraArm] Screw arrival !" << endl;
+}
+
+void ScaraArm::Reset()
+{
+	GotoPosition(0, 0, 62, 437, 459, 250.0f);
 }

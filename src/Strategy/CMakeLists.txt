@@ -3,8 +3,9 @@ project(Strategy)
 include_directories(${CMAKE_SOURCE_DIR})
 
 set(ALL_STRATEGES 
+    Scaratest/Scaratest.cpp
 # Strategies/Demo/Demo.cpp
 )
 
 add_library(Strategy SHARED Strategy.cpp ${ALL_STRATEGES}) 
-target_link_libraries(Strategy Robot)
+target_link_libraries(Strategy Robot Scara)

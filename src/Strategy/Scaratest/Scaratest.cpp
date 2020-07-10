@@ -1,16 +1,10 @@
 #include "Scaratest.h"
 
-Scaratest::Scaratest()
-{
+Scaratest::Scaratest() {
     cScara = Scara::getScara();
 }
 
-Scaratest::~Scaratest()
-{
-}
-
-void Scaratest::test1()
-{
+void Scaratest::test1() {
     // Get waffer from cassette A
     // Cassette A id = 0
     // Cassette B id = 1
@@ -52,7 +46,7 @@ void Scaratest::test1()
  * @param drawer - which drawer to get waffer, start from 0 ~23, ignore for station
  * @param io - put in or get out, get out for 0, put in for 1
  */
-void Scaratest::go_target(bool type, int id, int drawer, bool io){
+void Scaratest::go_target(bool type, int id, int drawer, bool io) {
     if (type == casay) {
         cassette(id, drawer, io);
     }
@@ -60,6 +54,28 @@ void Scaratest::go_target(bool type, int id, int drawer, bool io){
         station(id, io);
     }
 }
+
+/**
+ * Set cassette/station position
+ * 
+ * @param type - cassette or station
+ * @param id - ID of the station or cassette
+ * @param data - station/cassette location, oritation data
+ * @retval 1 for success, 0 for fail
+ */
+bool Scaratest::set_pos(bool type, int id, float *data) {
+    if(type == casay) {
+        std::copy(data, data+6, std::begin(CASAY[id]));
+        return 1;
+    }
+    else if (type = stations) {
+        std::copy(data, data+6, std::begin(STATE[id]));
+        return 1;
+    }
+    else
+        return 0;
+}
+
 
 /**
  * Ready position for the scara to action
@@ -146,3 +162,5 @@ void Scaratest::go_straight(float *head, float *tail, float h, float div) {
         // printf("readyx: %f, readyy: %f, x: %f, y: %f, z: %f\n",head[3], head[4], (head[3] + i * step[0]), (head[4] + i * step[1]), h);   // DEBUG
     }
 }
+
+Scaratest::~Scaratest() {}

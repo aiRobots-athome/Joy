@@ -12,6 +12,7 @@ class Scaratest
         Scaratest();
         ~Scaratest();
         void test1();
+        bool set_pos(bool, int, float*);
         void go_target(bool, int, int, bool);
 
         // Cassette position, { x oritation, y orit, z orit, x, y, height of the first drawer}

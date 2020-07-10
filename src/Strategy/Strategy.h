@@ -1,11 +1,10 @@
 #pragma once
 #include <string>
 
-class Strategy
-{
+class Strategy {
 public:
-    Strategy() { isStrategyRunning = false; };
-    ~Strategy(){};
+    Strategy();
+    ~Strategy();
 
     void select_strategy(std::string strategy_name);
     void terminate_strategy() { isStrategyRunning = false; }

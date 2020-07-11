@@ -30,8 +30,10 @@ Scara::~Scara()
     inst_ = nullptr;
 }
 
-void Scara::Reconnect()
-{
+/**
+ * If motors fails to connect, regenerate scara and xy platform object
+ */
+void Scara::Reconnect() {
     delete CScaraArm;
     delete CXYPlatform;
     MotorUnion::allport = {0, 1};

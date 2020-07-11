@@ -1,6 +1,11 @@
 #include "ScaraArm.h"
 
 ScaraArm *ScaraArm::inst_ = nullptr;
+
+/**
+ * Alternatively new scara arm object
+ * To ensure we only have one scara arm object alive at a time
+ */
 ScaraArm *ScaraArm::getScaraArm()
 {
 	if (inst_ == nullptr)
@@ -35,8 +40,10 @@ ScaraArm::ScaraArm()
 	cout << "\t\tClass constructed: ScaraArm" << endl;
 }
 
-void ScaraArm::Start()
-{
+/**
+ * Enable all motors, and set up the speed
+ */
+void ScaraArm::Start() {
 	/* Big */
 	SetMotor_Accel(FIRST_HAND_ID, 200);
 	SetMotor_Velocity(FIRST_HAND_ID + 1, 100);
@@ -52,8 +59,10 @@ void ScaraArm::Start()
 	// SetAllMotorsTorqueEnable(true);
 }
 
-void ScaraArm::Stop()
-{
+/**
+ * Disable all motors
+ */
+void ScaraArm::Stop() {
 	SetAllMotorsTorqueEnable(false);
 }
 
@@ -70,8 +79,15 @@ float &ScaraArm::GetPresentHeight()
 	return now_height;
 }
 
-cv::Mat ScaraArm::Calculate_ArmForwardKinematics(const float &J1, const float &J2, const float &J3)
-{
+/**
+ * Use forward kinematics to calculate end effector position
+ * 
+ * @param J1 - Joint 1 angle, in radius
+ * @param J2 - Joint 2 angle, in radius
+ * @param J3 - Joint 3 angle, in radius
+ * @retval - End effector orientation/transportation matrix
+ */
+cv::Mat ScaraArm::Calculate_ArmForwardKinematics(const float &J1, const float &J2, const float &J3) {
 	cv::Matx44f TransMatrix_01(1, 0, 0, Arm1_Length,
 							   0, 1, 0, 0,
 							   0, 0, 1, 0,
@@ -93,8 +109,13 @@ cv::Mat ScaraArm::Calculate_ArmForwardKinematics(const float &J1, const float &J
 	return Temp.clone();
 }
 
-float *ScaraArm::Arm_InverseKinematics(const cv::Mat &T)
-{
+/**
+ * Use inverse kinematics to calculate each angle of motors
+ * 
+ * @param T - normal, orientation, acceleration, and position of end effector
+ * @retval - The angle each motor has to achieve, 
+ */
+float *ScaraArm::Arm_InverseKinematics(const cv::Mat &T) {
 	ScaraArmMotionEnable = false;
 	float J1, J2, J3;
 	float delta_Pos = 150000 * 2 + 250950 * 4; // default value for calculate delta solution(very large scale)
@@ -258,14 +279,34 @@ float *ScaraArm::Arm_InverseKinematics(const cv::Mat &T)
 	return Solution;
 }
 
-void ScaraArm::GotoPosition(const int &ox, const int &oy, const int &oz, const int &x, const int &y, const float &height)
-{
+/**
+ * Goto position, height seperate version
+ * seperate height for more accurate movement
+ * 
+ * @param ox - orientation along x axis, in degree
+ * @param oy - orientation along y axis, in degree
+ * @param oz - orientation along z axis, in degree
+ * @param x - position on x asix, in mm
+ * @param y - position on y asix, in mm 
+ * @param height - height of scara arm, in mm
+ */
+void ScaraArm::GotoPosition(const int &ox, const int &oy, const int &oz, const int &x, const int &y, const float &height) {
 	GoScrewHeight(height);
 	GotoPosition(ox, oy, oz, x, y, 0);
 }
 
-void ScaraArm::GotoPosition(const int &ox, const int &oy, const int &oz, const int &x, const int &y, const int &z)
-{
+/**
+ * Goto position, including height
+ * But for scara, it,s impossible to change z, therefore, set z to zero
+ * 
+ * @param ox - orientation along x axis, in degree
+ * @param oy - orientation along y axis, in degree
+ * @param oz - orientation along z axis, in degree
+ * @param x - position on x asix, in mm
+ * @param y - position on y asix, in mm 
+ * @param height - height of scara arm, in mm
+ */
+void ScaraArm::GotoPosition(const int &ox, const int &oy, const int &oz, const int &x, const int &y, const int &z) {
 	cv::Mat T = TransRotate(0, 0, oz);
 	float data[16] = {T.at<float>(0, 0), T.at<float>(0, 1), T.at<float>(0, 2), float(x),
 					  T.at<float>(1, 0), T.at<float>(1, 1), T.at<float>(1, 2), float(y),
@@ -275,6 +316,11 @@ void ScaraArm::GotoPosition(const int &ox, const int &oy, const int &oz, const i
 	GotoPosition(tmp);
 }
 
+/**
+ * Goto position by calcualting inverse kinematics
+ * 
+ * @param T - End effector matrix, for inverse kinematics
+ */
 void ScaraArm::GotoPosition(const cv::Mat &T)
 {
 	float *tmp = Arm_InverseKinematics(T);
@@ -294,8 +340,17 @@ void ScaraArm::GotoPosition(const cv::Mat &T)
 	}
 }
 
-cv::Mat ScaraArm::TransRotate(const float &ox, const float &oy, const float &oz)
-{
+/**
+ * Find (n, o, a)'s mapping on (x, y, z)
+ * 
+ * @param ox - End effector orientation along x axis
+ * @param oy - End effector orientation along y axis
+ * @param oz - End effector orientation along z axis
+ * @retval - 3*3 matrix, which is [ nx ox ax
+ * 									ny oy ay
+ * 									nz oz az ]
+ */
+cv::Mat ScaraArm::TransRotate(const float &ox, const float &oy, const float &oz) {
 	float x_angle = ox * Angle2Rad;
 	float y_angle = oy * Angle2Rad;
 	float z_angle = oz * Angle2Rad;
@@ -317,6 +372,9 @@ cv::Mat ScaraArm::TransRotate(const float &ox, const float &oy, const float &oz)
 	return tmpMat.clone();
 }
 
+/**
+ * Read height from file
+ */
 void ScaraArm::ReadHeight()
 {
 	// Read Height
@@ -334,6 +392,9 @@ void ScaraArm::ReadHeight()
 	}
 }
 
+/**
+ * Write height into height.txt
+ */
 void ScaraArm::WriteHeight(const float &height) const
 {
 	fstream heightfile;
@@ -347,16 +408,19 @@ void ScaraArm::WriteHeight(const float &height) const
 		heightfile.close();
 	}
 }
+
+/**
+ * Move arm to desire height
+ * 
+ * @param goal_height - Height we desired to achieve, in mm 
+ */
 // Need to check
-void ScaraArm::GoScrewHeight(const float &goal_height) //unit : mm
-{
+void ScaraArm::GoScrewHeight(const float &goal_height) {
 	ReadHeight();
-	if (goal_height >= 400)
-	{
+	if (goal_height >= 400)	{
 		cout << "[ScaraArm] Too high" << endl;
 	}
-	else if (goal_height <= 20)
-	{
+	else if (goal_height <= 20)	{
 		cout << "[ScaraArm] Too low" << endl;
 	}
 
@@ -404,7 +468,9 @@ void ScaraArm::GoScrewHeight(const float &goal_height) //unit : mm
 	cout << "[ScaraArm] Screw arrival !" << endl;
 }
 
-void ScaraArm::Reset()
-{
+/**
+ * Move scara arm to initial point
+ */
+void ScaraArm::Reset(){
 	GotoPosition(0, 0, 62, 437, 459, 250.0f);
 }

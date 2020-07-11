@@ -41,11 +41,11 @@ private:
 
     const unsigned char FIRST_HAND_ID;
     
-    const float J2_sign;
-    const float Arm1_Length;
-    const float Arm2_Length;
-    const float Arm3_Length;
-    const float Arm4_Length;
+    const float J2_sign;        // Joint 2 direction, due to the machanic, Joint 2 has to be inverted
+    const float Arm1_Length;    // Length from Joint 0 to 1
+    const float Arm2_Length;    // Length from Joint 1 to 2
+    const float Arm3_Length;    // Length from Joint 2 to 3
+    const float Arm4_Length;    // Length from Joint 3 to 4
     const float Degree2Resolution;
 
     float now_height;

@@ -19,7 +19,7 @@ public:
     void GotoPosition(const int &ox, const int &oy, const int &oz, const int &x, const int &y, const float &height);
 
     // Screw
-    void GoScrewHeight(const float &goal_height);
+    bool GoScrewHeight(const float &goal_height);
 
     void Reset();
 

@@ -413,15 +413,18 @@ void ScaraArm::WriteHeight(const float &height) const
  * Move arm to desire height
  * 
  * @param goal_height - Height we desired to achieve, in mm 
+ * @retval - true if height is legal, false if illegal
  */
 // Need to check
-void ScaraArm::GoScrewHeight(const float &goal_height) {
+bool ScaraArm::GoScrewHeight(const float &goal_height) {
 	ReadHeight();
 	if (goal_height >= 400)	{
 		cout << "[ScaraArm] Too high" << endl;
+		return false;
 	}
 	else if (goal_height <= 20)	{
 		cout << "[ScaraArm] Too low" << endl;
+		return false;
 	}
 
 	float delta_height = goal_height - now_height;
@@ -466,6 +469,7 @@ void ScaraArm::GoScrewHeight(const float &goal_height) {
 	WriteHeight(goal_height);
 	now_height = goal_height;
 	cout << "[ScaraArm] Screw arrival !" << endl;
+	return true;
 }
 
 /**

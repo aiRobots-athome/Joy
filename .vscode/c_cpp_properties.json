@@ -6,9 +6,9 @@
                 "${workspaceFolder}/**",
                 "/usr/include/x86_64-linux-gnu/qt5",
                 "/opt/ros/${ROS_DISTRO}/include",
-                "/usr/include/pcl-1.8",
+                "/usr/include/pcl-1.10",
                 "/usr/include/eigen3",
-                "/usr/include/vtk-6.3",
+                "/usr/include/vtk-7.1",
                 "/usr/include/SDL2",
                 "${workspaceFolder}/build"
             ],

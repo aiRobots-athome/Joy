@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include <opencv2/opencv.hpp>
+#include <opencv2/core/core.hpp>
 #include "../../Robot/MotorUnion/MotorUnion.h"
 
 class ScaraArm : public MotorUnion

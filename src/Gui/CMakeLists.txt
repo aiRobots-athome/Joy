@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 project(Gui)
-
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread")
 find_package(Qt5 COMPONENTS Core Widgets REQUIRED)
 
 include_directories(${CMAKE_BINARY_DIR})

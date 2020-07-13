@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 project(Joy)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread")
 set(CMAKE_BUILD_TYPE Debug)
 
 add_subdirectory(Gui)

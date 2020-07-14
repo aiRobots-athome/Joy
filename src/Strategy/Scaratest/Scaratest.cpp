@@ -11,12 +11,12 @@ Scaratest::~Scaratest()
 
 void Scaratest::test1()
 {
-    // go_target(casay, 0, 1, 0);
+    go_target(casay, 0, 1, 0);
 
-    // go_target(stations, 0, 0, 1);
-    // go_target(stations, 0, 0, 0);
-    // go_target(stations, 1, 0, 1);
-    // go_target(stations, 1, 0, 0);
+    go_target(stations, 0, 0, 1);
+    go_target(stations, 0, 0, 0);
+    go_target(stations, 1, 0, 1);
+    go_target(stations, 1, 0, 0);
     go_target(stations, 2, 0, 1);
     go_target(stations, 2, 0, 0);
     go_target(stations, 3, 0, 1);
@@ -26,7 +26,7 @@ void Scaratest::test1()
     go_target(stations, 5, 0, 1);
     go_target(stations, 5, 0, 0);
 
-    // go_target(casay, 1, 10, 1);
+    go_target(casay, 1, 10, 1);
     // float ans[2] = {};
     // cScara->CScaraArm->Reset();
     // cScara->CScaraArm->GotoPosition(CASAY[0][0], CASAY[0][1], CASAY[0][2], CASAY[0][3], CASAY[0][4], CASAY[0][5]);

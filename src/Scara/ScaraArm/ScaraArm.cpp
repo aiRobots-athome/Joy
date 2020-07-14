@@ -39,9 +39,12 @@ void ScaraArm::Start()
 {
 	/* Big */
 	SetMotor_Accel(FIRST_HAND_ID, 200);
-	SetMotor_Velocity(FIRST_HAND_ID + 1, 100);
-	SetMotor_Velocity(FIRST_HAND_ID + 2, 500);
-	SetMotor_Velocity(FIRST_HAND_ID + 3, 500);
+	SetMotor_Velocity(FIRST_HAND_ID + 1, 50);
+	SetMotor_Accel(FIRST_HAND_ID + 1, 25);
+	SetMotor_Velocity(FIRST_HAND_ID + 2, 250);
+	SetMotor_Accel(FIRST_HAND_ID + 2, 200);
+	SetMotor_Velocity(FIRST_HAND_ID + 3, 1000);
+	SetMotor_Accel(FIRST_HAND_ID+3, 700);
 	SetAllMotorsTorqueEnable(true);
 
 	/* Small */
@@ -359,49 +362,55 @@ void ScaraArm::GoScrewHeight(const float &goal_height) //unit : mm
 	{
 		cout << "[ScaraArm] Too low" << endl;
 	}
-
-	float delta_height = goal_height - now_height;
-	int now_position = GetMotor_PresentAngle(FIRST_HAND_ID) * Degree2Resolution;
-	// 224(Speed ​​increaser ratio 1:11.05, Pro200 1rev = Screw 224mm)  1003846(Pro200 resolution)
-	int delta_postion = round(delta_height / 224 * 1003846);
-	int need_position = now_position + delta_postion;
-	int delta_height_f = 0;
-	if (abs(delta_height) > 10)
+	else if (goal_height == now_height)
 	{
-		if (delta_height > 0)
-			delta_height_f = delta_height - 5;
-		else if (delta_height < 0)
-			delta_height_f = delta_height + 5;
-		float motorspeed = 200 * 0.01 / 60 * 226;					//Velocity(set 400) * Scale(rev/min) / 60(to 1sec) * 226(mm) (Pro200 1rev = Screw 226)
-		float waittime = (abs(delta_height_f) / motorspeed) * 1000; //unit:milliseconds
-		if (delta_height < 0)
+		cout << "[ScaraArm] Screw arrival !" << endl;
+	}
+	else
+	{
+		float delta_height = goal_height - now_height;
+		int now_position = GetMotor_PresentAngle(FIRST_HAND_ID) * Degree2Resolution;
+		// 224(Speed ​​increaser ratio 1:11.05, Pro200 1rev = Screw 224mm)  1003846(Pro200 resolution)
+		int delta_postion = round(delta_height / 224 * 1003846);
+		int need_position = now_position + delta_postion;
+		int delta_height_f = 0;
+		if (abs(delta_height) > 10)
 		{
-			SetMotor_Velocity(FIRST_HAND_ID, -200);
+			if (delta_height > 0)
+				delta_height_f = delta_height - 5;
+			else if (delta_height < 0)
+				delta_height_f = delta_height + 5;
+			float motorspeed = 200 * 0.01 / 60 * 226;					//Velocity(set 400) * Scale(rev/min) / 60(to 1sec) * 226(mm) (Pro200 1rev = Screw 226)
+			float waittime = (abs(delta_height_f) / motorspeed) * 1000; //unit:milliseconds
+			if (delta_height < 0)
+			{
+				SetMotor_Velocity(FIRST_HAND_ID, -200);
+			}
+			else if (delta_height > 0)
+			{
+				SetMotor_Velocity(FIRST_HAND_ID, 200);
+			}
+			WaitAllMotorsArrival(waittime);
+			SetMotor_Velocity(FIRST_HAND_ID, 0);
+			this_thread::sleep_for(chrono::milliseconds(500));
 		}
-		else if (delta_height > 0)
+		int present_position = GetMotor_PresentAngle(FIRST_HAND_ID) * Degree2Resolution;
+		int delta_resolution = need_position - present_position;
+
+		for (int j = 0;; j++)
 		{
-			SetMotor_Velocity(FIRST_HAND_ID, 200);
+			SetMotor_Velocity(FIRST_HAND_ID, copysign(20, delta_resolution));
+			this_thread::sleep_for(chrono::milliseconds(100));
+			int changing_position2 = GetMotor_PresentAngle(FIRST_HAND_ID) * Degree2Resolution;
+
+			if (abs(changing_position2 - need_position) < 2500)
+				break;
 		}
-		WaitAllMotorsArrival(waittime);
 		SetMotor_Velocity(FIRST_HAND_ID, 0);
-		this_thread::sleep_for(chrono::milliseconds(500));
+		WriteHeight(goal_height);
+		now_height = goal_height;
+		cout << "[ScaraArm] Screw arrival !" << endl;
 	}
-	int present_position = GetMotor_PresentAngle(FIRST_HAND_ID) * Degree2Resolution;
-	int delta_resolution = need_position - present_position;
-
-	for (int j = 0;; j++)
-	{
-		SetMotor_Velocity(FIRST_HAND_ID, copysign(20, delta_resolution));
-		this_thread::sleep_for(chrono::milliseconds(100));
-		int changing_position2 = GetMotor_PresentAngle(FIRST_HAND_ID) * Degree2Resolution;
-
-		if (abs(changing_position2 - need_position) < 2500)
-			break;
-	}
-	SetMotor_Velocity(FIRST_HAND_ID, 0);
-	WriteHeight(goal_height);
-	now_height = goal_height;
-	cout << "[ScaraArm] Screw arrival !" << endl;
 }
 
 void ScaraArm::Reset()

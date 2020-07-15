@@ -48,6 +48,12 @@ private:
     const float Arm4_Length;    // Length from Joint 3 to 4
     const float Degree2Resolution;
 
+    bool USING_BIG;                  // Which kind of scara used, 0 for big, 1 for small
+    int Height_Resol;           // Resolution of present motor which control height
+    const int PRO200_RESOL;      // Resolution of Pro200
+    const int MX106_RESOL;       // Resolution of Mx106
+    const int REV_2_SCREW;        // 1 rev equal to how many screw
+
     float now_height;
     bool ScaraArmMotionEnable;
 };

@@ -22,9 +22,10 @@ ScaraArm::ScaraArm()
 	  Arm3_Length(238),
 	  Arm4_Length(242),
 	  FIRST_HAND_ID(0),
-	  Degree2Resolution(1003846 / 360)
+	  Degree2Resolution(1003846 / 360),
+	  USING_BIG(true),
 
-	// /* Small */
+	/* Small */
 	// : MotorUnion({0, 1, 2, 3}, {"Mx106", "Mx106", "Mx106", "Mx106"}),
 	//   J2_sign(1),
 	//   Arm1_Length(53), 
@@ -32,8 +33,20 @@ ScaraArm::ScaraArm()
 	//   Arm3_Length(92),
 	//   Arm4_Length(69), 
 	//   FIRST_HAND_ID(0),
-	//   Degree2Resolution(4096 / 360)
+	//   Degree2Resolution(4096 / 360),
+	//   USING_BIG(false),
+	
+
+	/* Common variable */
+	  PRO200_RESOL(1003846),
+	  MX106_RESOL(4096),
+	  REV_2_SCREW(226)
 {
+	if (USING_BIG)
+		Height_Resol = PRO200_RESOL;
+	else 
+		
+		Height_Resol = MX106_RESOL;
 	Start();
 	ReadHeight();
 	SetMotor_Operating_Mode(FIRST_HAND_ID, 1);	//Pro 200 change operating mode to velocity mode
@@ -437,43 +450,53 @@ bool ScaraArm::GoScrewHeight(const float &goal_height) {
 	else
 	{
 		float delta_height = goal_height - now_height;
+		int dir = 0;		// Move up or down for the robot arm
+		if (delta_height > 0)
+			dir = 1;
+		else
+			dir = -1;
 		int now_position = GetMotor_PresentAngle(FIRST_HAND_ID) * Degree2Resolution;
 		// 224(Speed ​​increaser ratio 1:11.05, Pro200 1rev = Screw 224mm)  1003846(Pro200 resolution)
-		int delta_postion = round(delta_height / 224 * 1003846);
+		int delta_postion = round(delta_height / REV_2_SCREW * Height_Resol);
 		int need_position = now_position + delta_postion;
 		int delta_height_f = 0;
 		if (abs(delta_height) > 10)
 		{
-			if (delta_height > 0)
-				delta_height_f = delta_height - 5;
-			else if (delta_height < 0)
-				delta_height_f = delta_height + 5;
-			float motorspeed = 200 * 0.01 / 60 * 226;					//Velocity(set 400) * Scale(rev/min) / 60(to 1sec) * 226(mm) (Pro200 1rev = Screw 226)
+			delta_height_f = delta_height - dir * 5;
+
+			float motorspeed = 200 * 0.01 / 60 * REV_2_SCREW;					//Velocity(set 400) * Scale(rev/min) / 60(to 1sec) * 226(mm) (Pro200 1rev = Screw 226)
 			float waittime = (abs(delta_height_f) / motorspeed) * 1000; //unit:milliseconds
-			if (delta_height < 0)
-			{
-				SetMotor_Velocity(FIRST_HAND_ID, -200);
-			}
-			else if (delta_height > 0)
-			{
-				SetMotor_Velocity(FIRST_HAND_ID, 200);
-			}
+
+			SetMotor_Velocity(FIRST_HAND_ID, dir * 200);
 			WaitAllMotorsArrival(waittime);
 			SetMotor_Velocity(FIRST_HAND_ID, 0);
 			this_thread::sleep_for(chrono::milliseconds(500));
 		}
-		int present_position = GetMotor_PresentAngle(FIRST_HAND_ID) * Degree2Resolution;
-		int delta_resolution = need_position - present_position;
+		now_position = GetMotor_PresentAngle(FIRST_HAND_ID) * Degree2Resolution;
+		delta_height_f = need_position - now_position;
 
-		for (int j = 0;; j++)
-		{
-			SetMotor_Velocity(FIRST_HAND_ID, copysign(20, delta_resolution));
+		// Use to integrate the moved angle of motor
+		int pos_integrator = 0;
+
+		// Last position of motor, in resolution
+		int last_pos = GetMotor_PresentAngle(FIRST_HAND_ID) * Degree2Resolution;
+
+		// Set motor speed to 1
+		SetMotor_Velocity(FIRST_HAND_ID, dir);
+
+		while(abs(delta_height_f - pos_integrator) < 2500) {
 			this_thread::sleep_for(chrono::milliseconds(100));
-			int changing_position2 = GetMotor_PresentAngle(FIRST_HAND_ID) * Degree2Resolution;
+			int present_pos = GetMotor_PresentAngle(FIRST_HAND_ID) * Degree2Resolution;
 
-			if (abs(changing_position2 - need_position) < 2500)
-				break;
-		}
+			// Integrate the position change
+			pos_integrator += abs(present_pos - last_pos);
+			last_pos = present_pos;
+
+			// if (abs(changing_position2 - need_position) < 2500)
+			// 	break;
+		} 
+
+		// Set motor speed to 0
 		SetMotor_Velocity(FIRST_HAND_ID, 0);
 		WriteHeight(goal_height);
 		now_height = goal_height;

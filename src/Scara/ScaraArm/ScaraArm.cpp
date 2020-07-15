@@ -433,7 +433,7 @@ bool ScaraArm::GoScrewHeight(const float &goal_height) {
 	int delta_postion = round(delta_height / 224 * 1003846);
 	int need_position = now_position + delta_postion;
 	int delta_height_f = 0;
-	if (abs(delta_height) > 10)
+	if (abs(delta_height) > 10)	// Height > 1 cm
 	{
 		if (delta_height > 0)
 			delta_height_f = delta_height - 5;

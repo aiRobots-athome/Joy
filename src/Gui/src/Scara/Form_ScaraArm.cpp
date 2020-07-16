@@ -1,7 +1,8 @@
 #include "Scara/Form_ScaraArm.h"
 
 void Form_ScaraArm::on_ScaraArm_btn_PosGo_clicked()
-{const float oz = ui->ScaraArm_lineEdit_Oz->text().toFloat();
+{
+	const float oz = ui->ScaraArm_lineEdit_Oz->text().toFloat();
 
 	const float px = ui->ScaraArm_lineEdit_X->text().toFloat();
 	const float py = ui->ScaraArm_lineEdit_Y->text().toFloat();

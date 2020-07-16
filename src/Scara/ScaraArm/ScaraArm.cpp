@@ -421,11 +421,11 @@ void ScaraArm::WriteHeight(const float &height) const
 // Need to check
 bool ScaraArm::GoScrewHeight(const float &goal_height) {
 	ReadHeight();
-	if (goal_height >= 400)	{
+	if (goal_height > 400)	{
 		cout << "[ScaraArm] Too high" << endl;
 		return false;
 	}
-	else if (goal_height <= 20)	{
+	else if (goal_height < 20)	{
 		cout << "[ScaraArm] Too low" << endl;
 		return false;
 	}

@@ -489,11 +489,13 @@ bool ScaraArm::GoScrewHeight(const float &goal_height) {
 			int present_pos = GetMotor_PresentAngle(FIRST_HAND_ID) * Degree2Resolution;
 
 			// Integrate the position change
-			pos_integrator += abs(present_pos - last_pos);
+			// position difference
+			int pos_diff = abs(present_pos - last_pos);
+			// Assume every angle difference is acute
+			if (pos_diff > 180 * Degree2Resolution)
+				pos_diff = Height_Resol - pos_diff;
+			pos_integrator += pos_diff;
 			last_pos = present_pos;
-
-			// if (abs(changing_position2 - need_position) < 2500)
-			// 	break;
 		} 
 
 		// Set motor speed to 0

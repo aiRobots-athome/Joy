@@ -464,8 +464,6 @@ bool ScaraArm::GoScrewHeight(const float &goal_height) {
 			dir = -1;
 		int now_position = GetMotor_PresentAngle(FIRST_HAND_ID) * Degree2Resolution;
 		// 224(Speed ​​increaser ratio 1:11.05, Pro200 1rev = Screw 224mm)  1003846(Pro200 resolution)
-		int delta_postion = round(delta_height / REV_2_SCREW * Height_Resol);
-		int need_position = now_position + delta_postion;
 		int delta_height_f = 0;
 		if (abs(delta_height) > 10)
 		{
@@ -479,7 +477,12 @@ bool ScaraArm::GoScrewHeight(const float &goal_height) {
 			SetMotor_Velocity(FIRST_HAND_ID, 0);
 			this_thread::sleep_for(chrono::milliseconds(500));
 		}
+		int delta_postion = round(delta_height / REV_2_SCREW * Height_Resol);
+		int need_position = now_position + delta_postion;
+		
+		printf("delta: %d, need: %d, now: %d, ", delta_postion, need_position, now_position);
 		now_position = GetMotor_PresentAngle(FIRST_HAND_ID) * Degree2Resolution;
+		printf("now: %d\n", now_position);
 		delta_height_f = need_position - now_position;
 
 		if (delta_height_f > 0)

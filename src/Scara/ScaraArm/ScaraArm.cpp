@@ -432,6 +432,7 @@ bool ScaraArm::GoScrewHeight(const float &goal_height) {
 	else if (goal_height == now_height)
 	{
 		cout << "[ScaraArm] Screw arrival !" << endl;
+		return true;
 	}
 	else
 	{
@@ -477,6 +478,7 @@ bool ScaraArm::GoScrewHeight(const float &goal_height) {
 		WriteHeight(goal_height);
 		now_height = goal_height;
 		cout << "[ScaraArm] Screw arrival !" << endl;
+		return true;
 	}
 }
 

@@ -1,6 +1,12 @@
 #include "MotorUnion.h"
 vector<unsigned char> MotorUnion::allport = {0, 1, 2, 3, 4, 5, 6};
 
+/**
+ * Motor constructor
+ * 
+ * @param IDArray - 
+ * @param MotorModelArray - Array defined the type of motor using
+ */
 MotorUnion::MotorUnion(const vector<unsigned char> &IDArray,
 					   const vector<string> &MotorModelArray)
 	: _is_deleted_thread_BG(true),

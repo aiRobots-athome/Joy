@@ -46,10 +46,12 @@ ScaraArm::ScaraArm()
 	  MX106_RESOL(4096),
 	  REV_2_SCREW(226)
 {
-#ifdef USING_BIG
+#ifdef USE_BIG
 		Height_Resol = PRO200_RESOL;
+		printf("pro200!!");
 #else 
 		Height_Resol = MX106_RESOL;
+		printf("mx106!!");
 #endif
 	Start();
 	ReadHeight();
@@ -491,11 +493,12 @@ bool ScaraArm::GoScrewHeight(const float &goal_height) {
 		// Last position of motor, in resolution
 		int last_pos = GetMotor_PresentAngle(FIRST_HAND_ID) * Degree2Resolution;
 
+		this_thread::sleep_for(chrono::milliseconds(500));
 		// Set motor speed to 1
-		SetMotor_Velocity(FIRST_HAND_ID, dir*10);
+		SetMotor_Velocity(FIRST_HAND_ID, dir*8);
 
 		printf("det_h_f: %d", delta_height_f);
-		while(abs(delta_height_f - pos_integrator) >= 500) {
+		while(abs(delta_height_f - pos_integrator) >= 300) {
 			this_thread::sleep_for(chrono::milliseconds(50));
 			int present_pos = GetMotor_PresentAngle(FIRST_HAND_ID) * Degree2Resolution;
 

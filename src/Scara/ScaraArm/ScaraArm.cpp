@@ -434,11 +434,11 @@ void ScaraArm::WriteHeight(const float &height) const
 // Need to check
 bool ScaraArm::GoScrewHeight(const float &goal_height) {
 	ReadHeight();
-	if (goal_height >= 400)	{
+	if (goal_height > 400)	{
 		cout << "[ScaraArm] Too high" << endl;
 		return false;
 	}
-	else if (goal_height <= 20)	{
+	else if (goal_height < 20)	{
 		cout << "[ScaraArm] Too low" << endl;
 		return false;
 	}
@@ -462,18 +462,23 @@ bool ScaraArm::GoScrewHeight(const float &goal_height) {
 		int delta_height_f = 0;
 		if (abs(delta_height) > 10)
 		{
-			delta_height_f = delta_height - dir * 5;
+			delta_height_f = delta_height - dir * 2;
 
-			float motorspeed = 200 * 0.01 / 60 * REV_2_SCREW;					//Velocity(set 400) * Scale(rev/min) / 60(to 1sec) * 226(mm) (Pro200 1rev = Screw 226)
+			float motorspeed = 400 * 0.01 / 60 * REV_2_SCREW;					//Velocity(set 400) * Scale(rev/min) / 60(to 1sec) * 226(mm) (Pro200 1rev = Screw 226)
 			float waittime = (abs(delta_height_f) / motorspeed) * 1000; //unit:milliseconds
 
-			SetMotor_Velocity(FIRST_HAND_ID, dir * 200);
+			SetMotor_Velocity(FIRST_HAND_ID, dir * 400);
 			WaitAllMotorsArrival(waittime);
 			SetMotor_Velocity(FIRST_HAND_ID, 0);
 			this_thread::sleep_for(chrono::milliseconds(500));
 		}
 		now_position = GetMotor_PresentAngle(FIRST_HAND_ID) * Degree2Resolution;
 		delta_height_f = need_position - now_position;
+
+		if (delta_height_f > 0)
+			dir = 1;
+		else
+			dir = -1;
 
 		// Use to integrate the moved angle of motor
 		int pos_integrator = 0;
@@ -482,20 +487,22 @@ bool ScaraArm::GoScrewHeight(const float &goal_height) {
 		int last_pos = GetMotor_PresentAngle(FIRST_HAND_ID) * Degree2Resolution;
 
 		// Set motor speed to 1
-		SetMotor_Velocity(FIRST_HAND_ID, dir);
+		SetMotor_Velocity(FIRST_HAND_ID, dir*10);
 
-		while(abs(delta_height_f - pos_integrator) < 2500) {
-			this_thread::sleep_for(chrono::milliseconds(100));
+		printf("det_h_f: %d", delta_height_f);
+		while(abs(delta_height_f - pos_integrator) >= 500) {
+			this_thread::sleep_for(chrono::milliseconds(50));
 			int present_pos = GetMotor_PresentAngle(FIRST_HAND_ID) * Degree2Resolution;
 
 			// Integrate the position change
 			// position difference
-			int pos_diff = abs(present_pos - last_pos);
+			int pos_diff = present_pos - last_pos;
 			// Assume every angle difference is acute
-			if (pos_diff > 180 * Degree2Resolution)
-				pos_diff = Height_Resol - pos_diff;
+			if (abs(pos_diff) > 180 * Degree2Resolution)
+				pos_diff = dir * Height_Resol - pos_diff;
 			pos_integrator += pos_diff;
 			last_pos = present_pos;
+			printf("det_h_f: %d, inte: %d\n", delta_height_f, pos_integrator);
 		} 
 
 		// Set motor speed to 0

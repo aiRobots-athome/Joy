@@ -1,5 +1,7 @@
 #include "ScaraArm.h"
 
+#define USE_BIG
+
 ScaraArm *ScaraArm::inst_ = nullptr;
 
 /**
@@ -14,6 +16,7 @@ ScaraArm *ScaraArm::getScaraArm()
 }
 
 ScaraArm::ScaraArm()
+#ifdef USE_BIG
 	/* Big */
 	: MotorUnion({0, 1, 2, 3}, {"Pro200", "Pro200", "Pro20", "Pro20"}),
 	  J2_sign(-1),
@@ -24,29 +27,30 @@ ScaraArm::ScaraArm()
 	  FIRST_HAND_ID(0),
 	  Degree2Resolution(1003846 / 360),
 	  USING_BIG(true),
-
+#else
 	/* Small */
-	// : MotorUnion({0, 1, 2, 3}, {"Mx106", "Mx106", "Mx106", "Mx106"}),
-	//   J2_sign(1),
-	//   Arm1_Length(53), 
-	//   Arm2_Length(92), 
-	//   Arm3_Length(92),
-	//   Arm4_Length(69), 
-	//   FIRST_HAND_ID(0),
-	//   Degree2Resolution(4096 / 360),
-	//   USING_BIG(false),
+	: MotorUnion({0, 1, 2, 3}, {"Mx106", "Mx106", "Mx106", "Mx106"}),
+	  J2_sign(1),
+	  Arm1_Length(53), 
+	  Arm2_Length(92), 
+	  Arm3_Length(92),
+	  Arm4_Length(69), 
+	  FIRST_HAND_ID(0),
+	  Degree2Resolution(4096 / 360),
+	  USING_BIG(false),
 	
+#endif
 
 	/* Common variable */
 	  PRO200_RESOL(1003846),
 	  MX106_RESOL(4096),
 	  REV_2_SCREW(226)
 {
-	if (USING_BIG)
+#ifdef USING_BIG
 		Height_Resol = PRO200_RESOL;
-	else 
-		
+#else 
 		Height_Resol = MX106_RESOL;
+#endif
 	Start();
 	ReadHeight();
 	SetMotor_Operating_Mode(FIRST_HAND_ID, 1);	//Pro 200 change operating mode to velocity mode
@@ -57,6 +61,7 @@ ScaraArm::ScaraArm()
  * Enable all motors, and set up the speed
  */
 void ScaraArm::Start() {
+#ifdef USE_BIG
 	/* Big */
 	SetMotor_Accel(FIRST_HAND_ID, 200);
 	SetMotor_Velocity(FIRST_HAND_ID + 1, 50);
@@ -66,13 +71,14 @@ void ScaraArm::Start() {
 	SetMotor_Velocity(FIRST_HAND_ID + 3, 1000);
 	SetMotor_Accel(FIRST_HAND_ID+3, 700);
 	SetAllMotorsTorqueEnable(true);
-
+#else
 	/* Small */
-	// SetMotor_Accel(FIRST_HAND_ID, 50);
-	// SetMotor_Velocity(FIRST_HAND_ID + 1, 10);
-	// SetMotor_Velocity(FIRST_HAND_ID + 2, 20);
-	// SetMotor_Velocity(FIRST_HAND_ID + 3, 20);
-	// SetAllMotorsTorqueEnable(true);
+	SetMotor_Accel(FIRST_HAND_ID, 50);
+	SetMotor_Velocity(FIRST_HAND_ID + 1, 10);
+	SetMotor_Velocity(FIRST_HAND_ID + 2, 20);
+	SetMotor_Velocity(FIRST_HAND_ID + 3, 20);
+	SetAllMotorsTorqueEnable(true);
+#endif
 }
 
 /**
@@ -90,8 +96,7 @@ cv::Mat ScaraArm::GetKinematics()
 	return Calculate_ArmForwardKinematics(fRadian1, fRadian2, fRadian3);
 }
 
-float &ScaraArm::GetPresentHeight()
-{
+float &ScaraArm::GetPresentHeight() {
 	return now_height;
 }
 

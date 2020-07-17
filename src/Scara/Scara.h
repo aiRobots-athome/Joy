@@ -1,6 +1,7 @@
 #pragma once
 #include "ScaraArm/ScaraArm.h"
 #include "XYPlatform/XYPlatform.h"
+#include "VisionCar/VisionCar.h"
 
 class Scara
 {
@@ -11,6 +12,7 @@ public:
 
     ScaraArm *CScaraArm;
     XYPlatform *CXYPlatform;
+    VisionCar *CVisionCar;
 
 private:
     static Scara *inst_;

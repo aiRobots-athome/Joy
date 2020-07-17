@@ -23,6 +23,7 @@ include/Robot/Form_Mobile.h
 include/Scara/Form_Scara.h
 include/Scara/Form_ScaraArm.h
 include/Scara/Form_XYPlatform.h
+include/Scara/Form_VisionCar.h
 include/Form_ControlPanel.h
 include/Form_Network.h
 include/Form_Strategy.h
@@ -36,6 +37,7 @@ src/Robot/Form_Mobile.cpp
 src/Scara/Form_Scara.cpp
 src/Scara/Form_ScaraArm.cpp
 src/Scara/Form_XYPlatform.cpp
+src/Scara/Form_VisionCar.cpp
 src/Form_ControlPanel.cpp
 src/Form_Network.cpp
 src/Form_Strategy.cpp

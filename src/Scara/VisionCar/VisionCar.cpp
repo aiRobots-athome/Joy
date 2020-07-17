@@ -15,9 +15,8 @@ VisionCar *VisionCar::getVisionCar()
 }
 
 VisionCar::VisionCar()
-	: MotorUnion({0, 1, 2}, {"Pro200", "Pro20", "Pro20"}),
-	  FIRST_MOTOR_ID(0),
-	  Degree2Resolution(1003846 / 360)
+	: MotorUnion({4, 5, 6}, {"Pro200", "Pro20", "Pro20"}),
+	  FIRST_MOTOR_ID(0)
 {
 	Start();
 	SetMotor_Operating_Mode(FIRST_MOTOR_ID  , 3);	    // Car angle control motor set to position mode
@@ -30,6 +29,7 @@ VisionCar::VisionCar()
  * Enable all motors, and set up the speed
  */
 void VisionCar::Start() {
+	printf("Start\n");
 	// Car angle motor
 	SetMotor_Velocity(FIRST_MOTOR_ID, 100);
 	SetMotor_Accel(FIRST_MOTOR_ID, 50);
@@ -61,26 +61,26 @@ void VisionCar::Stop() {
 void VisionCar::GotoPosition(const float &oz, const int &h,  const int &oc) {
 
 	// Move camera inside
-	if(current_cam_io != INSIDE){
-		GoCameraIO(INSIDE);
+	if(current_cam_io != VisionCar::INSIDE){
+		GoCameraIO(VisionCar::INSIDE);
 	}
 
 	// Screw down
-	if (current_screw_io != DOWN){
-		GoScrewHeight(DOWN);
+	if (current_screw_io != VisionCar::DOWN){
+		GoScrewHeight(VisionCar::DOWN);
 	}
 
 	// Set car angle
 	GoCarAngle(oz);
 
 	// Screw up or down
-	bool screw_io = (h > 0)? UP: DOWN;
+	bool screw_io = (h > 0)? VisionCar::UP: VisionCar::DOWN;
 	if (current_screw_io != screw_io){
 		GoScrewHeight(screw_io);
 	}
 
 	// Camera out or in
-	bool cam_io = (oc > 0)? OUTSIDE: INSIDE;
+	bool cam_io = (oc > 0)? VisionCar::OUTSIDE: VisionCar::INSIDE;
 	if(current_cam_io != cam_io){
 		GoCameraIO(cam_io);
 	}
@@ -115,7 +115,7 @@ bool VisionCar::GoScrewHeight(const bool &dir) {
  * @retval current_cam_io - bool, current camera position
  */
 bool VisionCar::GoCameraIO(const bool &IO){
-	if (IO==INSIDE){
+	if (IO == VisionCar::INSIDE){
 		SetMotor_Angle(FIRST_MOTOR_ID+2, CamInDegree);
 	}
 	else{
@@ -126,14 +126,30 @@ bool VisionCar::GoCameraIO(const bool &IO){
 }
 
 /**
+ * Get the Camera position data
+ * @retval - bool, inside (true), outside (false)
+ */
+bool VisionCar::GetCamPos(){
+	return current_cam_io;
+}
+
+/**
+ * Get the Screw position data
+ * @retval - bool, up (true), down (false)
+ */
+bool VisionCar::GetScrewPos(){
+	return current_screw_io;
+}
+
+/**
  * Move scara arm to initial point
  * Camera in, Screw down and car to 0.
  */
 void VisionCar::Reset(){
 	// camera in
-	GoCameraIO(true);
+	GoCameraIO(VisionCar::INSIDE);
 	// Screw down
-	GoScrewHeight(DOWN);
+	GoScrewHeight(VisionCar::DOWN);
 	// Car to 0 degree
 	GoCarAngle(0);
 }

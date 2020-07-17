@@ -19,6 +19,11 @@ Scara::Scara()
     /// Construct XY Platform ///////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////
     CXYPlatform = XYPlatform::getXYPlatform();
+
+    /////////////////////////////////////////////////////////////////////
+    /// Construct VisionCar /////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////
+    CVisionCar = VisionCar::getVisionCar();  
     
     cout << "\tClass constructed: Scara" << endl;
 }
@@ -27,6 +32,7 @@ Scara::~Scara()
 {
     delete CScaraArm;
     delete CXYPlatform;
+    delete CVisionCar;
     inst_ = nullptr;
 }
 
@@ -36,7 +42,9 @@ Scara::~Scara()
 void Scara::Reconnect() {
     delete CScaraArm;
     delete CXYPlatform;
+    delete CVisionCar;
     MotorUnion::allport = {0, 1};
     CScaraArm = ScaraArm::getScaraArm();
     CXYPlatform = XYPlatform::getXYPlatform();
+    CVisionCar = VisionCar::getVisionCar();
 }

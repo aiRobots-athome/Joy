@@ -9,7 +9,7 @@ XYPlatform *XYPlatform::getXYPlatform()
 }
 
 XYPlatform::XYPlatform()
-    : MotorUnion({4, 5}, {"Mx106", "Mx106"}),
+    : MotorUnion({10, 11}, {"Mx106", "Mx106"}),
       X_Motor(0),
       Y_Motor(1),
       RPM2mm_ms(2 * M_PI * (1.667 * 1e-5) / (M_PI * 0.5) * 10), //90 degree to 10 mm

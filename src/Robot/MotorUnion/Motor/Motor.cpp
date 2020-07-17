@@ -241,6 +241,7 @@ void Motor::WriteVelocity()
 		break;
 
 	case 3:
+	case 4:
 		groupBulkWrite->addParam(Motor_ID, ADDR_PROFILE_VELOCITY, LEN_PROFILE_VELOCITY, param_goal_velocity);
 		break;
 	}

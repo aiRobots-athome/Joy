@@ -21,6 +21,8 @@ motor::motor()
 	Min_Position_Limit = 0;
 	Max_Velocity_Limit = 0;
 	Min_Velocity_Limit = 0;
+	Max_Extend_Limit = 0;
+	Min_Extend_Limit = 0;
 	Max_Accel_Limit = 0;
 	Max_Torque_Limit = 0;
 
@@ -67,14 +69,28 @@ void motor::SetMotor_CenterScale(const short &centerscale)
 
 void motor::SetMotor_Angle(const float &angle)
 {
-	Motor_Scale = angle * Angle2MotorScale + Motor_CenterScale;
-
-	if (Motor_Scale >= Max_Position_Limit)
-		Motor_Scale = Max_Position_Limit;
-	else if (Motor_Scale <= Min_Position_Limit)
-		Motor_Scale = Min_Position_Limit;
-	else
-		;
+	switch (Motor_Operating_Mode) {
+	case 1: // Velocity control mode
+	case 3: // Position control mode
+		Motor_Scale = angle * Angle2MotorScale + Motor_CenterScale;
+		if (Motor_Scale >= Max_Position_Limit)
+			Motor_Scale = Max_Position_Limit;
+		else if (Motor_Scale <= Min_Position_Limit)
+			Motor_Scale = Min_Position_Limit;
+		else
+			;
+		break;
+	case 4:	// Extended position control mode
+		Motor_Scale = angle * Angle2MotorScale + GetMotor_PresentAngle();
+		if (Motor_Scale >= Max_Extend_Limit)
+			Motor_Scale = Max_Extend_Limit;
+		else if (Motor_Scale <= Min_Extend_Limit)
+			Motor_Scale = Min_Extend_Limit;
+		else
+			;
+		break;
+	}
+	
 
 	Motor_Angle = (Motor_Scale - Motor_CenterScale) * MotorScale2Angle;
 	is_Arrival = false;
@@ -95,6 +111,7 @@ void motor::SetMotor_Velocity(const int &velocity)
 		break;
 
 	case 3: // Position control mode
+	case 4:	// Extended position control mode
 		if (std::abs(velocity) >= Max_Velocity_Limit)
 			Motor_Velocity = Max_Velocity_Limit;
 		else

@@ -55,6 +55,8 @@ protected:
 	int Min_Position_Limit;
 	int Max_Velocity_Limit;
 	int Min_Velocity_Limit;
+	int Max_Extend_Limit;
+	int Min_Extend_Limit;
 	int Max_Accel_Limit;
 	int Max_Torque_Limit;
 

@@ -462,62 +462,16 @@ bool ScaraArm::GoScrewHeight(const float &goal_height) {
 			dir = 1;
 		else
 			dir = -1;
-		int now_position = GetMotor_PresentAngle(FIRST_HAND_ID) * Degree2Resolution;
-		// 224(Speed ​​increaser ratio 1:11.05, Pro200 1rev = Screw 224mm)  1003846(Pro200 resolution)
-		int delta_height_f = 0;
-		if (abs(delta_height) > 10)
-		{
-			delta_height_f = delta_height - dir * 2;
 
-			float motorspeed = 400 * 0.01 / 60 * REV_2_SCREW;					//Velocity(set 400) * Scale(rev/min) / 60(to 1sec) * 226(mm) (Pro200 1rev = Screw 226)
-			float waittime = (abs(delta_height_f) / motorspeed) * 1000; //unit:milliseconds
+		float delta_angle = delta_height / REV_2_SCREW;
 
-			SetMotor_Velocity(FIRST_HAND_ID, dir * 400);
-			WaitAllMotorsArrival(waittime);
-			SetMotor_Velocity(FIRST_HAND_ID, 0);
-			this_thread::sleep_for(chrono::milliseconds(500));
-		}
-		int delta_postion = round(delta_height / REV_2_SCREW * Height_Resol);
-		int need_position = now_position + delta_postion;
-		
-		printf("delta: %d, need: %d, now: %d, ", delta_postion, need_position, now_position);
-		now_position = GetMotor_PresentAngle(FIRST_HAND_ID) * Degree2Resolution;
-		printf("now: %d\n", now_position);
-		delta_height_f = need_position - now_position;
+		SetMotor_Angle(FIRST_HAND_ID, delta_angle);
 
-		if (delta_height_f > 0)
-			dir = 1;
-		else
-			dir = -1;
+		cout << "delta_height: " << delta_height << ", delta_angle: " << delta_angle << endl;
 
-		// Use to integrate the moved angle of motor
-		int pos_integrator = 0;
-
-		// Last position of motor, in resolution
-		int last_pos = GetMotor_PresentAngle(FIRST_HAND_ID) * Degree2Resolution;
-
+		WaitAllMotorsArrival();
 		this_thread::sleep_for(chrono::milliseconds(500));
-		// Set motor speed to 1
-		SetMotor_Velocity(FIRST_HAND_ID, dir*8);
 
-		printf("det_h_f: %d", delta_height_f);
-		while(abs(delta_height_f - pos_integrator) >= 300) {
-			this_thread::sleep_for(chrono::milliseconds(50));
-			int present_pos = GetMotor_PresentAngle(FIRST_HAND_ID) * Degree2Resolution;
-
-			// Integrate the position change
-			// position difference
-			int pos_diff = present_pos - last_pos;
-			// Assume every angle difference is acute
-			if (abs(pos_diff) > 180 * Degree2Resolution)
-				pos_diff = dir * Height_Resol - pos_diff;
-			pos_integrator += pos_diff;
-			last_pos = present_pos;
-			printf("det_h_f: %d, inte: %d\n", delta_height_f, pos_integrator);
-		} 
-
-		// Set motor speed to 0
-		SetMotor_Velocity(FIRST_HAND_ID, 0);
 		WriteHeight(goal_height);
 		now_height = goal_height;
 		cout << "[ScaraArm] Screw arrival !" << endl;

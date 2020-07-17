@@ -55,7 +55,7 @@ ScaraArm::ScaraArm()
 #endif
 	Start();
 	ReadHeight();
-	SetMotor_Operating_Mode(FIRST_HAND_ID, 1);	//Pro 200 change operating mode to velocity mode
+	SetMotor_Operating_Mode(FIRST_HAND_ID, 4);	//Pro 200 change operating mode to velocity mode
 	cout << "\t\tClass constructed: ScaraArm" << endl;
 }
 
@@ -65,6 +65,7 @@ ScaraArm::ScaraArm()
 void ScaraArm::Start() {
 #ifdef USE_BIG
 	/* Big */
+	SetMotor_Velocity(FIRST_HAND_ID, 400);
 	SetMotor_Accel(FIRST_HAND_ID, 200);
 	SetMotor_Velocity(FIRST_HAND_ID + 1, 50);
 	SetMotor_Accel(FIRST_HAND_ID + 1, 25);
@@ -463,13 +464,14 @@ bool ScaraArm::GoScrewHeight(const float &goal_height) {
 		else
 			dir = -1;
 
-		float delta_angle = delta_height / REV_2_SCREW;
+		float delta_angle = delta_height / REV_2_SCREW * 360;
 
 		SetMotor_Angle(FIRST_HAND_ID, delta_angle);
 
-		cout << "delta_height: " << delta_height << ", delta_angle: " << delta_angle << endl;
+		// cout << "delta_height: " << delta_height << ", delta_angle: " << delta_angle << endl;
+		// cout << "desire angle: " << GetMotor_Angle(FIRST_HAND_ID) << endl;
 
-		WaitAllMotorsArrival();
+		WaitMotorArrival(FIRST_HAND_ID);
 		this_thread::sleep_for(chrono::milliseconds(500));
 
 		WriteHeight(goal_height);

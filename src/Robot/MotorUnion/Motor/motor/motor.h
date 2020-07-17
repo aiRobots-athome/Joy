@@ -42,7 +42,7 @@ protected:
 	unsigned char Motor_Operating_Mode;
 	short Motor_CenterScale;
 	float Motor_Angle;			  // (degree)
-	int Motor_Scale;			  // Goal Position (Motor Scale)
+	float Motor_Scale;			  // Goal Position (Motor Scale)
 	int Motor_Velocity;			  // Goal Velocity
 	int Motor_Accel;			  // Goal Acceleration
 	float Motor_Present_Angle;	  // Present Position (degree)
@@ -55,8 +55,8 @@ protected:
 	int Min_Position_Limit;
 	int Max_Velocity_Limit;
 	int Min_Velocity_Limit;
-	int Max_Extend_Limit;
-	int Min_Extend_Limit;
+	float Max_Extend_Limit;
+	float Min_Extend_Limit;
 	int Max_Accel_Limit;
 	int Max_Torque_Limit;
 

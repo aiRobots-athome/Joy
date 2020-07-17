@@ -125,6 +125,16 @@ const bool MotorUnion::CheckAllMotorsArrival() const
 	return arrival;
 }
 
+void MotorUnion::WaitMotorArrival(int i) const
+{
+	while (!Motor_Union.at(i)->GetMotor_Arrival())
+	{
+		if (GetAllMotorsTorqueEnable() == false)
+			break;
+		this_thread::sleep_for(chrono::milliseconds(waiting_frequency));
+	}
+}
+
 void MotorUnion::WaitAllMotorsArrival() const
 {
 	while (!CheckAllMotorsArrival())
@@ -274,9 +284,14 @@ const float &MotorUnion::GetMotor_PresentTorque(const unsigned char &idx) const
 /*
 	Set Motor Data
 */
-void MotorUnion::SetMotor_Operating_Mode(const unsigned char &idx, const char &mode) const
-{
+void MotorUnion::SetMotor_Operating_Mode(const unsigned char &idx, char mode) const	//can't set mode online
+{	
+	Motor_Union.at(idx)->SetMotor_TorqueEnable(false);
+	this_thread::sleep_for(chrono::milliseconds(50));
 	Motor_Union.at(idx)->SetMotor_Operating_Mode(mode);
+	Motor_Union.at(idx)->WriteMode(mode);
+	this_thread::sleep_for(chrono::milliseconds(50));
+	Motor_Union.at(idx)->SetMotor_TorqueEnable(true);
 }
 
 void MotorUnion::SetMotor_CenterScale(const unsigned char &idx, const short &motor_center_scale) const

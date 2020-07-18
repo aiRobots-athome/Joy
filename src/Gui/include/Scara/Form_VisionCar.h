@@ -26,7 +26,6 @@ public slots:
 private:
     Ui::Form_Scara *ui;
 
-
     const int torque_threshold;
 
     VisionCar *CVisionCar;

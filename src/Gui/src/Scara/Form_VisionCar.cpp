@@ -2,7 +2,6 @@
 
 /**
  * Set vision car angle, screw and camera manually
- * @brief - Get value from user interface and pass to VisionCar
  */
 void Form_VisionCar::on_VisionCar_btn_PosGo_clicked()
 {

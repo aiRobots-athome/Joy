@@ -444,42 +444,35 @@ void ScaraArm::WriteHeight(const float &height) const
 // Need to check
 bool ScaraArm::GoScrewHeight(const float &goal_height) {
 	ReadHeight();
-	if (goal_height > 400)	{
+	if (goal_height > 400) {
 		cout << "[ScaraArm] Too high" << endl;
 		return false;
 	}
-	else if (goal_height < 20)	{
+	else if (goal_height < 20) {
 		cout << "[ScaraArm] Too low" << endl;
 		return false;
 	}
-	else if (goal_height == now_height)
-	{
+	else if (goal_height == now_height) {
 		cout << "[ScaraArm] Screw arrival !" << endl;
 		return true;
 	}
-	else
-	{
+	else {
 		float delta_height = goal_height - now_height;
-		int dir = 0;		// Move up or down for the robot arm
-		if (delta_height > 0)
-			dir = 1;
-		else
-			dir = -1;
-
 		float delta_angle = delta_height / REV_2_SCREW * 360;
 
+		// Motor angle is set to present angle + angle needed
 		SetMotor_Angle(FIRST_HAND_ID, delta_angle + GetMotor_PresentAngle(FIRST_HAND_ID));
 
 		// cout << "delta_height: " << delta_height << ", delta_angle: " << delta_angle << endl;
 		// cout << "desire angle: " << GetMotor_Angle(FIRST_HAND_ID) << endl;
 
 		WaitMotorArrival(FIRST_HAND_ID);
-		this_thread::sleep_for(chrono::milliseconds(500));
+		this_thread::sleep_for(chrono::milliseconds(50));
 
 		WriteHeight(goal_height);
 		now_height = goal_height;
 
-		cout << "sp_angle: " << GetMotor_PresentAngle(FIRST_HAND_ID) << endl;
+		// cout << "sp_angle: " << GetMotor_PresentAngle(FIRST_HAND_ID) << endl;
 		cout << "[ScaraArm] Screw arrival !" << endl;
 		return true;
 	}

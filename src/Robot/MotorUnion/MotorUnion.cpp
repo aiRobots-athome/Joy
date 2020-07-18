@@ -125,6 +125,21 @@ const bool MotorUnion::CheckAllMotorsArrival() const
 	return arrival;
 }
 
+
+/**
+ * Wait single motor arrive
+ * @param i - int, motor index of the motor union
+ */
+void MotorUnion::WaitMotorArrival(int i) const
+{
+	while (!Motor_Union.at(i)->GetMotor_Arrival())
+	{
+		if (GetAllMotorsTorqueEnable() == false)
+			break;
+		this_thread::sleep_for(chrono::milliseconds(waiting_frequency));
+	}	
+}
+
 void MotorUnion::WaitAllMotorsArrival() const
 {
 	while (!CheckAllMotorsArrival())

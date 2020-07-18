@@ -6,18 +6,12 @@
  */
 void Form_VisionCar::on_VisionCar_btn_PosGo_clicked()
 {
-    // /* Vision car angle */
-	// const float oz = ui->VisionCar_lineEdit_Oz->text().toFloat();
+    const int oz = ui->VisionCar_spin_CarAngle->value();
+    const int h = ui->VisionCar_spin_Screw->value();
+    const int oc = ui->VisionCar_spin_CamAngle->value();
 
-    // /* Vision car screw up/down */
-	// const float pz = ui->VisionCar_lineEdit_Z->text().toFloat();
+	CVisionCar->GotoPosition(oz, h, oc);
 
-    // /* Vision car camera position */
-    // const float cam = ui->VisionCar_lineEdit_cam->text().toFloat();
-
-	// CVisionCar->GotoPosition(oz, pz, cam);
-
-    CVisionCar->GoCarAngle(0);
 	printf("Go clicked\n");
 }
 
@@ -26,7 +20,13 @@ void Form_VisionCar::on_VisionCar_btn_PosGo_clicked()
  */
 void Form_VisionCar::on_VisionCar_Cam_CTL_clicked()
 {
-
+    int cam_pos = CVisionCar->GetCamPos();
+    if(cam_pos != VisionCar::INSIDE){
+        CVisionCar->GoCameraIO(VisionCar::INSIDE);
+    }
+    else{
+        CVisionCar->GoCameraIO(VisionCar::OUTSIDE);
+    }
 }
 
 /**
@@ -34,7 +34,13 @@ void Form_VisionCar::on_VisionCar_Cam_CTL_clicked()
  */
 void Form_VisionCar::on_VisionCar_Screw_CTL_clicked()
 {
-
+    int screw_pos = CVisionCar->GetScrewPos();
+    if(screw_pos != VisionCar::DOWN){
+        CVisionCar->GoScrewHeight(VisionCar::DOWN);
+    }
+    else{
+        CVisionCar->GoScrewHeight(VisionCar::UP);
+    }
 }
 
 /**
@@ -43,4 +49,13 @@ void Form_VisionCar::on_VisionCar_Screw_CTL_clicked()
 void Form_VisionCar::on_VisionCar_btn_Reset_clicked()
 {
     CVisionCar->Reset();
+}
+
+/**
+ * Get current position and display
+ */
+void Form_VisionCar::Display()
+{
+    ui->VisionCar_label_CarAngle->setText(QString::number((int)CVisionCar->GetMotor_PresentAngle(0)));
+    ui->VisionCar_label_CamAngle->setText(QString::number((int)CVisionCar->GetMotor_PresentAngle(2)));
 }

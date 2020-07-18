@@ -9,19 +9,18 @@ public:
     static VisionCar *getVisionCar();
     ~VisionCar() { inst_ = nullptr; };
     
-    enum pos_state {INSIDE=true, OUTSIDE=false, UP=true, DOWN=false};
+    enum pos_state {INSIDE=0, OUTSIDE=1, DOWN=0, UP=1, UNDEFINED=2};
 
     void Start();
     void Stop();
 
+    void GotoPosition(const int &oz, const int &h,  const int &oc);
+    void GoCarAngle(const int &goal_angle);
+    int GoScrewHeight(const int &dir);
+    int GoCameraIO(const int &IO);
 
-    void GotoPosition(const float &oz, const int &h,  const int &oc);
-    void GoCarAngle(const float &goal_angle);
-    bool GoScrewHeight(const bool &dir);
-    bool GoCameraIO(const bool &IO);
-
-    bool GetCamPos();
-    bool GetScrewPos();
+    int GetCamPos();
+    int GetScrewPos();
 
     void Reset();
 
@@ -31,10 +30,10 @@ private:
 
     const unsigned char FIRST_MOTOR_ID;
 
-    const float CamInDegree=170;
-    const float CamOutDegree=90;
+    const float CamInDegree=165.0;
+    const float CamOutDegree=100.0;
 
-    bool current_cam_io;
-    bool current_screw_io;
+    int current_cam_io=UNDEFINED;
+    int current_screw_io=UNDEFINED;
     bool VisionCarMotionEnable;
 };

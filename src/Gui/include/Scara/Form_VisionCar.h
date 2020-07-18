@@ -10,6 +10,7 @@ class Form_VisionCar : public QObject
 public:
     Form_VisionCar(Ui::Form_Scara *_ui, QObject *parent = nullptr) : QObject(parent), torque_threshold(50) { ui = _ui; };
     ~Form_VisionCar(){};
+    void Display();
     void SetVisionCar(VisionCar *_VisionCar)
     {
         CVisionCar = _VisionCar;

@@ -35,6 +35,7 @@ private:
 
 protected:
 	/* Wait */
+	void WaitMotorArrival(int i) const;
 	void WaitAllMotorsArrival() const;
 	void WaitAllMotorsArrival(const int &total_waiting_time_ms) const;
 

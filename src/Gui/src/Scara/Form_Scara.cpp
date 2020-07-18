@@ -126,7 +126,7 @@ void Form_Scara::Display()
 		else if (ui->Correction->currentIndex() == 1)
 			form_xy_platform->Display();
 		else if (ui->Correction->currentIndex() == 2)
-			;
+			form_visioncar->Display();
 		else
 			;
 		this_thread::sleep_for(chrono::milliseconds(50));

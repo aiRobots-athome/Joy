@@ -350,6 +350,8 @@ void ScaraArm::GotoPosition(const cv::Mat &T)
 	float *tmp = Arm_InverseKinematics(T);
 	if (ScaraArmMotionEnable)
 	{
+		cout << "p_angle: " << GetMotor_PresentAngle(FIRST_HAND_ID) << endl;
+		this_thread::sleep_for(chrono::milliseconds(500));
 		SetMotor_Angle(FIRST_HAND_ID, GetMotor_PresentAngle(FIRST_HAND_ID));
 		SetMotor_Angle(FIRST_HAND_ID + 1, tmp[0]);
 		SetMotor_Angle(FIRST_HAND_ID + 2, tmp[1]);
@@ -466,7 +468,7 @@ bool ScaraArm::GoScrewHeight(const float &goal_height) {
 
 		float delta_angle = delta_height / REV_2_SCREW * 360;
 
-		SetMotor_Angle(FIRST_HAND_ID, delta_angle);
+		SetMotor_Angle(FIRST_HAND_ID, delta_angle + GetMotor_PresentAngle(FIRST_HAND_ID));
 
 		// cout << "delta_height: " << delta_height << ", delta_angle: " << delta_angle << endl;
 		// cout << "desire angle: " << GetMotor_Angle(FIRST_HAND_ID) << endl;
@@ -476,6 +478,8 @@ bool ScaraArm::GoScrewHeight(const float &goal_height) {
 
 		WriteHeight(goal_height);
 		now_height = goal_height;
+
+		cout << "sp_angle: " << GetMotor_PresentAngle(FIRST_HAND_ID) << endl;
 		cout << "[ScaraArm] Screw arrival !" << endl;
 		return true;
 	}

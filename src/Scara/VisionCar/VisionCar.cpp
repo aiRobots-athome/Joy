@@ -1,4 +1,5 @@
 #include "VisionCar.h"
+#include <unistd.h>
 
 VisionCar *VisionCar::inst_ = nullptr;
 
@@ -21,10 +22,10 @@ VisionCar::VisionCar()
 	: MotorUnion({4, 5, 6}, {"Pro200", "Pro20", "Pro20"}),
 	  FIRST_MOTOR_ID(0)
 {
-	Start();
 	SetMotor_Operating_Mode(FIRST_MOTOR_ID  , 3);	    // Car angle control motor set to position mode
-	SetMotor_Operating_Mode(FIRST_MOTOR_ID+1, 1);	    // Screw control motor set to velocity mode
+	SetMotor_Operating_Mode(FIRST_MOTOR_ID+1, 4);	    // Screw control motor set to extended position mode
 	SetMotor_Operating_Mode(FIRST_MOTOR_ID+2, 3);	    // Cam angle control motor set to position mode
+	Start();
 	cout << "\t\tClass constructed: VisionCar" << endl;
 }
 
@@ -38,12 +39,13 @@ void VisionCar::Start()
 	SetMotor_Accel(FIRST_MOTOR_ID, 50);
 
 	// Screw motor
-	SetMotor_Accel(FIRST_MOTOR_ID + 1, 50);
+	SetMotor_Velocity(FIRST_MOTOR_ID + 1, 2920);
+	SetMotor_Accel(FIRST_MOTOR_ID + 1, 10765);
 
 	// Cam angle motor
 	SetMotor_Velocity(FIRST_MOTOR_ID + 2, 200);
 	SetMotor_Accel(FIRST_MOTOR_ID + 2, 100);
-
+	sleep(1);
 	SetAllMotorsTorqueEnable(true);
 }
 
@@ -74,6 +76,7 @@ void VisionCar::GotoPosition(const int &oz, const int &h,  const int &oc)
 	// Screw down if screw is now upside or undefined (undefined mean initial)
 	if (current_screw_io != VisionCar::DOWN){
 		GoScrewHeight(VisionCar::DOWN);
+		WaitMotorArrival(1);
 	}
 
 	// Set car angle
@@ -83,6 +86,7 @@ void VisionCar::GotoPosition(const int &oz, const int &h,  const int &oc)
 	// Screw up or down
 	if (current_screw_io != h){
 		GoScrewHeight(h);
+		WaitMotorArrival(1);
 	}
 
 	// Camera out or in
@@ -99,7 +103,8 @@ void VisionCar::GotoPosition(const int &oz, const int &h,  const int &oc)
  */
 void VisionCar::GoCarAngle(const int &goal_angle)
 {
-	SetMotor_Angle(FIRST_MOTOR_ID, float(goal_angle));
+	printf("Set car %d\n",goal_angle);
+	SetMotor_Angle(FIRST_MOTOR_ID, goal_angle);
 }
 
 /**
@@ -109,9 +114,13 @@ void VisionCar::GoCarAngle(const int &goal_angle)
  */
 int VisionCar::GoScrewHeight(const int &dir)
 {
-	/*Moving*/
-
-	printf("Not yet\n");
+	printf("Set screw %d\n",dir);
+	if (dir == VisionCar::DOWN){
+		SetMotor_Angle(FIRST_MOTOR_ID+1, 0);
+	}
+	else{
+		SetMotor_Angle(FIRST_MOTOR_ID+1, -3600);
+	}
 	current_screw_io = dir;
 	return current_screw_io;
 }
@@ -119,18 +128,19 @@ int VisionCar::GoScrewHeight(const int &dir)
 /**
  * Move camera out or in
  * ##  No checking if already in position or not
- * @param IO - bool, inside (true), outside (false)
+ * @param io - bool, inside (true), outside (false)
  * @retval current_cam_io - int, current camera position
  */
-int VisionCar::GoCameraIO(const int &IO)
+int VisionCar::GoCameraIO(const int &io)
 {
-	if (IO == VisionCar::INSIDE){
+	printf("Set cam %d\n",io);
+	if (io == VisionCar::INSIDE){
 		SetMotor_Angle(FIRST_MOTOR_ID+2, CamInDegree);
 	}
 	else{
 		SetMotor_Angle(FIRST_MOTOR_ID+2, CamOutDegree);
 	}
-	current_cam_io = IO;
+	current_cam_io = io;
 	return current_cam_io;
 }
 
@@ -162,8 +172,8 @@ void VisionCar::Reset()
 	GoCameraIO(VisionCar::INSIDE);
 	WaitMotorArrival(2);
 	// // Screw down
-	// GoScrewHeight(VisionCar::DOWN);
-	// WaitAllMotorsArrival();
+	GoScrewHeight(VisionCar::DOWN);
+	WaitMotorArrival(1);
 	// Car to 0 degree
 	GoCarAngle(0);
 	WaitMotorArrival(0);

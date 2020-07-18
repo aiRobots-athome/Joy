@@ -12,6 +12,7 @@ Motor::Motor()
 	  ADDR_PRESENT_TORQUE(0),
 	  ADDR_PRESENT_VELOCITY(0),
 	  ADDR_PRESENT_POSITION(0),
+	  ADDR_OPERATING_MODE(0),
 	  LEN_TORQUE_ENABLE(0),
 	  LEN_GOAL_VELOCITY(0),
 	  LEN_PROFILE_ACCEL(0),
@@ -36,6 +37,7 @@ Motor::Motor(
 	const uint16_t &addr_present_torque,
 	const uint16_t &addr_present_velocity,
 	const uint16_t &addr_present_position,
+	const uint16_t &addr_operating_mode,
 	const uint16_t &len_torque_enable,
 	const uint16_t &len_goal_velocity,
 	const uint16_t &len_profile_accel,
@@ -55,6 +57,7 @@ Motor::Motor(
 	  ADDR_PRESENT_TORQUE(addr_present_torque),
 	  ADDR_PRESENT_VELOCITY(addr_present_velocity),
 	  ADDR_PRESENT_POSITION(addr_present_position),
+	  ADDR_OPERATING_MODE(addr_operating_mode),
 	  LEN_TORQUE_ENABLE(len_torque_enable),
 	  LEN_GOAL_VELOCITY(len_goal_velocity),
 	  LEN_PROFILE_ACCEL(len_profile_accel),
@@ -214,14 +217,19 @@ void Motor::ReadPresentTorque()
 	Motor_Present_Torque = data * 100.f / Max_Torque_Limit;
 }
 
+void Motor::WriteMode(uint8_t mode)	// NOT WORKING!!!
+{
+	groupBulkWrite->addParam(Motor_ID, ADDR_OPERATING_MODE, 1, &mode);
+}
+
 void Motor::WriteScale()
 {
 	uint8_t param_goal_position[LEN_GOAL_POSITION];
-	param_goal_position[0] = DXL_LOBYTE(DXL_LOWORD(Motor_Scale));
-	param_goal_position[1] = DXL_HIBYTE(DXL_LOWORD(Motor_Scale));
-	param_goal_position[2] = DXL_LOBYTE(DXL_HIWORD(Motor_Scale));
-	param_goal_position[3] = DXL_HIBYTE(DXL_HIWORD(Motor_Scale));
-
+	param_goal_position[0] = DXL_LOBYTE(DXL_LOWORD((int)Motor_Scale));
+	param_goal_position[1] = DXL_HIBYTE(DXL_LOWORD((int)Motor_Scale));
+	param_goal_position[2] = DXL_LOBYTE(DXL_HIWORD((int)Motor_Scale));
+	param_goal_position[3] = DXL_HIBYTE(DXL_HIWORD((int)Motor_Scale));
+	
 	groupBulkWrite->addParam(Motor_ID, ADDR_GOAL_POSITION, LEN_GOAL_POSITION, param_goal_position);
 	is_Write_Scale = false;
 }
@@ -241,6 +249,7 @@ void Motor::WriteVelocity()
 		break;
 
 	case 3:
+	case 4:
 		groupBulkWrite->addParam(Motor_ID, ADDR_PROFILE_VELOCITY, LEN_PROFILE_VELOCITY, param_goal_velocity);
 		break;
 	}

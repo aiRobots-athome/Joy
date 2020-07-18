@@ -17,7 +17,7 @@ public:
     void GotoPosition(const int &oz, const int &h,  const int &oc);
     void GoCarAngle(const int &goal_angle);
     int GoScrewHeight(const int &dir);
-    int GoCameraIO(const int &IO);
+    int GoCameraIO(const int &io);
 
     int GetCamPos();
     int GetScrewPos();

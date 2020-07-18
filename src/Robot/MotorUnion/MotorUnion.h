@@ -35,8 +35,8 @@ private:
 
 protected:
 	/* Wait */
-	void WaitMotorArrival(int i) const;
 	void WaitAllMotorsArrival() const;
+	void WaitMotorArrival(int i) const;
 	void WaitAllMotorsArrival(const int &total_waiting_time_ms) const;
 
 	/* Set All Motors Data */
@@ -66,7 +66,7 @@ protected:
 	const bool &GetMotor_TorqueEnable(const unsigned char &idx) const;
 	const float &GetMotor_PresentVelocity(const unsigned char &idx) const;
 	/* Set Motor Data */
-	void SetMotor_Operating_Mode(const unsigned char &idx, const char &mode) const;
+	void SetMotor_Operating_Mode(const unsigned char &idx, char mode) const;
 	void SetMotor_CenterScale(const unsigned char &idx, const short &motor_center_scale) const;
 	void SetMotor_Angle(const unsigned char &idx, const float &angle) const;
 	void SetMotor_Velocity(const unsigned char &idx, const int &velocity) const;

@@ -54,7 +54,24 @@ void Form_VisionCar::on_VisionCar_btn_Reset_clicked()
  */
 void Form_VisionCar::Display()
 {
-    ui->VisionCar_label_CarAngle->setText(QString::number((int)CVisionCar->GetMotor_PresentAngle(0)));
-    ui->VisionCar_label_Screw->setText(QString::number((int)CVisionCar->GetMotor_PresentAngle(1)));
-    ui->VisionCar_label_CamAngle->setText(QString::number((int)CVisionCar->GetMotor_PresentAngle(2)));
+	// ID
+	ui->VisionCar_label_ID_0->setText(QString::number(CVisionCar->GetMotor_ID(0)));
+	ui->VisionCar_label_ID_1->setText(QString::number(CVisionCar->GetMotor_ID(1)));
+	ui->VisionCar_label_ID_2->setText(QString::number(CVisionCar->GetMotor_ID(2)));
+	isOK(CVisionCar->GetMotor_Connected(0), ui->VisionCar_label_ID_0);
+	isOK(CVisionCar->GetMotor_Connected(1), ui->VisionCar_label_ID_1);
+	isOK(CVisionCar->GetMotor_Connected(2), ui->VisionCar_label_ID_2);
+
+    //Angle
+    ui->VisionCar_label_CarAngle->setText(QString::number(CVisionCar->GetMotor_PresentAngle(0), 'f', 1));
+    ui->VisionCar_label_Screw->setText(QString::number(CVisionCar->GetMotor_PresentAngle(1), 'f', 1));
+    ui->VisionCar_label_CamAngle->setText(QString::number(CVisionCar->GetMotor_PresentAngle(2), 'f', 1));
+}
+
+void Form_VisionCar::isOK(bool checked_thing, QLabel *label)
+{
+	if (checked_thing == true)
+		QMetaObject::invokeMethod(label, "setStyleSheet", Qt::QueuedConnection, Q_ARG(QString, "QLabel { background-color: rgb(170, 255, 127)}"));
+	else
+		QMetaObject::invokeMethod(label, "setStyleSheet", Qt::QueuedConnection, Q_ARG(QString, "QLabel { background-color: rgb(255, 60, 63)}"));
 }

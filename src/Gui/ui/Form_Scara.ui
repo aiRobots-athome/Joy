@@ -1898,7 +1898,7 @@
           <property name="spacing">
            <number>2</number>
           </property>
-          <item row="2" column="2">
+          <item row="2" column="3">
            <widget class="QSpinBox" name="VisionCar_spin_CarAngle">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -1923,7 +1923,7 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="1">
+          <item row="4" column="2">
            <widget class="QLabel" name="VisionCar_label_CamAngle">
             <property name="minimumSize">
              <size>
@@ -1956,7 +1956,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
+          <item row="2" column="2">
            <widget class="QLabel" name="VisionCar_label_CarAngle">
             <property name="minimumSize">
              <size>
@@ -1989,7 +1989,7 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="0">
+          <item row="4" column="1">
            <widget class="QLabel" name="VisionCar_label_title_CamAngle">
             <property name="minimumSize">
              <size>
@@ -2024,7 +2024,7 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="0">
+          <item row="3" column="1">
            <widget class="QLabel" name="VisionCar_label_title_Screw">
             <property name="minimumSize">
              <size>
@@ -2059,7 +2059,7 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="1">
+          <item row="3" column="2">
            <widget class="QLabel" name="VisionCar_label_Screw">
             <property name="minimumSize">
              <size>
@@ -2092,7 +2092,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
+          <item row="2" column="1">
            <widget class="QLabel" name="VisionCar_label_title_CarAngle">
             <property name="minimumSize">
              <size>
@@ -2129,7 +2129,7 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="2">
+          <item row="3" column="3">
            <widget class="QSpinBox" name="VisionCar_spin_Screw">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -2148,7 +2148,7 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="3">
+          <item row="3" column="4">
            <widget class="QSplitter" name="splitter_4">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -2224,7 +2224,7 @@
             </widget>
            </widget>
           </item>
-          <item row="4" column="3">
+          <item row="4" column="4">
            <widget class="QPushButton" name="VisionCar_btn_PosGo">
             <property name="minimumSize">
              <size>
@@ -2257,7 +2257,7 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="2">
+          <item row="4" column="3">
            <widget class="QSpinBox" name="VisionCar_spin_CamAngle">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -2276,7 +2276,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
+          <item row="1" column="2">
            <widget class="QLabel" name="VisionCar_label_title_Current">
             <property name="minimumSize">
              <size>
@@ -2313,7 +2313,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="2">
+          <item row="1" column="3">
            <widget class="QLabel" name="VisionCar_label_title_Desire">
             <property name="minimumSize">
              <size>
@@ -2350,7 +2350,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="3">
+          <item row="1" column="4">
            <widget class="QLabel" name="VisionCar_label_title_Command">
             <property name="minimumSize">
              <size>
@@ -2381,6 +2381,105 @@
             </property>
             <property name="text">
              <string>Command</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="VisionCar_label_ID_0">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>90</width>
+              <height>90</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <family>Bitstream Vera Sans</family>
+              <pointsize>12</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color :rgb(255, 60, 63)</string>
+            </property>
+            <property name="text">
+             <string>0</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="VisionCar_label_ID_1">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>90</width>
+              <height>90</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <family>Bitstream Vera Sans</family>
+              <pointsize>12</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color :rgb(255, 60, 63)</string>
+            </property>
+            <property name="text">
+             <string>1</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="VisionCar_label_ID_2">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>90</width>
+              <height>90</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <family>Bitstream Vera Sans</family>
+              <pointsize>12</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color :rgb(255, 60, 63)</string>
+            </property>
+            <property name="text">
+             <string>2</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>

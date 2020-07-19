@@ -33,7 +33,7 @@ private:
     const float CamInDegree=165.0;
     const float CamOutDegree=100.0;
 
-    int current_cam_io=UNDEFINED;
-    int current_screw_io=UNDEFINED;
+    int current_cam_io=VisionCar::UNDEFINED;
+    int current_screw_io=VisionCar::UNDEFINED;
     bool VisionCarMotionEnable;
 };

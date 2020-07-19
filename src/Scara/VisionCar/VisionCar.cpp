@@ -103,7 +103,6 @@ void VisionCar::GotoPosition(const int &oz, const int &h,  const int &oc)
  */
 void VisionCar::GoCarAngle(const int &goal_angle)
 {
-	printf("Set car %d\n",goal_angle);
 	SetMotor_Angle(FIRST_MOTOR_ID, goal_angle);
 }
 
@@ -114,7 +113,6 @@ void VisionCar::GoCarAngle(const int &goal_angle)
  */
 int VisionCar::GoScrewHeight(const int &dir)
 {
-	printf("Set screw %d\n",dir);
 	if (dir == VisionCar::DOWN){
 		SetMotor_Angle(FIRST_MOTOR_ID+1, 0);
 	}
@@ -133,7 +131,6 @@ int VisionCar::GoScrewHeight(const int &dir)
  */
 int VisionCar::GoCameraIO(const int &io)
 {
-	printf("Set cam %d\n",io);
 	if (io == VisionCar::INSIDE){
 		SetMotor_Angle(FIRST_MOTOR_ID+2, CamInDegree);
 	}

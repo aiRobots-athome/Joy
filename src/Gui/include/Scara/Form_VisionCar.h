@@ -8,7 +8,7 @@ class Form_VisionCar : public QObject
     Q_OBJECT
 
 public:
-    Form_VisionCar(Ui::Form_Scara *_ui, QObject *parent = nullptr) : QObject(parent), torque_threshold(50) { ui = _ui; };
+    Form_VisionCar(Ui::Form_Scara *_ui, QObject *parent = nullptr) : QObject(parent) { ui = _ui; };
     ~Form_VisionCar(){};
     void Display();
     void SetVisionCar(VisionCar *_VisionCar)
@@ -22,12 +22,9 @@ public slots:
     void on_VisionCar_Cam_CTL_clicked();
     void on_VisionCar_Screw_CTL_clicked();
 
-
 private:
     Ui::Form_Scara *ui;
-
-
-    const int torque_threshold;
+    void isOK(bool checked_thing, QLabel *label);
 
     VisionCar *CVisionCar;
 };

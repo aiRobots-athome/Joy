@@ -99,7 +99,7 @@ void VisionCar::GotoPosition(const int &oz, const int &h,  const int &oc)
 /**
  * Move vision car to goal angle
  * ##  No checking if already in position or not
- * @param goal_angle - float, target angle to go
+ * @param goal_angle - int, target angle to go
  */
 void VisionCar::GoCarAngle(const int &goal_angle)
 {
@@ -108,8 +108,8 @@ void VisionCar::GoCarAngle(const int &goal_angle)
 
 /**
  * Move camera to desired height
- * @param dir - move screw up or down
- * @retval - bool, current screw position
+ * @param dir - move screw up (1) or down (0)
+ * @retval - int, current screw position
  */
 int VisionCar::GoScrewHeight(const int &dir)
 {
@@ -126,7 +126,7 @@ int VisionCar::GoScrewHeight(const int &dir)
 /**
  * Move camera out or in
  * ##  No checking if already in position or not
- * @param io - bool, inside (true), outside (false)
+ * @param io - int, inside (0), outside (1)
  * @retval current_cam_io - int, current camera position
  */
 int VisionCar::GoCameraIO(const int &io)
@@ -143,7 +143,7 @@ int VisionCar::GoCameraIO(const int &io)
 
 /**
  * Get the Camera position data
- * @retval - bool, inside (true), outside (false)
+ * @retval - int, inside (true), outside (false)
  */
 int VisionCar::GetCamPos()
 {
@@ -152,7 +152,7 @@ int VisionCar::GetCamPos()
 
 /**
  * Get the Screw position data
- * @retval - bool, up (true), down (false)
+ * @retval - int, up (true), down (false)
  */
 int VisionCar::GetScrewPos()
 {
@@ -168,7 +168,7 @@ void VisionCar::Reset()
 	// camera in
 	GoCameraIO(VisionCar::INSIDE);
 	WaitMotorArrival(2);
-	// // Screw down
+	// Screw down
 	GoScrewHeight(VisionCar::DOWN);
 	WaitMotorArrival(1);
 	// Car to 0 degree

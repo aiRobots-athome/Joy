@@ -53,6 +53,8 @@ MotorPro::MotorPro(const unsigned char &MotorID, const string &MotorModel)
 		Min_Position_Limit = -303454;
 		Max_Velocity_Limit = 2920;
 		Min_Velocity_Limit = -2920;
+		Max_Extend_Limit = 2147483647;
+		Min_Extend_Limit = -2147483647;
 		Max_Accel_Limit = 10765;
 		Max_Torque_Limit = 4500;
 		Max_Extend_Limit = 2147483647;

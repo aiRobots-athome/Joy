@@ -23,14 +23,26 @@ Form_Scara::Form_Scara(QWidget *parent) : QDialog(parent),
 	QObject::connect(ui->XYPlatform_btn_Reset, SIGNAL(clicked()), form_xy_platform, SLOT(XYPlatformReset()));
 	form_xy_platform->moveToThread(thread_xy_platform);
 	thread_xy_platform->start();
+
+	form_visioncar = new Form_VisionCar(ui);
+	thread_visioncar= new QThread();
+	QObject::connect(ui->VisionCar_btn_PosGo, SIGNAL(clicked()), form_visioncar, SLOT(on_VisionCar_btn_PosGo_clicked()));
+	QObject::connect(ui->VisionCar_Cam_CTL, SIGNAL(clicked()), form_visioncar, SLOT(on_VisionCar_Cam_CTL_clicked()));
+	QObject::connect(ui->VisionCar_Screw_CTL, SIGNAL(clicked()), form_visioncar, SLOT(on_VisionCar_Screw_CTL_clicked()));
+	QObject::connect(ui->VisionCar_btn_Reset, SIGNAL(clicked()), form_visioncar, SLOT(on_VisionCar_btn_Reset_clicked()));
+	form_visioncar->moveToThread(thread_visioncar);
+	thread_visioncar->start();
 }
 
 Form_Scara::~Form_Scara()
 {
 	form_scara_arm->deleteLater();
 	form_xy_platform->deleteLater();
+	form_visioncar->deleteLater();
+
 	thread_scara_arm->deleteLater();
 	thread_xy_platform->deleteLater();
+	thread_visioncar->deleteLater();
 	delete ui;
 }
 
@@ -46,6 +58,7 @@ void Form_Scara::on_Scara_btn_Reconnect_clicked()
 	CScara->Reconnect();
 	form_scara_arm->SetScaraArm(CScara->CScaraArm);
 	form_xy_platform->SetXYPlatform(CScara->CXYPlatform);
+	form_visioncar->SetVisionCar(CScara->CVisionCar);
 
 	_is_deleted_thread_display = false;
 	thread_display = new std::thread(&Form_Scara::Display, this);
@@ -64,10 +77,18 @@ void Form_Scara::on_XYPlatform_btn_Start_clicked()
 {
 	CScara->CXYPlatform->Start();
 }
-
 void Form_Scara::on_XYPlatform_btn_Stop_clicked()
 {
 	CScara->CXYPlatform->Stop();
+}
+
+void Form_Scara::on_VisionCar_btn_Start_clicked()
+{
+	CScara->CVisionCar->Start();
+}
+void Form_Scara::on_VisionCar_btn_Stop_clicked()
+{
+	CScara->CVisionCar->Stop();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -78,6 +99,7 @@ void Form_Scara::showEvent(QShowEvent *event)
 	CScara = Scara::getScara();
 	form_scara_arm->SetScaraArm(CScara->CScaraArm);
 	form_xy_platform->SetXYPlatform(CScara->CXYPlatform);
+	form_visioncar->SetVisionCar(CScara->CVisionCar);
 	form_xy_platform->Initial();
 	
 	_is_deleted_thread_display = false;
@@ -104,7 +126,7 @@ void Form_Scara::Display()
 		else if (ui->Correction->currentIndex() == 1)
 			form_xy_platform->Display();
 		else if (ui->Correction->currentIndex() == 2)
-			;
+			form_visioncar->Display();
 		else
 			;
 		this_thread::sleep_for(chrono::milliseconds(50));

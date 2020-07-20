@@ -1,4 +1,5 @@
 #include "motor.h"
+
 motor::motor()
 {
 	Angle2MotorScale = 0.0f;

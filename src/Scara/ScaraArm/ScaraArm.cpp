@@ -76,6 +76,7 @@ void ScaraArm::Start() {
 	SetAllMotorsTorqueEnable(true);
 #else
 	/* Small */
+	SetMotor_Velocity(FIRST_HAND_ID, 50);
 	SetMotor_Accel(FIRST_HAND_ID, 50);
 	SetMotor_Velocity(FIRST_HAND_ID + 1, 10);
 	SetMotor_Velocity(FIRST_HAND_ID + 2, 20);

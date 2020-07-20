@@ -1,6 +1,13 @@
 #include "ScaraArm.h"
 
+#define USE_BIG
+
 ScaraArm *ScaraArm::inst_ = nullptr;
+
+/**
+ * Alternatively new scara arm object
+ * To ensure we only have one scara arm object alive at a time
+ */
 ScaraArm *ScaraArm::getScaraArm()
 {
 	if (inst_ == nullptr)
@@ -9,6 +16,7 @@ ScaraArm *ScaraArm::getScaraArm()
 }
 
 ScaraArm::ScaraArm()
+#ifdef USE_BIG
 	/* Big */
 	: MotorUnion({0, 1, 2, 3}, {"Pro200", "Pro200", "Pro20", "Pro20"}),
 	  J2_sign(-1),
@@ -17,43 +25,69 @@ ScaraArm::ScaraArm()
 	  Arm3_Length(238),
 	  Arm4_Length(242),
 	  FIRST_HAND_ID(0),
-	  Degree2Resolution(1003846 / 360)
+	  Degree2Resolution(1003846 / 360),
+	  USING_BIG(true),
+#else
+	/* Small */
+	: MotorUnion({0, 1, 2, 3}, {"Mx106", "Mx106", "Mx106", "Mx106"}),
+	  J2_sign(1),
+	  Arm1_Length(53), 
+	  Arm2_Length(92), 
+	  Arm3_Length(92),
+	  Arm4_Length(69), 
+	  FIRST_HAND_ID(0),
+	  Degree2Resolution(4096 / 360),
+	  USING_BIG(false),
+	
+#endif
 
-	// /* Small */
-	// : MotorUnion({0, 1, 2, 3}, {"Mx106", "Mx106", "Mx106", "Mx106"}),
-	//   J2_sign(1),
-	//   Arm1_Length(53), 
-	//   Arm2_Length(92), 
-	//   Arm3_Length(92),
-	//   Arm4_Length(69), 
-	//   FIRST_HAND_ID(0),
-	//   Degree2Resolution(4096 / 360)
+	/* Common variable */
+	  PRO200_RESOL(1003846),
+	  MX106_RESOL(4096),
+	  REV_2_SCREW(226)
 {
+#ifdef USE_BIG
+		Height_Resol = PRO200_RESOL;
+		printf("pro200!!");
+#else 
+		Height_Resol = MX106_RESOL;
+		printf("mx106!!");
+#endif
 	Start();
 	ReadHeight();
-	SetMotor_Operating_Mode(FIRST_HAND_ID, 1);	//Pro 200 change operating mode to velocity mode
+	SetMotor_Operating_Mode(FIRST_HAND_ID, 4);	//Pro 200 change operating mode to velocity mode
 	cout << "\t\tClass constructed: ScaraArm" << endl;
 }
 
-void ScaraArm::Start()
-{
+/**
+ * Enable all motors, and set up the speed
+ */
+void ScaraArm::Start() {
+#ifdef USE_BIG
 	/* Big */
-	SetMotor_Accel(FIRST_HAND_ID, 200);
-	SetMotor_Velocity(FIRST_HAND_ID + 1, 100);
-	SetMotor_Velocity(FIRST_HAND_ID + 2, 500);
-	SetMotor_Velocity(FIRST_HAND_ID + 3, 500);
+	SetMotor_Velocity(FIRST_HAND_ID, 500);
+	SetMotor_Accel(FIRST_HAND_ID, 250);
+	SetMotor_Velocity(FIRST_HAND_ID + 1, 50);
+	SetMotor_Accel(FIRST_HAND_ID + 1, 25);
+	SetMotor_Velocity(FIRST_HAND_ID + 2, 250);
+	SetMotor_Accel(FIRST_HAND_ID + 2, 200);
+	SetMotor_Velocity(FIRST_HAND_ID + 3, 1000);
+	SetMotor_Accel(FIRST_HAND_ID+3, 700);
 	SetAllMotorsTorqueEnable(true);
-
+#else
 	/* Small */
-	// SetMotor_Accel(FIRST_HAND_ID, 50);
-	// SetMotor_Velocity(FIRST_HAND_ID + 1, 10);
-	// SetMotor_Velocity(FIRST_HAND_ID + 2, 20);
-	// SetMotor_Velocity(FIRST_HAND_ID + 3, 20);
-	// SetAllMotorsTorqueEnable(true);
+	SetMotor_Accel(FIRST_HAND_ID, 50);
+	SetMotor_Velocity(FIRST_HAND_ID + 1, 10);
+	SetMotor_Velocity(FIRST_HAND_ID + 2, 20);
+	SetMotor_Velocity(FIRST_HAND_ID + 3, 20);
+	SetAllMotorsTorqueEnable(true);
+#endif
 }
 
-void ScaraArm::Stop()
-{
+/**
+ * Disable all motors
+ */
+void ScaraArm::Stop() {
 	SetAllMotorsTorqueEnable(false);
 }
 
@@ -65,13 +99,19 @@ cv::Mat ScaraArm::GetKinematics()
 	return Calculate_ArmForwardKinematics(fRadian1, fRadian2, fRadian3);
 }
 
-float &ScaraArm::GetPresentHeight()
-{
+float &ScaraArm::GetPresentHeight() {
 	return now_height;
 }
 
-cv::Mat ScaraArm::Calculate_ArmForwardKinematics(const float &J1, const float &J2, const float &J3)
-{
+/**
+ * Use forward kinematics to calculate end effector position
+ * 
+ * @param J1 - Joint 1 angle, in radius
+ * @param J2 - Joint 2 angle, in radius
+ * @param J3 - Joint 3 angle, in radius
+ * @retval - End effector orientation/transportation matrix
+ */
+cv::Mat ScaraArm::Calculate_ArmForwardKinematics(const float &J1, const float &J2, const float &J3) {
 	cv::Matx44f TransMatrix_01(1, 0, 0, Arm1_Length,
 							   0, 1, 0, 0,
 							   0, 0, 1, 0,
@@ -93,8 +133,13 @@ cv::Mat ScaraArm::Calculate_ArmForwardKinematics(const float &J1, const float &J
 	return Temp.clone();
 }
 
-float *ScaraArm::Arm_InverseKinematics(const cv::Mat &T)
-{
+/**
+ * Use inverse kinematics to calculate each angle of motors
+ * 
+ * @param T - normal, orientation, acceleration, and position of end effector
+ * @retval - The angle each motor has to achieve, 
+ */
+float *ScaraArm::Arm_InverseKinematics(const cv::Mat &T) {
 	ScaraArmMotionEnable = false;
 	float J1, J2, J3;
 	float delta_Pos = 150000 * 2 + 250950 * 4; // default value for calculate delta solution(very large scale)
@@ -258,14 +303,34 @@ float *ScaraArm::Arm_InverseKinematics(const cv::Mat &T)
 	return Solution;
 }
 
-void ScaraArm::GotoPosition(const int &ox, const int &oy, const int &oz, const int &x, const int &y, const float &height)
-{
+/**
+ * Goto position, height seperate version
+ * seperate height for more accurate movement
+ * 
+ * @param ox - orientation along x axis, in degree
+ * @param oy - orientation along y axis, in degree
+ * @param oz - orientation along z axis, in degree
+ * @param x - position on x asix, in mm
+ * @param y - position on y asix, in mm 
+ * @param height - height of scara arm, in mm
+ */
+void ScaraArm::GotoPosition(const int &ox, const int &oy, const int &oz, const int &x, const int &y, const float &height) {
 	GoScrewHeight(height);
 	GotoPosition(ox, oy, oz, x, y, 0);
 }
 
-void ScaraArm::GotoPosition(const int &ox, const int &oy, const int &oz, const int &x, const int &y, const int &z)
-{
+/**
+ * Goto position, including height
+ * But for scara, it,s impossible to change z, therefore, set z to zero
+ * 
+ * @param ox - orientation along x axis, in degree
+ * @param oy - orientation along y axis, in degree
+ * @param oz - orientation along z axis, in degree
+ * @param x - position on x asix, in mm
+ * @param y - position on y asix, in mm 
+ * @param height - height of scara arm, in mm
+ */
+void ScaraArm::GotoPosition(const int &ox, const int &oy, const int &oz, const int &x, const int &y, const int &z) {
 	cv::Mat T = TransRotate(0, 0, oz);
 	float data[16] = {T.at<float>(0, 0), T.at<float>(0, 1), T.at<float>(0, 2), float(x),
 					  T.at<float>(1, 0), T.at<float>(1, 1), T.at<float>(1, 2), float(y),
@@ -275,11 +340,18 @@ void ScaraArm::GotoPosition(const int &ox, const int &oy, const int &oz, const i
 	GotoPosition(tmp);
 }
 
+/**
+ * Goto position by calcualting inverse kinematics
+ * 
+ * @param T - End effector matrix, for inverse kinematics
+ */
 void ScaraArm::GotoPosition(const cv::Mat &T)
 {
 	float *tmp = Arm_InverseKinematics(T);
 	if (ScaraArmMotionEnable)
 	{
+		cout << "p_angle: " << GetMotor_PresentAngle(FIRST_HAND_ID) << endl;
+		this_thread::sleep_for(chrono::milliseconds(500));
 		SetMotor_Angle(FIRST_HAND_ID, GetMotor_PresentAngle(FIRST_HAND_ID));
 		SetMotor_Angle(FIRST_HAND_ID + 1, tmp[0]);
 		SetMotor_Angle(FIRST_HAND_ID + 2, tmp[1]);
@@ -294,8 +366,17 @@ void ScaraArm::GotoPosition(const cv::Mat &T)
 	}
 }
 
-cv::Mat ScaraArm::TransRotate(const float &ox, const float &oy, const float &oz)
-{
+/**
+ * Find (n, o, a)'s mapping on (x, y, z)
+ * 
+ * @param ox - End effector orientation along x axis
+ * @param oy - End effector orientation along y axis
+ * @param oz - End effector orientation along z axis
+ * @retval - 3*3 matrix, which is [ nx ox ax
+ * 									ny oy ay
+ * 									nz oz az ]
+ */
+cv::Mat ScaraArm::TransRotate(const float &ox, const float &oy, const float &oz) {
 	float x_angle = ox * Angle2Rad;
 	float y_angle = oy * Angle2Rad;
 	float z_angle = oz * Angle2Rad;
@@ -317,6 +398,9 @@ cv::Mat ScaraArm::TransRotate(const float &ox, const float &oy, const float &oz)
 	return tmpMat.clone();
 }
 
+/**
+ * Read height from file
+ */
 void ScaraArm::ReadHeight()
 {
 	// Read Height
@@ -334,6 +418,9 @@ void ScaraArm::ReadHeight()
 	}
 }
 
+/**
+ * Write height into height.txt
+ */
 void ScaraArm::WriteHeight(const float &height) const
 {
 	fstream heightfile;
@@ -347,64 +434,53 @@ void ScaraArm::WriteHeight(const float &height) const
 		heightfile.close();
 	}
 }
+
+/**
+ * Move arm to desire height
+ * 
+ * @param goal_height - Height we desired to achieve, in mm 
+ * @retval - true if height is legal, false if illegal
+ */
 // Need to check
-void ScaraArm::GoScrewHeight(const float &goal_height) //unit : mm
-{
+bool ScaraArm::GoScrewHeight(const float &goal_height) {
 	ReadHeight();
-	if (goal_height >= 400)
-	{
+	if (goal_height > 400) {
 		cout << "[ScaraArm] Too high" << endl;
+		return false;
 	}
-	else if (goal_height <= 20)
-	{
+	else if (goal_height < 20) {
 		cout << "[ScaraArm] Too low" << endl;
+		return false;
 	}
-
-	float delta_height = goal_height - now_height;
-	int now_position = GetMotor_PresentAngle(FIRST_HAND_ID) * Degree2Resolution;
-	// 224(Speed ​​increaser ratio 1:11.05, Pro200 1rev = Screw 224mm)  1003846(Pro200 resolution)
-	int delta_postion = round(delta_height / 224 * 1003846);
-	int need_position = now_position + delta_postion;
-	int delta_height_f = 0;
-	if (abs(delta_height) > 10)
-	{
-		if (delta_height > 0)
-			delta_height_f = delta_height - 5;
-		else if (delta_height < 0)
-			delta_height_f = delta_height + 5;
-		float motorspeed = 200 * 0.01 / 60 * 226;					//Velocity(set 400) * Scale(rev/min) / 60(to 1sec) * 226(mm) (Pro200 1rev = Screw 226)
-		float waittime = (abs(delta_height_f) / motorspeed) * 1000; //unit:milliseconds
-		if (delta_height < 0)
-		{
-			SetMotor_Velocity(FIRST_HAND_ID, -200);
-		}
-		else if (delta_height > 0)
-		{
-			SetMotor_Velocity(FIRST_HAND_ID, 200);
-		}
-		WaitAllMotorsArrival(waittime);
-		SetMotor_Velocity(FIRST_HAND_ID, 0);
-		this_thread::sleep_for(chrono::milliseconds(500));
+	else if (goal_height == now_height) {
+		cout << "[ScaraArm] Screw arrival !" << endl;
+		return true;
 	}
-	int present_position = GetMotor_PresentAngle(FIRST_HAND_ID) * Degree2Resolution;
-	int delta_resolution = need_position - present_position;
+	else {
+		float delta_height = goal_height - now_height;
+		float delta_angle = delta_height / REV_2_SCREW * 360;
 
-	for (int j = 0;; j++)
-	{
-		SetMotor_Velocity(FIRST_HAND_ID, copysign(20, delta_resolution));
-		this_thread::sleep_for(chrono::milliseconds(100));
-		int changing_position2 = GetMotor_PresentAngle(FIRST_HAND_ID) * Degree2Resolution;
+		// Motor angle is set to present angle + angle needed
+		SetMotor_Angle(FIRST_HAND_ID, delta_angle + GetMotor_PresentAngle(FIRST_HAND_ID));
 
-		if (abs(changing_position2 - need_position) < 2500)
-			break;
+		// cout << "delta_height: " << delta_height << ", delta_angle: " << delta_angle << endl;
+		// cout << "desire angle: " << GetMotor_Angle(FIRST_HAND_ID) << endl;
+
+		WaitMotorArrival(FIRST_HAND_ID);
+		this_thread::sleep_for(chrono::milliseconds(50));
+
+		WriteHeight(goal_height);
+		now_height = goal_height;
+
+		// cout << "sp_angle: " << GetMotor_PresentAngle(FIRST_HAND_ID) << endl;
+		cout << "[ScaraArm] Screw arrival !" << endl;
+		return true;
 	}
-	SetMotor_Velocity(FIRST_HAND_ID, 0);
-	WriteHeight(goal_height);
-	now_height = goal_height;
-	cout << "[ScaraArm] Screw arrival !" << endl;
 }
 
-void ScaraArm::Reset()
-{
+/**
+ * Move scara arm to initial point
+ */
+void ScaraArm::Reset(){
 	GotoPosition(0, 0, 62, 437, 459, 250.0f);
 }

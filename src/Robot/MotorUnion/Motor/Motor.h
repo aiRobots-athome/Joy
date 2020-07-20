@@ -40,6 +40,7 @@ public:
 		const uint16_t &addr_present_torque,
 		const uint16_t &addr_present_velocity,
 		const uint16_t &addr_present_position,
+		const uint16_t &addr_operating_mode,
 		const uint16_t &len_torque_enable,
 		const uint16_t &len_goal_velocity,
 		const uint16_t &len_profile_accel,
@@ -64,6 +65,7 @@ public:
 	bool WriteData();
 	void AddParam();
 	void ReadData();
+	void WriteMode(uint8_t mode);
 
 private:
 	void AddParamPresentAngle();
@@ -91,6 +93,7 @@ protected:
 	const uint16_t ADDR_PROFILE_ACCEL;
 	const uint16_t ADDR_PROFILE_VELOCITY;
 	const uint16_t ADDR_GOAL_POSITION;
+	const uint16_t ADDR_OPERATING_MODE;
 	const uint16_t ADDR_PRESENT_TORQUE; // equal to current address
 	const uint16_t ADDR_PRESENT_VELOCITY;
 	const uint16_t ADDR_PRESENT_POSITION;

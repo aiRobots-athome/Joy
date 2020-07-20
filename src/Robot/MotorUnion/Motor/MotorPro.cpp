@@ -22,7 +22,7 @@ MotorPro::MotorPro(const unsigned char &MotorID, const string &MotorModel)
 
 		Angle2MotorScale = (Max_Position_Limit - Min_Position_Limit) / 360.0;
 		MotorScale2Angle = 1.0 / Angle2MotorScale;
-		Rev_Resol_Extended = Max_Value_In_1_rev - Max_Value_In_1_rev;
+		Rev_Resol_Extended = Max_Value_In_1_rev - Min_Value_In_1_rev;
 		Scale2RPM = 0.01;
 		Scale2RPMM = 1;
 	}
@@ -42,7 +42,7 @@ MotorPro::MotorPro(const unsigned char &MotorID, const string &MotorModel)
 
 		Angle2MotorScale = (Max_Position_Limit - Min_Position_Limit) / 360.0;
 		MotorScale2Angle = 1.0 / Angle2MotorScale;
-		Rev_Resol_Extended = Max_Value_In_1_rev - Max_Value_In_1_rev;
+		Rev_Resol_Extended = Max_Value_In_1_rev - Min_Value_In_1_rev;
 		Scale2RPM = 0.01;
 		Scale2RPMM = 1;
 	}
@@ -62,7 +62,7 @@ MotorPro::MotorPro(const unsigned char &MotorID, const string &MotorModel)
 
 		Angle2MotorScale = (Max_Position_Limit - Min_Position_Limit) / 360.0;
 		MotorScale2Angle = 1.0 / Angle2MotorScale;
-		Rev_Resol_Extended = Max_Value_In_1_rev - Max_Value_In_1_rev;
+		Rev_Resol_Extended = Max_Value_In_1_rev - Min_Value_In_1_rev;
 		Scale2RPM = 0.01;
 		Scale2RPMM = 1;
 	}

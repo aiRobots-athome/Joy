@@ -65,8 +65,8 @@ ScaraArm::ScaraArm()
 void ScaraArm::Start() {
 #ifdef USE_BIG
 	/* Big */
-	SetMotor_Velocity(FIRST_HAND_ID, 400);
-	SetMotor_Accel(FIRST_HAND_ID, 200);
+	SetMotor_Velocity(FIRST_HAND_ID, 500);
+	SetMotor_Accel(FIRST_HAND_ID, 250);
 	SetMotor_Velocity(FIRST_HAND_ID + 1, 50);
 	SetMotor_Accel(FIRST_HAND_ID + 1, 25);
 	SetMotor_Velocity(FIRST_HAND_ID + 2, 250);

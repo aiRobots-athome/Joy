@@ -82,14 +82,15 @@ void motor::SetMotor_Angle(const float &angle)
 		Motor_Angle = (Motor_Scale - Motor_CenterScale) * MotorScale2Angle;
 		break;
 	case 4:	// Extended position control mode
-		Motor_Angle = angle;
-		Motor_Scale = angle * Rev_Resol_Extended / 360;
+		Motor_Scale = angle / 360 * Rev_Resol_Extended ;
 		if (Motor_Scale >= Max_Extend_Limit)
 			Motor_Scale = Max_Extend_Limit;
 		else if (Motor_Scale <= Min_Extend_Limit)
 			Motor_Scale = Min_Extend_Limit;
 		else
 			;
+		Motor_Angle = (Motor_Scale) / Rev_Resol_Extended * 360;
+		
 		break;
 	}
 	

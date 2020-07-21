@@ -90,7 +90,7 @@ void motor::SetMotor_Angle(const float &angle)
 			Motor_Scale = Min_Extend_Limit;
 		else
 			;
-		Motor_Angle = Motor_Scale / Rev_Resol_Extended * 360;
+		Motor_Angle = (float)Motor_Scale / Rev_Resol_Extended * 360;
 		
 		break;
 	}

@@ -483,5 +483,6 @@ bool ScaraArm::GoScrewHeight(const float &goal_height) {
  * Move scara arm to initial point
  */
 void ScaraArm::Reset(){
-	GotoPosition(0, 0, 62, 437, 459, 250.0f);
+	GotoPosition(0, 0, 62, 437, 459, 0);
+	GoScrewHeight(250.0f);
 }

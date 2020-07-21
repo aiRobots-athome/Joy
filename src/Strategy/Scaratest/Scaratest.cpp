@@ -113,12 +113,12 @@ void Scaratest::cassette(int id, int drawer, bool io) {
     float ready[6] = {};
     ready[2] = CASAY[id][2];
     ready_pos(casay, id, ready);    // Get ready pos
-    cScara->CScaraArm->go_straight(ready, CASAY[id], (CASAY[id][5] + drawer * DRAWER_H + (int)io * LIFT_DIS), DIV);    // Move from ready to cassette
+    cScara->CScaraArm->go_straight_tmp(ready, CASAY[id], (CASAY[id][5] + drawer * DRAWER_H + (int)io * LIFT_DIS), DIV);    // Move from ready to cassette
     io = !io;   // inverse io value for easier caculation
 
     // printf("io = %d\n", io);    // FOR DEBUG
-    cScara->CScaraArm->go_straight(CASAY[id], CASAY[id], (CASAY[id][5] + drawer * DRAWER_H + (int)io * LIFT_DIS), 1);  // Lift/place waffer
-    cScara->CScaraArm->go_straight(CASAY[id], ready, (CASAY[id][5] + drawer * DRAWER_H + (int)io * LIFT_DIS), DIV);    // Move back to ready position
+    cScara->CScaraArm->go_straight_tmp(CASAY[id], CASAY[id], (CASAY[id][5] + drawer * DRAWER_H + (int)io * LIFT_DIS), 1);  // Lift/place waffer
+    cScara->CScaraArm->go_straight_tmp(CASAY[id], ready, (CASAY[id][5] + drawer * DRAWER_H + (int)io * LIFT_DIS), DIV);    // Move back to ready position
 }
 
 /**
@@ -134,12 +134,12 @@ void Scaratest::station(int id, bool io) {
     float ready[6] = {};
     ready[2] = STATE[id][2];
     ready_pos(stations, id, ready);    // Get ready pos
-    cScara->CScaraArm->go_straight(ready, STATE[id], (STATE[id][5] + (int)io * (LIFT_DIS + STAT_SHIFT)), DIV);    // Move from ready to cassette
+    cScara->CScaraArm->go_straight_tmp(ready, STATE[id], (STATE[id][5] + (int)io * (LIFT_DIS + STAT_SHIFT)), DIV);    // Move from ready to cassette
 
     // io = !io;    // FOR DEBUG
     printf("io = %d\n", io);
-    cScara->CScaraArm->go_straight(STATE[id], STATE[id], (STATE[id][5] + (int)io * (LIFT_DIS + STAT_SHIFT)), 1);  // Lift/place waffer
-    cScara->CScaraArm->go_straight(STATE[id], ready, (STATE[id][5] + (int)io * (LIFT_DIS + STAT_SHIFT)), DIV);    // Move back to ready position
+    cScara->CScaraArm->go_straight_tmp(STATE[id], STATE[id], (STATE[id][5] + (int)io * (LIFT_DIS + STAT_SHIFT)), 1);  // Lift/place waffer
+    cScara->CScaraArm->go_straight_tmp(STATE[id], ready, (STATE[id][5] + (int)io * (LIFT_DIS + STAT_SHIFT)), DIV);    // Move back to ready position
 }
 
 /**

@@ -21,7 +21,7 @@ public:
     // Screw
     bool GoScrewHeight(const float &goal_height);
     void go_straight(float *head, float *tail, float h, float div);
-    void go_straight_tmp(float *goal, float speed);
+    void go_straight_tmp(float *hed, float *goal, float h, float speed);
 
     void Reset();
 
@@ -34,7 +34,7 @@ private:
     void GotoPosition(const int &ox, const int &oy, const int &oz, const int &x, const int &y, const int &z);
     void SetPosition(const cv::Mat &T);
     void SetPosition(const int &ox, const int &oy, const int &oz, const int &x, const int &y, const int &z);
-    cv::Matx13f ScaraArm::cal_vel(cv::Mat head, cv::Mat tail, float speed)
+    cv::Mat cal_vel(cv::Mat head, cv::Mat tail, float speed);
 
     // Screw
     void ReadHeight();

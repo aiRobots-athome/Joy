@@ -20,6 +20,8 @@ public:
 
     // Screw
     bool GoScrewHeight(const float &goal_height);
+    void go_straight(float *head, float *tail, float h, float div);
+    void go_straight_tmp(float *goal, float h, float div);
 
     void Reset();
 
@@ -30,6 +32,9 @@ private:
     float *Arm_InverseKinematics(const cv::Mat &T);
     void GotoPosition(const cv::Mat &T);
     void GotoPosition(const int &ox, const int &oy, const int &oz, const int &x, const int &y, const int &z);
+    void SetPosition(const cv::Mat &T);
+    void SetPosition(const int &ox, const int &oy, const int &oz, const int &x, const int &y, const int &z);
+    void cal_vel(Eigen::Vector3f head, Eigen::Vector3ffloat tail, float speed, Eigen::Vector3f ans);
 
     // Screw
     void ReadHeight();

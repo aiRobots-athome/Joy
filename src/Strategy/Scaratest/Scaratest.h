@@ -42,6 +42,6 @@ class Scaratest
         void ready_pos( bool, int, float*);
         void cassette(int, int, bool);
         void station(int, bool);
-        void go_straight(float*, float*, float, float);
+        // void go_straight(float*, float*, float, float);
 
 };

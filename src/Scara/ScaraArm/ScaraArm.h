@@ -21,7 +21,7 @@ public:
     // Screw
     bool GoScrewHeight(const float &goal_height);
     void go_straight(float *head, float *tail, float h, float div);
-    void go_straight_tmp(float *goal, float h, float div);
+    void go_straight_tmp(float *goal, float speed);
 
     void Reset();
 
@@ -34,7 +34,7 @@ private:
     void GotoPosition(const int &ox, const int &oy, const int &oz, const int &x, const int &y, const int &z);
     void SetPosition(const cv::Mat &T);
     void SetPosition(const int &ox, const int &oy, const int &oz, const int &x, const int &y, const int &z);
-    void cal_vel(Eigen::Vector3f head, Eigen::Vector3ffloat tail, float speed, Eigen::Vector3f ans);
+    Eigen::Vector3f cal_vel(Eigen::Vector3f head, Eigen::Vector3f tail, float speed);
 
     // Screw
     void ReadHeight();

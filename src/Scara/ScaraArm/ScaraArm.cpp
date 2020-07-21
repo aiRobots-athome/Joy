@@ -1,5 +1,4 @@
 #include "ScaraArm.h"
-#include <Eigen/Core>
 
 #define USE_BIG
 
@@ -519,11 +518,12 @@ bool ScaraArm::GoScrewHeight(const float &goal_height) {
  * @param speed - moving speed of the scara arm
  * @param ans - result to return
  */
-void ScaraArm::cal_vel(Eigen::Vector3f head, Eigen::Vector3ffloat tail, float speed, Eigen::Vector3f *ans) {
+Eigen::Vector3f ScaraArm::cal_vel(Eigen::Vector3f head, Eigen::Vector3f tail, float speed) {
 	Eigen::Vector3f dir = tail - head;
-	float dir_len = sqrt(dir(0)** + dir(1)** + dir(2)**);
-	float scale = speed / dir_len;
-	ans = dir * scale;
+	float dir_len = sqrt(dir(0)*dir(0) + dir(1)*dir(1) + dir(2)*dir(2));
+	const float scale = speed / dir_len;
+	dir *= scale;
+	return dir;
 }
 
 /**
@@ -569,7 +569,7 @@ void ScaraArm::go_straight_tmp(float *goal, float speed) {
 		Eigen::Vector3f effector_pos;
 		effector_pos << effector_mat.at<float>(0, 3), effector_mat.at<float>(1, 3), effector_mat.at<float>(2, 3);
 
-		cal_vel(effector_pos, tail_e, speed, v_dir);
+		v_dir = cal_vel(effector_pos, goal_e, speed);
 		
 		Eigen::Vector3f j_speed = J.inverse() * v_dir;
 

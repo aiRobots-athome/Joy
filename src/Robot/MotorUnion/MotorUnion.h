@@ -28,7 +28,6 @@ private:
 	/* Control All Motors */
 	const bool ConnectAllMotors(vector<unsigned char> &AllPortNumber);
 	const bool CheckAllMotorsConnected() const;
-	const bool CheckAllMotorsArrival() const;
 
 	/* Get All Motors Data */
 	const bool GetAllMotorsTorqueEnable() const;
@@ -37,6 +36,7 @@ protected:
 	/* Wait */
 	void WaitAllMotorsArrival() const;
 	void WaitMotorArrival(int i) const;
+	const bool CheckAllMotorsArrival() const;
 	void WaitAllMotorsArrival(const int &total_waiting_time_ms) const;
 
 	/* Set All Motors Data */

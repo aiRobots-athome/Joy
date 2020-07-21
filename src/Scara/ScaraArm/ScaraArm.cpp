@@ -1,5 +1,4 @@
 #include "ScaraArm.h"
-#include <Eigen/Core>
 
 #define USE_BIG
 

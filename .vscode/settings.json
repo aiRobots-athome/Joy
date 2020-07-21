@@ -70,7 +70,9 @@
         "map": "cpp",
         "memory_resource": "cpp",
         "optional": "cpp",
-        "set": "cpp"
+        "set": "cpp",
+        "core": "cpp",
+        "specialfunctions": "cpp"
     },
     "C_Cpp.dimInactiveRegions": false,
     "git.ignoreLimitWarning": true

@@ -519,11 +519,11 @@ bool ScaraArm::GoScrewHeight(const float &goal_height) {
  * @param speed - moving speed of the scara arm
  * @param ans - result to return
  */
-void ScaraArm::cal_vel(Eigen::Vector3f head, Eigen::Vector3ffloat tail, float speed, Eigen::Vector3f *ans) {
-	Eigen::Vector3f dir = tail - head;
-	float dir_len = sqrt(dir(0)** + dir(1)** + dir(2)**);
+cv::Matx13f ScaraArm::cal_vel(cv::Mat head, cv::Mat tail, float speed) {
+	cv::Matx13f dir = tail - head;
+	float dir_len = sqrt(dir(0, 0)*dir(0, 0) + dir(1, 0)*dir(1, 0) + dir(2, 0)*dir(2, 0));
 	float scale = speed / dir_len;
-	ans = dir * scale;
+	retrun cv::Scalar(scale, scale, scale) * dir;
 }
 
 /**
@@ -534,9 +534,8 @@ void ScaraArm::cal_vel(Eigen::Vector3f head, Eigen::Vector3ffloat tail, float sp
  * @param speed - speed of the end effector
  */
 void ScaraArm::go_straight_tmp(float *goal, float speed) {
-	Eigen::Vector3f goal_e, v_dir;
-	goal_e << goal[3], goal[4], 0;
-
+	cv::Mat goal_e(1,3,cv::DataType<float>::type) = cv::Scalar(goal[3], goal[4], 0);
+	
 	// Set motor to desire angle
 	SetPosition(0,0, goal[2], goal[3], goal[4], 0);
 
@@ -559,23 +558,21 @@ void ScaraArm::go_straight_tmp(float *goal, float speed) {
         float a3_s123 = Arm4_Length * sin(theta1 + theta2 + theta3);
         float a3_c123 = Arm4_Length * cos(theta1 + theta2 + theta3);
 
-		Eigen::Matrix3f J;
+		cv::Matx33f J;
 		J	<< 	-1*a1_s1-a2_s12-a3_s123, -1*a2_s12-a3_s123, -1*a3_s123,
              	 1*a1_c1+a2_c12+a3_c123,  1*a2_c12+a3_c123,  1*a3_c123,
                  1                     ,  1               , 		1;
         
 		// Calculate velocity direction, aka v_dir
 		cv::Mat effector_mat = Calculate_ArmForwardKinematics(theta1, theta2, theta3);
-		Eigen::Vector3f effector_pos;
-		effector_pos << effector_mat.at<float>(0, 3), effector_mat.at<float>(1, 3), effector_mat.at<float>(2, 3);
 
-		cal_vel(effector_pos, tail_e, speed, v_dir);
+		cv::Matx13f v_dir = cal_vel(effector_mat, goal_e, speed);
 		
-		Eigen::Vector3f j_speed = J.inverse() * v_dir;
+		cv::Matx13f j_speed = J.inv() * v_dir;
 
 		for (int i = 1; i < 4; i++) {
-			SetMotor_Velocity(FIRST_HAND_ID + i, abs(j_speed(i)));
-			SetMotor_Accel(FIRST_HAND_ID + i, abs(j_speed(i)));
+			SetMotor_Velocity(FIRST_HAND_ID + i, abs(j_speed(0,i)));
+			SetMotor_Accel(FIRST_HAND_ID + i, abs(j_speed(0,i)));
 		}
 
 	}	// End of while

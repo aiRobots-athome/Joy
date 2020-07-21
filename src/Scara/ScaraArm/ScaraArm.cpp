@@ -373,7 +373,6 @@ void ScaraArm::SetPosition(const cv::Mat &T) {
 		SetMotor_Angle(FIRST_HAND_ID + 2, tmp[1]);
 		SetMotor_Angle(FIRST_HAND_ID + 3, tmp[2]);
 		delete tmp;
-		cout << "[ScaraArm] Arm arrival !" << endl;
 	}
 }
 
@@ -497,9 +496,14 @@ bool ScaraArm::GoScrewHeight(const float &goal_height) {
 
 		// cout << "delta_height: " << delta_height << ", delta_angle: " << delta_angle << endl;
 		// cout << "desire angle: " << GetMotor_Angle(FIRST_HAND_ID) << endl;
+		this_thread::sleep_for(chrono::milliseconds(500));
+
+		SetMotor_Angle(FIRST_HAND_ID, 0);
 
 		WaitMotorArrival(FIRST_HAND_ID);
 		this_thread::sleep_for(chrono::milliseconds(50));
+
+		SetMotor_Velocity(FIRST_HAND_ID, 500);
 
 		WriteHeight(goal_height);
 		now_height = goal_height;
@@ -572,26 +576,25 @@ void ScaraArm::go_straight_tmp(float *hed, float *goal, float h, float speed) {
 						1*a1_c1+a2_c12+a3_c123,  1*a2_c12+a3_c123,  1*a3_c123,
 						1                     ,  1               , 		1};
 		cv::Mat J(3,3,cv::DataType<float>::type, J_f);
-		// cv::Matx33f J (-1*a1_s1-a2_s12-a3_s123, -1*a2_s12-a3_s123, -1*a3_s123,
-						// 1*a1_c1+a2_c12+a3_c123,  1*a2_c12+a3_c123,  1*a3_c123,
-						// 1                     ,  1               , 		1);
         
 		// Calculate velocity direction, aka v_dir
 		cv::Mat effector_mat = Calculate_ArmForwardKinematics(theta1, theta2, theta3);
 
 		cv::Mat v_dir = cal_vel(effector_mat.colRange(3,4).rowRange(0, 3), goal_e, speed);
 		cv::Mat J_inv = J.inv();
-		cout << v_dir << endl << endl;
-		cout << J_inv << endl << endl;
 		cv::Mat j_speed = J_inv * v_dir;
-
+		cout << j_speed << endl << endl;
 		for (int i = 1; i < 4; i++) {
 			SetMotor_Velocity(FIRST_HAND_ID + i, abs( j_speed.at<float>(0,i) ));
 			SetMotor_Accel(FIRST_HAND_ID + i, abs( j_speed.at<float>(0,i) ));
+			cout << i << "'s speed = " << j_speed.at<float>(0,i) ;
 		}
+		cout << endl;
 
 
 	}	// End of while
+
+	cout << "[ScaraArm] Arm arrival !" << endl;
 
 }
 

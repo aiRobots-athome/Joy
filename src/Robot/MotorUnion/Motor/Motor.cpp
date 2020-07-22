@@ -237,10 +237,10 @@ void Motor::WriteScale()
 void Motor::WriteVelocity()
 {
 	uint8_t param_goal_velocity[LEN_GOAL_VELOCITY];
-	param_goal_velocity[0] = DXL_LOBYTE(DXL_LOWORD(Motor_Velocity));
-	param_goal_velocity[1] = DXL_HIBYTE(DXL_LOWORD(Motor_Velocity));
-	param_goal_velocity[2] = DXL_LOBYTE(DXL_HIWORD(Motor_Velocity));
-	param_goal_velocity[3] = DXL_HIBYTE(DXL_HIWORD(Motor_Velocity));
+	param_goal_velocity[0] = DXL_LOBYTE(DXL_LOWORD((int)Motor_Velocity));
+	param_goal_velocity[1] = DXL_HIBYTE(DXL_LOWORD((int)Motor_Velocity));
+	param_goal_velocity[2] = DXL_LOBYTE(DXL_HIWORD((int)Motor_Velocity));
+	param_goal_velocity[3] = DXL_HIBYTE(DXL_HIWORD((int)Motor_Velocity));
 
 	switch (Motor_Operating_Mode)
 	{

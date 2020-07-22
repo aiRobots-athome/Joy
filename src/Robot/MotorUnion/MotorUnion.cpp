@@ -289,12 +289,12 @@ const float &MotorUnion::GetMotor_PresentTorque(const unsigned char &idx) const
 */
 void MotorUnion::SetMotor_Operating_Mode(const unsigned char &idx, char mode) const	//can't set mode online
 {	
-	Motor_Union.at(idx)->SetMotor_TorqueEnable(false);
-	this_thread::sleep_for(chrono::milliseconds(50));
+	// Motor_Union.at(idx)->SetMotor_TorqueEnable(false);
+	// this_thread::sleep_for(chrono::milliseconds(50));
 	Motor_Union.at(idx)->SetMotor_Operating_Mode(mode);
-	Motor_Union.at(idx)->WriteMode(mode);
-	this_thread::sleep_for(chrono::milliseconds(50));
-	Motor_Union.at(idx)->SetMotor_TorqueEnable(true);
+	// Motor_Union.at(idx)->WriteMode(mode);
+	// this_thread::sleep_for(chrono::milliseconds(50));
+	// Motor_Union.at(idx)->SetMotor_TorqueEnable(true);
 }
 
 void MotorUnion::SetMotor_CenterScale(const unsigned char &idx, const short &motor_center_scale) const

@@ -55,7 +55,7 @@ ScaraArm::ScaraArm()
 #endif
 	Start();
 	ReadHeight();
-	SetMotor_Operating_Mode(FIRST_HAND_ID, 4);	//Pro 200 change operating mode to velocity mode
+	SetMotor_Operating_Mode(FIRST_HAND_ID, 4);	//Pro 200 change operating mode to extended mode
 	cout << "\t\tClass constructed: ScaraArm" << endl;
 }
 
@@ -67,12 +67,12 @@ void ScaraArm::Start() {
 	/* Big */
 	SetMotor_Velocity(FIRST_HAND_ID, 500);
 	SetMotor_Accel(FIRST_HAND_ID, 250);
-	SetMotor_Velocity(FIRST_HAND_ID + 1, 50);
-	SetMotor_Accel(FIRST_HAND_ID + 1, 25);
-	SetMotor_Velocity(FIRST_HAND_ID + 2, 250);
-	SetMotor_Accel(FIRST_HAND_ID + 2, 200);
+	SetMotor_Velocity(FIRST_HAND_ID + 1, 500);
+	SetMotor_Accel(FIRST_HAND_ID + 1, 250);
+	SetMotor_Velocity(FIRST_HAND_ID + 2, 500);
+	SetMotor_Accel(FIRST_HAND_ID + 2, 250);
 	SetMotor_Velocity(FIRST_HAND_ID + 3, 1000);
-	SetMotor_Accel(FIRST_HAND_ID+3, 700);
+	SetMotor_Accel(FIRST_HAND_ID+3, 250);
 	SetAllMotorsTorqueEnable(true);
 #else
 	/* Small */
@@ -347,9 +347,14 @@ void ScaraArm::GotoPosition(const int &ox, const int &oy, const int &oz, const i
  * @param T - End effector matrix, for inverse kinematics
  */
 void ScaraArm::GotoPosition(const cv::Mat &T) {
+	float *tmp = Arm_InverseKinematics(T);
 	if (ScaraArmMotionEnable)
 	{
-		SetPosition(T);
+		this_thread::sleep_for(chrono::milliseconds(500));
+		SetMotor_Angle(FIRST_HAND_ID, GetMotor_PresentAngle(FIRST_HAND_ID));
+		SetMotor_Angle(FIRST_HAND_ID + 1, tmp[0]);
+		SetMotor_Angle(FIRST_HAND_ID + 2, tmp[1]);
+		SetMotor_Angle(FIRST_HAND_ID + 3, tmp[2]);
 		WaitAllMotorsArrival();
 		cout << "[ScaraArm] Arm arrival !" << endl;
 	}
@@ -357,6 +362,7 @@ void ScaraArm::GotoPosition(const cv::Mat &T) {
 	{
 		cout << "[ScaraArm] Arm fail to arrive !" << endl;
 	}
+	delete tmp;
 }
 
 /**
@@ -365,15 +371,15 @@ void ScaraArm::GotoPosition(const cv::Mat &T) {
  * @param T - End effector matrix, for inverse kinematics
  */
 void ScaraArm::SetPosition(const cv::Mat &T) {
+	float *tmp = Arm_InverseKinematics(T);
 	if (ScaraArmMotionEnable) {
-		float *tmp = Arm_InverseKinematics(T);
 		this_thread::sleep_for(chrono::milliseconds(500));
 		SetMotor_Angle(FIRST_HAND_ID, GetMotor_PresentAngle(FIRST_HAND_ID));
 		SetMotor_Angle(FIRST_HAND_ID + 1, tmp[0]);
 		SetMotor_Angle(FIRST_HAND_ID + 2, tmp[1]);
 		SetMotor_Angle(FIRST_HAND_ID + 3, tmp[2]);
-		delete tmp;
 	}
+	delete tmp;
 }
 
 /**
@@ -498,8 +504,6 @@ bool ScaraArm::GoScrewHeight(const float &goal_height) {
 		// cout << "desire angle: " << GetMotor_Angle(FIRST_HAND_ID) << endl;
 		this_thread::sleep_for(chrono::milliseconds(500));
 
-		SetMotor_Angle(FIRST_HAND_ID, 0);
-
 		WaitMotorArrival(FIRST_HAND_ID);
 		this_thread::sleep_for(chrono::milliseconds(50));
 
@@ -531,7 +535,10 @@ cv::Mat ScaraArm::cal_vel(cv::Mat head, cv::Mat tail, float speed) {
 
 	dir.at<float>(0,0) = dir.at<float>(0,0) * scale;
 	dir.at<float>(0,1) = dir.at<float>(0,1) * scale;
-	dir.at<float>(0,2) = dir.at<float>(0,2) * scale;
+	dir.at<float>(0,2) = 0;
+	cout << "head: " << head << endl<< endl;
+	cout << "tail: " << tail << endl<< endl;
+	cout << "dir: " << dir << endl<< endl;
 	return dir.clone();
 }
 
@@ -555,8 +562,10 @@ void ScaraArm::go_straight_tmp(float *hed, float *goal, float h, float speed) {
 
 	// Set all velocity to zero
 	for (int i = 1; i < 4; i++) {
+		SetMotor_Operating_Mode(FIRST_HAND_ID + i, 1);	//Change motor i operating mode to velocity mode	
 		SetMotor_Velocity(FIRST_HAND_ID + i, 0);
 		SetMotor_Accel(FIRST_HAND_ID + i, 0);
+		SetMotor_Operating_Mode(FIRST_HAND_ID + i, 3);	//Change motor i operating mode to position mode	
 	}
 
 	// Adjust motor speed until all motor has arrived
@@ -573,8 +582,8 @@ void ScaraArm::go_straight_tmp(float *hed, float *goal, float h, float speed) {
         float a3_c123 = Arm4_Length * cos(theta1 + theta2 + theta3);
 
 		float J_f[] = { -1*a1_s1-a2_s12-a3_s123, -1*a2_s12-a3_s123, -1*a3_s123,
-						1*a1_c1+a2_c12+a3_c123,  1*a2_c12+a3_c123,  1*a3_c123,
-						1                     ,  1               , 		1};
+						 1*a1_c1+a2_c12+a3_c123,  1*a2_c12+a3_c123,  1*a3_c123,
+						 1                     ,  1               , 		1};
 		cv::Mat J(3,3,cv::DataType<float>::type, J_f);
         
 		// Calculate velocity direction, aka v_dir
@@ -585,9 +594,16 @@ void ScaraArm::go_straight_tmp(float *hed, float *goal, float h, float speed) {
 		cv::Mat j_speed = J_inv * v_dir;
 		cout << j_speed << endl << endl;
 		for (int i = 1; i < 4; i++) {
-			int speed = j_speed.at<float>(0,i) * 60 / 6.28318;			// Angular velocity(rad/s) * 60(1sec to 1min) / 2pi = ? rev / min
+			SetMotor_Operating_Mode(FIRST_HAND_ID + i, 1);	//Change motor i operating mode to velocity mode	
+			this_thread::sleep_for(chrono::milliseconds(10));
+			int speed = j_speed.at<float>(i-1) * 60 / 6.28318 / 0.01 ;			// Angular velocity(rad/s) * 60(1sec to 1min) / 2pi / unit scale(0.01) = ? rev / min
+			speed |= (int)1;
 			SetMotor_Velocity(FIRST_HAND_ID + i, abs( speed ));
+			if (i == 1)
+				SetMotor_Velocity(FIRST_HAND_ID + i, abs( speed));
 			SetMotor_Accel(FIRST_HAND_ID + i, abs( speed ));
+			this_thread::sleep_for(chrono::milliseconds(10));
+			SetMotor_Operating_Mode(FIRST_HAND_ID + i, 3);	//Change motor i operating mode to angular mode	
 			cout << i << "'s speed = " << speed ;
 		}
 		cout << endl;
@@ -596,6 +612,11 @@ void ScaraArm::go_straight_tmp(float *hed, float *goal, float h, float speed) {
 
 	}	// End of while
 
+	// for (int i = 1; i < 4; i++) {
+	// 	SetMotor_Velocity(FIRST_HAND_ID + i, 0);
+	// 	SetMotor_Accel(FIRST_HAND_ID + i, 0);
+	// 	SetMotor_Operating_Mode(FIRST_HAND_ID + i, 3);	//Change motor i operating mode to angular mode	
+	// }
 	cout << "[ScaraArm] Arm arrival !" << endl;
 
 }

@@ -585,12 +585,14 @@ void ScaraArm::go_straight_tmp(float *hed, float *goal, float h, float speed) {
 		cv::Mat j_speed = J_inv * v_dir;
 		cout << j_speed << endl << endl;
 		for (int i = 1; i < 4; i++) {
-			SetMotor_Velocity(FIRST_HAND_ID + i, abs( j_speed.at<float>(0,i) ));
-			SetMotor_Accel(FIRST_HAND_ID + i, abs( j_speed.at<float>(0,i) ));
-			cout << i << "'s speed = " << j_speed.at<float>(0,i) ;
+			int speed = j_speed.at<float>(0,i) * 60 / 6.28318;			// Angular velocity(rad/s) * 60(1sec to 1min) / 2pi = ? rev / min
+			SetMotor_Velocity(FIRST_HAND_ID + i, abs( speed ));
+			SetMotor_Accel(FIRST_HAND_ID + i, abs( speed ));
+			cout << i << "'s speed = " << speed ;
 		}
 		cout << endl;
 
+		this_thread::sleep_for(chrono::milliseconds(500));
 
 	}	// End of while
 

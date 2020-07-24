@@ -67,12 +67,18 @@ void ScaraArm::Start() {
 	/* Big */
 	SetMotor_Velocity(FIRST_HAND_ID, 500);
 	SetMotor_Accel(FIRST_HAND_ID, 250);
+	// SetMotor_Velocity(FIRST_HAND_ID + 1, 500);
+	// SetMotor_Accel(FIRST_HAND_ID + 1, 250);
+	// SetMotor_Velocity(FIRST_HAND_ID + 2, 500);
+	// SetMotor_Accel(FIRST_HAND_ID + 2, 250);
+	// SetMotor_Velocity(FIRST_HAND_ID + 3, 1000);
+	// SetMotor_Accel(FIRST_HAND_ID+3, 250);
 	SetMotor_Velocity(FIRST_HAND_ID + 1, 500);
-	SetMotor_Accel(FIRST_HAND_ID + 1, 250);
+	SetMotor_Accel(FIRST_HAND_ID + 1, 0);
 	SetMotor_Velocity(FIRST_HAND_ID + 2, 500);
-	SetMotor_Accel(FIRST_HAND_ID + 2, 250);
+	SetMotor_Accel(FIRST_HAND_ID + 2, 0);
 	SetMotor_Velocity(FIRST_HAND_ID + 3, 1000);
-	SetMotor_Accel(FIRST_HAND_ID+3, 250);
+	SetMotor_Accel(FIRST_HAND_ID+3, 0);
 	SetAllMotorsTorqueEnable(true);
 #else
 	/* Small */
@@ -599,9 +605,10 @@ void ScaraArm::go_straight_tmp(float *hed, float *goal, float h, float speed) {
 			int speed = j_speed.at<float>(i-1) * 60 / 6.28318 / 0.01 ;			// Angular velocity(rad/s) * 60(1sec to 1min) / 2pi / unit scale(0.01) = ? rev / min
 			speed |= (int)1;
 			SetMotor_Velocity(FIRST_HAND_ID + i, abs( speed ));
-			if (i == 1)
-				SetMotor_Velocity(FIRST_HAND_ID + i, abs( speed));
-			SetMotor_Accel(FIRST_HAND_ID + i, abs( speed ));
+			// if (i == 1)
+			// 	SetMotor_Velocity(FIRST_HAND_ID + i, abs( speed));
+			// SetMotor_Accel(FIRST_HAND_ID + i, abs( speed ));
+			SetMotor_Accel(FIRST_HAND_ID + i, abs( 0 ));
 			this_thread::sleep_for(chrono::milliseconds(10));
 			SetMotor_Operating_Mode(FIRST_HAND_ID + i, 3);	//Change motor i operating mode to angular mode	
 			cout << i << "'s speed = " << speed ;

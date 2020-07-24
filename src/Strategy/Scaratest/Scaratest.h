@@ -24,7 +24,7 @@ class Scaratest
         // Station position, { x orientation, y orit, z orit, x, y, height of the station}
         // Height of the station: The height end effector is able to move in without bumping waffers,
         // and able to lift the waffer placing on station by moving up LIFT_DIS
-        float STATE[6][6] = {   {0, 0, 33, 921, 432, 240},
+        float STATE[6][6] = {   {0, 0, 33, 939, 392, 240},
                                 {0, 0, 32, 930, 410, 111},
                                 {0, 0, 0, 1037, -9, 238},
                                 {0, 0, 0, 1037, -10, 110},
@@ -35,7 +35,7 @@ class Scaratest
         float STAT_SHIFT = 10;
         float LIFT_DIS = 3;
         float SAFE_DIS = 300;
-        float DIV = 30;
+        float DIV = 10;
     
     private:
         Scara *cScara;

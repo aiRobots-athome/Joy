@@ -95,7 +95,6 @@ void Scaratest::ready_pos(bool type, int id, float* ans) {
     else {             // For station
         ans[3] = STATE[id][3] - SAFE_DIS * cos(STATE[id][2]/180*3.14159);
         ans[4] = STATE[id][4] - SAFE_DIS * sin(STATE[id][2]/180*3.14159);
-        printf("cos: %f, sin: %f", STATE[id][2], STATE[id][2]);
     }
 }
 
@@ -142,8 +141,8 @@ void Scaratest::station(int id, bool io) {
     cScara->CScaraArm->GotoPosition(0,0, ready[2], ready[3], ready[4], (ready[5] + (int)io * (LIFT_DIS + STAT_SHIFT)));
     cScara->CScaraArm->go_straight(STATE[id], (STATE[id][5] + (int)io * (LIFT_DIS + STAT_SHIFT)), DIV);    // Move from ready to cassette
 
-    // io = !io;    // FOR DEBUG
-    printf("io = %d\n", io);
+    io = !io;    
+    // printf("io = %d\n", io);    // FOR DEBUG
     cScara->CScaraArm->go_straight(STATE[id], (STATE[id][5] + (int)io * (LIFT_DIS + STAT_SHIFT)), DIV);  // Lift/place waffer
     cScara->CScaraArm->go_straight(ready, (STATE[id][5] + (int)io * (LIFT_DIS + STAT_SHIFT)), DIV);    // Move back to ready position
 }

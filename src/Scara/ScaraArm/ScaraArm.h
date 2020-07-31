@@ -58,6 +58,7 @@ private:
     const int PRO200_RESOL;         // Resolution of Pro200
     const int MX106_RESOL;          // Resolution of Mx106
     const int REV_2_SCREW;          // 1 rev equal to how many screw
+    int Acc_Factor;                 // Accelleration fector for move straight
 
     float now_height;
     bool ScaraArmMotionEnable;

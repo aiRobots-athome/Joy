@@ -44,7 +44,8 @@ ScaraArm::ScaraArm()
 	/* Common variable */
 	  PRO200_RESOL(1003846),
 	  MX106_RESOL(4096),
-	  REV_2_SCREW(226)
+	  REV_2_SCREW(226),
+	  Acc_Factor(2)
 {
 #ifdef USE_BIG
 		Height_Resol = PRO200_RESOL;
@@ -73,6 +74,7 @@ void ScaraArm::Start() {
 	SetMotor_Accel(FIRST_HAND_ID + 2, 250);
 	SetMotor_Velocity(FIRST_HAND_ID + 3, 1000);
 	SetMotor_Accel(FIRST_HAND_ID+3, 250);
+	SetAllMotorsTorqueEnable(true);
 	
 #else
 	/* Small */
@@ -539,16 +541,13 @@ float vec_length(cv::Mat vec) {
  */
 cv::Mat ScaraArm::cal_vel(cv::Mat head, cv::Mat tail, float speed) {
 	cv::Mat dir = tail - head;
-	// cv::Mat dir = (1,3,cv::DataType<float>::type, tail - head);
 	float dir_len = vec_length(dir);
 	float scale = speed / dir_len;
 
 	dir.at<float>(0,0) = dir.at<float>(0,0) * scale;
 	dir.at<float>(0,1) = dir.at<float>(0,1) * scale;
 	dir.at<float>(0,2) = 0;
-	cout << "head: " << head << endl<< endl;
-	cout << "tail: " << tail << endl<< endl;
-	cout << "dir: " << dir << endl<< endl;
+	
 	return dir.clone();
 }
 
@@ -611,9 +610,9 @@ void ScaraArm::go_straight(float *goal, float h, float speed_max) {
 		float end_dis = vec_length( goal_m - effector_pos );
 
 		// Find minimum speed
-		speed_p = start_dis;
+		speed_p = start_dis * Acc_Factor;
 		if (end_dis < start_dis)
-			speed_p = end_dis;
+			speed_p = end_dis * Acc_Factor;
 		if (speed_max < speed_p)
 			speed_p = speed_max;
 
@@ -636,7 +635,7 @@ void ScaraArm::go_straight(float *goal, float h, float speed_max) {
 		// Use Jacobian to map back to joint space
 		cv::Mat J_inv = J.inv();
 		cv::Mat j_speed = J_inv * v_dir;
-		cout << j_speed << endl << endl;
+		// cout << j_speed << endl << endl;
 
 		for (int i = 1; i < 4; i++) {
 			int motor_speed = round( j_speed.at<float>(i-1) * 60 / 6.28318 / 0.01 );			// Angular velocity(rad/s) * 60(1sec to 1min) / 2pi / unit scale(0.01) = ? rev / min
@@ -648,11 +647,13 @@ void ScaraArm::go_straight(float *goal, float h, float speed_max) {
 			SetMotor_Accel(FIRST_HAND_ID + i, 0);
 
 			this_thread::sleep_for(chrono::milliseconds(10));
-			cout << i << "'s speed = " << motor_speed ;
+			// cout << i << "'s speed = " << motor_speed ;
 		}
-		cout << endl;
+		// cout << endl;
 
-		this_thread::sleep_for(chrono::milliseconds(500));
+		this_thread::sleep_for(chrono::milliseconds(200));	// sleep time is decided by try and error, 
+															// Too short, the motor is unable to set velocity
+															// Too long, the adjustment is not real-time
 
 	}	// End of while
 

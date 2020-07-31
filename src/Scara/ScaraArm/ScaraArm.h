@@ -20,8 +20,8 @@ public:
 
     // Screw
     bool GoScrewHeight(const float &goal_height);
-    void go_straight(float *head, float *tail, float h, float div);
-    void go_straight_tmp(float *hed, float *goal, float h, float speed);
+    void go_straight(float *goal, float h, float speed_max);
+    void go_straight_tmp(float *head, float *tail, float h, float div);
 
     void Reset();
 

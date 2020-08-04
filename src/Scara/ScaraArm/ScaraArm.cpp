@@ -575,9 +575,6 @@ void ScaraArm::go_straight(float *goal, float h, float speed_max) {
 	goal_m.at<float>(0,0) = goal[3];
 	goal_m.at<float>(1,0) = goal[4];
 	
-	// Set motor desire angle
-	SetPosition(0,0, goal[2], goal[3], goal[4], 0);
-
 	// Set all velocity to zero
 	for (int i = 1; i < 4; i++) {
 		SetMotor_Operating_Mode(FIRST_HAND_ID + i, 1);	//Change motor i operating mode to velocity mode	
@@ -585,6 +582,9 @@ void ScaraArm::go_straight(float *goal, float h, float speed_max) {
 		SetMotor_Accel(FIRST_HAND_ID + i, 0);
 		SetMotor_Operating_Mode(FIRST_HAND_ID + i, 3);	//Change motor i operating mode to position mode	
 	}
+
+	// Set motor desire angle
+	SetPosition(0,0, goal[2], goal[3], goal[4], 0);
 
 	// Speed we want our end effector to move through time
 	float speed_p = 0;
@@ -644,12 +644,10 @@ void ScaraArm::go_straight(float *goal, float h, float speed_max) {
 
 			// Set motor i to desire speed
 			SetMotor_Velocity(FIRST_HAND_ID + i, abs( motor_speed ));
-			SetMotor_Accel(FIRST_HAND_ID + i, 0);
-
-			this_thread::sleep_for(chrono::milliseconds(10));
+			// SetMotor_Accel(FIRST_HAND_ID + i, 0);
 			// cout << i << "'s speed = " << motor_speed ;
 		}
-		// cout << endl;
+		cout << "test" << endl;
 
 		this_thread::sleep_for(chrono::milliseconds(200));	// sleep time is decided by try and error, 
 															// Too short, the motor is unable to set velocity

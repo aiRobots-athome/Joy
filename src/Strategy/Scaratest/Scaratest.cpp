@@ -7,6 +7,8 @@ Scaratest::Scaratest() {
 void Scaratest::test1() {
     float tmp[] = {0.f, 0.f, 62.f, 593.f, 737.f, 213.f};
     set_pos(casay, 0, tmp);
+    float tmp1[] = {0.f, 0.f, 27.f, 947.f, 376.f, 238.f};
+    set_pos(stations, 0, tmp1);
     // Get waffer from cassette A
     // Cassette A id = 0
     // Cassette B id = 1

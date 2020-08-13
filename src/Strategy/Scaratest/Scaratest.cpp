@@ -5,10 +5,22 @@ Scaratest::Scaratest() {
 }
 
 void Scaratest::test1() {
-    float tmp[] = {0.f, 0.f, 62.f, 593.f, 737.f, 213.f};
-    set_pos(casay, 0, tmp);
-    float tmp1[] = {0.f, 0.f, 27.f, 947.f, 376.f, 238.f};
-    set_pos(stations, 0, tmp1);
+    float casay1[] = {0.f, 0.f, 49.f, 652.f, 719.f, 214.f};
+    set_pos(casay, 0, casay1);
+    float stat1[] = {0.f, 0.f, 27.f, 947.f, 376.f, 238.f};
+    set_pos(stations, 0, stat1);
+    float stat2[] = {0.f, 0.f, 25.f, 939.f, 401.f, 90.f};
+    set_pos(stations, 1, stat2);
+    float stat3[] = {0.f, 0.f, -4.f, 1014.f, -40.f, 235.f};
+    set_pos(stations, 2, stat3);
+    float stat4[] = {0.f, 0.f, -1.f, 1036.f, -50.f, 85.f};
+    set_pos(stations, 3, stat4);
+    float stat5[] = {0.f, 0.f, -27.f, 891.f, -469.f, 235.f};
+    set_pos(stations, 4, stat5);
+    float stat6[] = {0.f, 0.f, -28.f, 898.f, -467.f, 87.f};
+    set_pos(stations, 5, stat6);
+    float casay2[] = {0.f, 0.f, -49.f, 561.f, -764.f, 206.f};
+    set_pos(casay, 1, casay2);
     // Get waffer from cassette A
     // Cassette A id = 0
     // Cassette B id = 1

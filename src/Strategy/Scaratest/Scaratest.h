@@ -32,7 +32,7 @@ class Scaratest
                                 {0, 0, -35, 900, -433, 106} };
 
         float DRAWER_H = 6.3;
-        float STAT_SHIFT = 10;
+        float STAT_SHIFT = 15;
         float LIFT_DIS = 3;
         float SAFE_DIS = 300;
         float DIV = 50;

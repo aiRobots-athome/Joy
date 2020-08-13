@@ -647,7 +647,7 @@ void ScaraArm::go_straight(float *goal, float h, float speed_max) {
 			// SetMotor_Accel(FIRST_HAND_ID + i, 0);
 			// cout << i << "'s speed = " << motor_speed ;
 		}
-		cout << "test" << endl;
+		//cout << "test" << endl;
 
 		this_thread::sleep_for(chrono::milliseconds(200));	// sleep time is decided by try and error, 
 															// Too short, the motor is unable to set velocity

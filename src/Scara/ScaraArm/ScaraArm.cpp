@@ -657,9 +657,9 @@ void ScaraArm::go_straight(float *goal, float h, float speed_max) {
 
 	// Turn back to original speed and acceleration
 	SetMotor_Velocity(FIRST_HAND_ID + 1, 500);
-	SetMotor_Accel(FIRST_HAND_ID + 1, 250);
+	SetMotor_Accel(FIRST_HAND_ID + 1, 125);
 	SetMotor_Velocity(FIRST_HAND_ID + 2, 500);
-	SetMotor_Accel(FIRST_HAND_ID + 2, 250);
+	SetMotor_Accel(FIRST_HAND_ID + 2, 125);
 	SetMotor_Velocity(FIRST_HAND_ID + 3, 1000);
 	SetMotor_Accel(FIRST_HAND_ID+3, 250);
 	

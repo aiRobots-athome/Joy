@@ -5,7 +5,7 @@ Scaratest::Scaratest() {
 }
 
 void Scaratest::test1() {
-    float casay1[] = {0.f, 0.f, 49.f, 652.f, 719.f, 214.f};
+    float casay1[] = {0.f, 0.f, 58.f, 638.f, 704.f, 212.f};
     set_pos(casay, 0, casay1);
     float stat1[] = {0.f, 0.f, 27.f, 947.f, 376.f, 238.f};
     set_pos(stations, 0, stat1);
@@ -19,39 +19,40 @@ void Scaratest::test1() {
     set_pos(stations, 4, stat5);
     float stat6[] = {0.f, 0.f, -28.f, 898.f, -467.f, 87.f};
     set_pos(stations, 5, stat6);
-    float casay2[] = {0.f, 0.f, -49.f, 561.f, -764.f, 206.f};
+    float casay2[] = {0.f, 0.f, -69.f, 526.f, -749.f, 206.f};
     set_pos(casay, 1, casay2);
     // Get waffer from cassette A
     // Cassette A id = 0
     // Cassette B id = 1
     go_target(casay, 0, 1, 0);
+    go_target(casay, 0, 1, 1);
 
-    // At station 0, id = 0
-    go_target(stations, 0, 0, 1);   // Put in waffer
-    go_target(stations, 0, 0, 0);   // Get waffer out
+    // // At station 0, id = 0
+    // go_target(stations, 0, 0, 1);   // Put in waffer
+    // go_target(stations, 0, 0, 0);   // Get waffer out
 
-    // At station 1, id = 1
-    go_target(stations, 1, 0, 1);   // Put in waffer
-    go_target(stations, 1, 0, 0);   // Get waffer out
+    // // At station 1, id = 1
+    // go_target(stations, 1, 0, 1);   // Put in waffer
+    // go_target(stations, 1, 0, 0);   // Get waffer out
 
-    // At station 2, id = 2
-    go_target(stations, 2, 0, 1);   // Put in waffer
-    go_target(stations, 2, 0, 0);   // Get waffer out
+    // // At station 2, id = 2
+    // go_target(stations, 2, 0, 1);   // Put in waffer
+    // go_target(stations, 2, 0, 0);   // Get waffer out
 
-    // At station 3, id = 3
-    go_target(stations, 3, 0, 1);   // Put in waffer
-    go_target(stations, 3, 0, 0);   // Get waffer out
+    // // At station 3, id = 3
+    // go_target(stations, 3, 0, 1);   // Put in waffer
+    // go_target(stations, 3, 0, 0);   // Get waffer out
 
-    // At station 4, id = 4
-    go_target(stations, 4, 0, 1);   // Put in waffer
-    go_target(stations, 4, 0, 0);   // Get waffer out
+    // // At station 4, id = 4
+    // go_target(stations, 4, 0, 1);   // Put in waffer
+    // go_target(stations, 4, 0, 0);   // Get waffer out
 
-    // At station 5, id = 5
-    go_target(stations, 5, 0, 1);   // Put in waffer
-    go_target(stations, 5, 0, 0);   // Get waffer out
+    // // At station 5, id = 5
+    // go_target(stations, 5, 0, 1);   // Put in waffer
+    // go_target(stations, 5, 0, 0);   // Get waffer out
 
     // Put waffer in cassette B
-    go_target(casay, 1, 10, 1);
+    // go_target(casay, 1, 10, 1);
 }
 
 /**

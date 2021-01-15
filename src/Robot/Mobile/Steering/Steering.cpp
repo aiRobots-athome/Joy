@@ -16,10 +16,11 @@ Steering::Steering()
       steering_RB(3),
       steering_gear_ratio(1.75)
 {
-    SetMotor_CenterScale(steering_LF, 0); //Motor center scale shift
-    SetMotor_CenterScale(steering_RF, 0);
-    SetMotor_CenterScale(steering_LB, 0);
-    SetMotor_CenterScale(steering_RB, 0);
+    SetMotor_CenterScale(steering_LF, 284); //Motor center scale shift
+    SetMotor_CenterScale(steering_RF, 5505);
+    SetMotor_CenterScale(steering_LB, 5459);
+    SetMotor_CenterScale(steering_RB, 602);
+    SetAllMotorsAccel(2000);
     Start();
 }
 
@@ -103,6 +104,6 @@ void Steering::Wait()
 
 void Steering::Start()
 {
-    SetAllMotorsVelocity(500);
+    SetAllMotorsVelocity(2000);
     SetAllMotorsTorqueEnable(true);
 }

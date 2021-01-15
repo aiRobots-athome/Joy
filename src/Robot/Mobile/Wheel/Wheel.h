@@ -37,6 +37,11 @@ public:
 
 	void Stop();
 
+	void MoveByConstant(const int &velocity);
+	void SelfTurnByConstant(const int &velocity);
+	void LockOn(void);
+	void Wait(void);
+
 private:
 	Wheel();
 	static Wheel *inst_;

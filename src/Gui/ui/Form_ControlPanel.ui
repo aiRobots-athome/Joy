@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>209</width>
-    <height>353</height>
+    <height>361</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -76,6 +76,33 @@
      </widget>
     </item>
     <item>
+     <widget class="QPushButton" name="pB_Form_May">
+      <property name="minimumSize">
+       <size>
+        <width>150</width>
+        <height>60</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>微軟正黑體</family>
+        <pointsize>16</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="mouseTracking">
+       <bool>true</bool>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(239, 245, 213);</string>
+      </property>
+      <property name="text">
+       <string>May</string>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="QPushButton" name="pB_Form_Strategy">
       <property name="minimumSize">
        <size>
@@ -102,33 +129,6 @@
       </property>
      </widget>
     </item>
-    <item>
-     <widget class="QPushButton" name="pB_Form_Network">
-      <property name="minimumSize">
-       <size>
-        <width>150</width>
-        <height>60</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <family>微軟正黑體</family>
-        <pointsize>16</pointsize>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="mouseTracking">
-       <bool>true</bool>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">background-color: rgb(239, 245, 213);</string>
-      </property>
-      <property name="text">
-       <string>Network</string>
-      </property>
-     </widget>
-    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -137,7 +137,7 @@
      <x>0</x>
      <y>0</y>
      <width>209</width>
-     <height>20</height>
+     <height>28</height>
     </rect>
    </property>
   </widget>

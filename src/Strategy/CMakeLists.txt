@@ -8,4 +8,4 @@ set(ALL_STRATEGES
 )
 
 add_library(Strategy SHARED Strategy.cpp ${ALL_STRATEGES}) 
-target_link_libraries(Strategy Robot Scara)
+target_link_libraries(Strategy Robot Scara May)

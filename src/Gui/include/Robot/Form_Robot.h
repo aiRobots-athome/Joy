@@ -4,6 +4,7 @@
 #include "Form_Head.h"
 #include "Form_Arm.h"
 #include "Form_Mobile.h"
+#include "Form_ForceSensor.h"
 #include "Robot/Robot.h"
 #include "XBoxJoystick/XBoxJoystick.h"
 #include <QtWidgets/QDialog>
@@ -36,9 +37,11 @@ private:
 	Form_Head *form_head;
 	Form_Arm *form_arm;
 	Form_Mobile *form_mobile;
+	Form_ForceSensor *form_forcesensor;
 	QThread *thread_head;
 	QThread *thread_arm;
 	QThread *thread_mobile;
+	QThread *thread_forcesensor;
 
 	// Display
 	std::thread *thread_display;
@@ -49,4 +52,4 @@ private:
 	Robot *CRobot;
 	XBoxJoystick *CXBoxJoystick;
 };
-#endif // FORM_BODY_H
+#endif

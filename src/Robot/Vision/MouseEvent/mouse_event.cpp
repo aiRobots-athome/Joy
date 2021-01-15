@@ -18,18 +18,18 @@ void MouseEvent::OnMouse(int event, int x, int y, int, void* userdata)
 }
 void MouseEvent::OnMouse(int event, int x, int y)
 {
-    if(event==CV_EVENT_MOUSEMOVE)
+    if(event==cv::EVENT_MOUSEMOVE)
     {
         cout<<"mouse"<<endl;
         this->mouse_point.x = x;
         this->mouse_point.y = y;
     }
-    if(event==CV_EVENT_LBUTTONDOWN)
+    if(event==cv::EVENT_LBUTTONDOWN)
     {
         this->rect_left_top.x = x;
         this->rect_left_top.y = y;
     }
-    if(event==CV_EVENT_LBUTTONUP)
+    if(event==cv::EVENT_LBUTTONUP)
     {
         this->rect_right_bot.x = x;
         this->rect_right_bot.y = y;

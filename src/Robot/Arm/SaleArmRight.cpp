@@ -9,1420 +9,281 @@ SaleArmRight *SaleArmRight::getSaleArmRight()
 }
 
 SaleArmRight::SaleArmRight()
-	: Arm({23, 24, 25, 26, 27, 28, 29, 30},
-		  {"Pro200", "Pro200", "Pro200", "Pro20", "Pro20", "Mx106", "Pro20", "Mx106"})
+	: Arm({23, 24, 25, 26, 27, 28, 29}, {"Pro200", "Pro200", "Pro200", "Pro20", "Pro100", "Pro20", "Pro20"})
 {
-	// Arm Member
-	alength_6 = 170;
-	Motor_Distance_3 = -250;
-	Motor_Distance_5 = 250;
+    SHOULDER_LINK_LENGTH_ = 120;
+    UPPER_LINK_LENGTH_ = -258;
+    LOWER_LINK_LENGTH_ = 260;
+    END_EFFECTOR_LENGTH_ = 190;
 
-	F_SholderCenter = 1985;
-	B_SholderCenter = 2027;
-
-	dis_CenterZ_To_ShoulderY_Ori = 170;
-
+    CalculateJacobianMatrix();
 	cout << "\tClass constructed: SaleArmRight" << endl;
 }
 
-cv::Mat *SaleArmRight::GetKinematics(void)
+/**
+ * This function is in charge of only the calculation process of jacobian matrix of 6 motors.
+ * Variable jacobian_matrix_ is the member variable of class Arm, which will be used to solve the solution of angular velocity of 6 motors.
+ * 
+ * Because there will be infinite solutions under conditions of 7 dof, here we fix the 0th motor and build the jacobian for next 6 motors.
+ * Thus the positions and orientations will be based on 1st coordination.
+ *  
+ * @retval void
+ * 
+ * @result Arm::Eigen::Matrix<float, 3, 1> current_orientation_
+ * @result Arm::Eigen::Matrix<float, 3, 1> current_position_
+ * @result Arm::Eigen::Matrix<float, 6, 6> jacobian_matrix_
+ */
+void SaleArmRight::CalculateJacobianMatrix()
 {
-	float fRadian1 = GetMotor_PresentAngle(FIRST_HAND_ID) * Angle2Rad;
-	float fRadian2 = GetMotor_PresentAngle(FIRST_HAND_ID + 1) * Angle2Rad;
-	float fRadian3 = GetMotor_PresentAngle(FIRST_HAND_ID + 2) * Angle2Rad;
-	float fRadian4 = GetMotor_PresentAngle(FIRST_HAND_ID + 3) * Angle2Rad;
-	float fRadian5 = GetMotor_PresentAngle(FIRST_HAND_ID + 4) * Angle2Rad;
-	float fRadian6 = GetMotor_PresentAngle(FIRST_HAND_ID + 5) * Angle2Rad;
-
-	return Calculate_ArmForwardKinematics(fRadian1, fRadian2, fRadian3, fRadian4, fRadian5, fRadian6);
-}
-cv::Mat *SaleArmRight::Calculate_ArmForwardKinematics(float J1, float J2, float J3, float J4, float J5, float J6)
-{
-	float b = 120;
-	double shoulder_angle = GetMotor_PresentAngle(FIRST_SHOULDER_ID);
-
-	cv::Matx44f Ref2Shoulder(
-		1, 0, 0, 0,
-		0, 1, 0, 0,
-		0, 0, 1, -b,
-		0, 0, 0, 1);
-
-	cv::Matx44f Shoulder_Turn(
-		cos(-shoulder_angle * Angle2Rad), 0, sin(-shoulder_angle * Angle2Rad), 0,
-		0, 1, 0, 0,
-		-sin(-shoulder_angle * Angle2Rad), 0, cos(-shoulder_angle * Angle2Rad), 0,
-		0, 0, 0, 1);
-
-	cv::Matx44f Shoulder2Base(
-		1, 0, 0, 0,
-		0, 1, 0, 0,
-		0, 0, 1, b,
-		0, 0, 0, 1);
-
-	cv::Matx44f Tz_L1(
-		cos(J1), 0, sin(J1), 0,
-		sin(J1), 0, -cos(J1), 0,
-		0, 1, 0, 0,
-		0, 0, 0, 1);
-	cv::Matx44f Tz_L2(cos(J2), 0, -sin(J2), 0,
-					  sin(J2), 0, cos(J2), 0,
-					  0, -1, 0, 0,
-					  0, 0, 0, 1);
-	cv::Matx44f Tz_L3(cos(J3), 0, sin(J3), 0,
-					  sin(J3), 0, -cos(J3), 0,
-					  0, 1, 0, Motor_Distance_3,
-					  0, 0, 0, 1);
-	cv::Matx44f Tz_L4(cos(J4), 0, sin(J4), 0,
-					  sin(J4), 0, -cos(J4), 0,
-					  0, 1, 0, 0,
-					  0, 0, 0, 1);
-	cv::Matx44f Tz_L5(cos(J5), 0, sin(J5), 0,
-					  sin(J5), 0, -cos(J5), 0,
-					  0, 1, 0, Motor_Distance_5,
-					  0, 0, 0, 1);
-	cv::Matx44f Tz_L6(cos(J6), -sin(J6), 0, alength_6 * cos(J6),
-					  sin(J6), cos(J6), 0, alength_6 * sin(J6),
-					  0, 0, 1, 0,
-					  0, 0, 0, 1);
-	cv::Matx44f Temp(Ref2Shoulder * Shoulder_Turn * Shoulder2Base * Tz_L1 * Tz_L2 * Tz_L3 * Tz_L4 * Tz_L5 * Tz_L6); // RefT5
-
-	for (int i = 0; i < 4; i++)
-	{
-		for (int j = 0; j < 4; j++)
-		{
-			ArmForward->at<float>(i, j) = Temp(i, j);
-		}
-	}
-	return ArmForward;
-}
-cv::Mat *SaleArmRight::Calculate_ArmForwardKinematics(float pre_angle, float J1, float J2, float J3, float J4, float J5, float J6)
-{
-	float b = 120;
-	double shoulder_angle = pre_angle;
-
-	cv::Matx44f Ref2Shoulder(
-		1, 0, 0, 0,
-		0, 1, 0, 0,
-		0, 0, 1, -b,
-		0, 0, 0, 1);
-
-	cv::Matx44f Shoulder_Turn(
-		cos(-shoulder_angle * Angle2Rad), 0, sin(-shoulder_angle * Angle2Rad), 0,
-		0, 1, 0, 0,
-		-sin(-shoulder_angle * Angle2Rad), 0, cos(-shoulder_angle * Angle2Rad), 0,
-		0, 0, 0, 1);
-
-	cv::Matx44f Shoulder2Base(
-		1, 0, 0, 0,
-		0, 1, 0, 0,
-		0, 0, 1, b,
-		0, 0, 0, 1);
-
-	cv::Matx44f Tz_L1(
-		cos(J1), 0, sin(J1), 0,
-		sin(J1), 0, -cos(J1), 0,
-		0, 1, 0, 0,
-		0, 0, 0, 1);
-	cv::Matx44f Tz_L2(cos(J2), 0, -sin(J2), 0,
-					  sin(J2), 0, cos(J2), 0,
-					  0, -1, 0, 0,
-					  0, 0, 0, 1);
-	cv::Matx44f Tz_L3(cos(J3), 0, sin(J3), 0,
-					  sin(J3), 0, -cos(J3), 0,
-					  0, 1, 0, Motor_Distance_3,
-					  0, 0, 0, 1);
-	cv::Matx44f Tz_L4(cos(J4), 0, sin(J4), 0,
-					  sin(J4), 0, -cos(J4), 0,
-					  0, 1, 0, 0,
-					  0, 0, 0, 1);
-	cv::Matx44f Tz_L5(cos(J5), 0, sin(J5), 0,
-					  sin(J5), 0, -cos(J5), 0,
-					  0, 1, 0, Motor_Distance_5,
-					  0, 0, 0, 1);
-	cv::Matx44f Tz_L6(cos(J6), -sin(J6), 0, alength_6 * cos(J6),
-					  sin(J6), cos(J6), 0, alength_6 * sin(J6),
-					  0, 0, 1, 0,
-					  0, 0, 0, 1);
-	cv::Matx44f Temp(Ref2Shoulder * Shoulder_Turn * Shoulder2Base * Tz_L1 * Tz_L2 * Tz_L3 * Tz_L4 * Tz_L5 * Tz_L6); // RefT5
-
-	for (int i = 0; i < 4; i++)
-	{
-		for (int j = 0; j < 4; j++)
-		{
-			ArmForward->at<float>(i, j) = Temp(i, j);
-		}
-	}
-	return ArmForward;
-}
-// 6 DOFs InverseKinematics
-float *SaleArmRight::Arm_InverseKinematics(cv::Mat *&T)
-{
-	cv::Mat *T_OriArm2Shoulder = new cv::Mat(4, 4, CV_32FC1, cv::Scalar::all(0));
-	cv::Mat *T_ShoulderTurn = new cv::Mat(4, 4, CV_32FC1, cv::Scalar::all(0));
-	cv::Mat *T_Shoulder2Arm = new cv::Mat(4, 4, CV_32FC1, cv::Scalar::all(0));
-	float b = 120;
-	double shoulder_angle = GetMotor_PresentAngle(FIRST_SHOULDER_ID);
-
-	float nx_T, ny_T, nz_T, ox_T, oy_T, oz_T, ax_T, ay_T, az_T, px_T, py_T, pz_T;
-	nx_T = T->at<float>(0, 0);
-	ny_T = T->at<float>(1, 0);
-	nz_T = T->at<float>(2, 0);
-	ox_T = T->at<float>(0, 1);
-	oy_T = T->at<float>(1, 1);
-	oz_T = T->at<float>(2, 1);
-	ax_T = T->at<float>(0, 2);
-	ay_T = T->at<float>(1, 2);
-	az_T = T->at<float>(2, 2);
-	px_T = T->at<float>(0, 3);
-	py_T = T->at<float>(1, 3);
-	pz_T = T->at<float>(2, 3);
-	//==========================================
-	T_OriArm2Shoulder->at<float>(0, 0) = 1;
-	T_OriArm2Shoulder->at<float>(0, 1) = 0;
-	T_OriArm2Shoulder->at<float>(0, 2) = 0;
-	T_OriArm2Shoulder->at<float>(0, 3) = 0;
-
-	T_OriArm2Shoulder->at<float>(1, 0) = 0;
-	T_OriArm2Shoulder->at<float>(1, 1) = 1;
-	T_OriArm2Shoulder->at<float>(1, 2) = 0;
-	T_OriArm2Shoulder->at<float>(1, 3) = 0;
-
-	T_OriArm2Shoulder->at<float>(2, 0) = 0;
-	T_OriArm2Shoulder->at<float>(2, 1) = 0;
-	T_OriArm2Shoulder->at<float>(2, 2) = 1;
-	T_OriArm2Shoulder->at<float>(2, 3) = -b;
-
-	T_OriArm2Shoulder->at<float>(3, 0) = 0;
-	T_OriArm2Shoulder->at<float>(3, 1) = 0;
-	T_OriArm2Shoulder->at<float>(3, 2) = 0;
-	T_OriArm2Shoulder->at<float>(3, 3) = 1;
-
-	//===========================================
-	T_ShoulderTurn->at<float>(0, 0) = cos(shoulder_angle * Angle2Rad); //shoulder_angle�S���["-"�O�]���t�t�o��
-	T_ShoulderTurn->at<float>(0, 1) = 0;
-	T_ShoulderTurn->at<float>(0, 2) = -sin(shoulder_angle * Angle2Rad);
-	T_ShoulderTurn->at<float>(0, 3) = 0;
-
-	T_ShoulderTurn->at<float>(1, 0) = 0;
-	T_ShoulderTurn->at<float>(1, 1) = 1;
-	T_ShoulderTurn->at<float>(1, 2) = 0;
-	T_ShoulderTurn->at<float>(1, 3) = 0;
-
-	T_ShoulderTurn->at<float>(2, 0) = sin(shoulder_angle * Angle2Rad);
-	T_ShoulderTurn->at<float>(2, 1) = 0;
-	T_ShoulderTurn->at<float>(2, 2) = cos(shoulder_angle * Angle2Rad);
-	T_ShoulderTurn->at<float>(2, 3) = 0;
-
-	T_ShoulderTurn->at<float>(3, 0) = 0;
-	T_ShoulderTurn->at<float>(3, 1) = 0;
-	T_ShoulderTurn->at<float>(3, 2) = 0;
-	T_ShoulderTurn->at<float>(3, 3) = 1;
-
-	//===========================================
-	T_Shoulder2Arm->at<float>(0, 0) = 1;
-	T_Shoulder2Arm->at<float>(0, 1) = 0;
-	T_Shoulder2Arm->at<float>(0, 2) = 0;
-	T_Shoulder2Arm->at<float>(0, 3) = 0;
-
-	T_Shoulder2Arm->at<float>(1, 0) = 0;
-	T_Shoulder2Arm->at<float>(1, 1) = 1;
-	T_Shoulder2Arm->at<float>(1, 2) = 0;
-	T_Shoulder2Arm->at<float>(1, 3) = 0;
-
-	T_Shoulder2Arm->at<float>(2, 0) = 0;
-	T_Shoulder2Arm->at<float>(2, 1) = 0;
-	T_Shoulder2Arm->at<float>(2, 2) = 1;
-	T_Shoulder2Arm->at<float>(2, 3) = b;
-
-	T_Shoulder2Arm->at<float>(3, 0) = 0;
-	T_Shoulder2Arm->at<float>(3, 1) = 0;
-	T_Shoulder2Arm->at<float>(3, 2) = 0;
-	T_Shoulder2Arm->at<float>(3, 3) = 1;
-
-	////////////////////////////////////////////////////////////First ver.
-	ArmMotionEnable = false;
-
-	float J1, J2, J3, J4, J5, J6;
-
-	float delta_Pos = 4096 * 1 + 151875 * 3 + 250950 * 2;
-
-	float theta1[4];
-	float theta2[4];
-	float theta3[4];
-	float theta4[4];
-	float theta5[4];
-	float theta6;
-	float nx1, ny1, nz1, ox1, oy1, oz1, ax1, ay1, az1, px1, py1, pz1;
-	float nx_test, ny_test, nz_test, ox_test, oy_test, oz_test, ax_test, ay_test, az_test, px_test, py_test, pz_test;
-	float nx_goal, ny_goal, nz_goal, ox_goal, oy_goal, oz_goal, ax_goal, ay_goal, az_goal, px_goal, py_goal, pz_goal;
-
-	int delta_Ang = 180 * 6;
-
-	//cv::Mat T1 = T->inv(); //ori
-	//   cv::Mat T_test = *T_Shoulder2Arm*(*T_ShoulderTurn)*(*T_OriArm2Shoulder)*T->inv();
-	//cv::Mat T_test = T->inv(); //ori
-	//cv::Mat T_test = *T; //ori
-
-	//cv::Mat T_goal = (T_Shoulder2Arm->inv())*(T_ShoulderTurn->inv())*(T_OriArm2Shoulder->inv())*(*T);
-	cv::Mat T_goal = (T_Shoulder2Arm->inv()) * (T_ShoulderTurn->inv()) * (T_OriArm2Shoulder->inv()) * (*T);
-	/*T_test.at<float>(0, 3) = round(T_goal.at<float>(0, 3));
-	T_test.at<float>(1, 3) = round(T_goal.at<float>(1, 3));
-	T_test.at<float>(2, 3) = round(T_goal.at<float>(2, 3));*/
-	/*T_goal.at<float>(0, 3) = round(T_goal.at<float>(0, 3));
-	T_goal.at<float>(1, 3) = round(T_goal.at<float>(1, 3));
-	T_goal.at<float>(2, 3) = round(T_goal.at<float>(2, 3));*/
-	cv::Mat T1 = T_goal.inv();
-	//cv::Mat T1 = T_test.inv();
-
-	//T1 = T_test;
-
-	//cv::Mat T_test = T_test->inv();
-	//cv::Mat T_test = *T_Shoulder2Arm*(*T_ShoulderTurn)*(*T_OriArm2Shoulder)*T->inv();
-
-	//initial------------------------------------------------------------//
-	nx_T = T->at<float>(0, 0);
-	ny_T = T->at<float>(1, 0);
-	nz_T = T->at<float>(2, 0);
-	ox_T = T->at<float>(0, 1);
-	oy_T = T->at<float>(1, 1);
-	oz_T = T->at<float>(2, 1);
-	ax_T = T->at<float>(0, 2);
-	ay_T = T->at<float>(1, 2);
-	az_T = T->at<float>(2, 2);
-	px_T = T->at<float>(0, 3);
-	py_T = T->at<float>(1, 3);
-	pz_T = T->at<float>(2, 3);
-
-	//--------------------goal T
-	nx_goal = T_goal.at<float>(0, 0);
-	ny_goal = T_goal.at<float>(1, 0);
-	nz_goal = T_goal.at<float>(2, 0);
-	ox_goal = T_goal.at<float>(0, 1);
-	oy_goal = T_goal.at<float>(1, 1);
-	oz_goal = T_goal.at<float>(2, 1);
-	ax_goal = T_goal.at<float>(0, 2);
-	ay_goal = T_goal.at<float>(1, 2);
-	az_goal = T_goal.at<float>(2, 2);
-	px_goal = T_goal.at<float>(0, 3);
-	py_goal = T_goal.at<float>(1, 3);
-	pz_goal = T_goal.at<float>(2, 3);
-	//T = Calculate_ArmForwardKinematics(0* Angle2Rad, 10 * Angle2Rad, 90 * Angle2Rad, 0 * Angle2Rad, 70 * Angle2Rad, 0 * Angle2Rad);
-
-	//-----------------------------------------------
-	nx1 = T1.at<float>(0, 0);
-	ny1 = T1.at<float>(1, 0);
-	nz1 = T1.at<float>(2, 0);
-	ox1 = T1.at<float>(0, 1);
-	oy1 = T1.at<float>(1, 1);
-	oz1 = T1.at<float>(2, 1);
-	ax1 = T1.at<float>(0, 2);
-	ay1 = T1.at<float>(1, 2);
-	az1 = T1.at<float>(2, 2);
-	px1 = T1.at<float>(0, 3);
-	py1 = T1.at<float>(1, 3);
-	pz1 = T1.at<float>(2, 3);
-
-	for (int i = 0; i < 4; i++)
-	{
-		theta1[i] = -999;
-		theta2[i] = -999;
-		theta3[i] = -999;
-		theta4[i] = -999;
-		theta5[i] = -999;
-		theta6 = -999;
-	}
-
-	float *Solution = new float[6];
-	for (int i = 0; i < 6; i++)
-	{
-		Solution[i] = 0;
-	}
-	//--------------------------------------------------------------------//
-	{
-		//k = a6 ^ 2 + 2 * a6*px1 + px1 ^ 2 + py1 ^ 2 + pz1 ^ 2 - d3 ^ 2 - d5 ^ 2;
-
-		float k = pow(alength_6, 2) + 2 * alength_6 * px1 + pow(px1, 2) + pow(py1, 2) + pow(pz1, 2) - pow(Motor_Distance_3, 2) - pow(Motor_Distance_5, 2);
-
-		float a = -2 * Motor_Distance_3 * Motor_Distance_5;
-		float tc = (k / a);
-
-		if (tc > 1)
-			tc = 1;
-		else if (tc < -1)
-			tc = -1;
-
-		float ts = pow((1 - pow(tc, 2)), 0.5);
-		if (ts > 1)
-			ts = 1;
-		else if (ts < -1)
-			ts = -1;
-
-		theta4[0] = atan2(ts, -tc) / Angle2Rad;
-		theta4[1] = atan2(ts, tc) / Angle2Rad;
-		theta4[2] = -(atan2(ts, -tc) / Angle2Rad);
-		theta4[3] = -(atan2(ts, tc) / Angle2Rad);
-	}
-	for (int i = 0; i < 4; i++)
-	{
-		if (theta4[i] > 180)
-		{
-			theta4[i] = theta4[i] - 360;
-		}
-		if (theta4[i] < -180)
-		{
-			theta4[i] = theta4[i] + 360;
-		}
-
-		if (theta4[i] <= -120 || theta4[i] >= 120) //�_���I
-		{
-			theta4[i] = -999;
-		}
-	}
-
-	for (int i = 0; i < 4; i++)
-	{
-		if (theta4[i] != -999)
-		{
-			J4 = theta4[i] * Angle2Rad;
-			//J5-----------------------------------------------------------------------------
-			//Matlab
-			//ts= (pz1)/(-d3*sin(J4));
-			float ts = (pz1 / (-Motor_Distance_3 * sin(J4)));
-			if (ts > 1)
-				ts = 1;
-			else if (ts < -1)
-				ts = -1;
-			else if (abs(ts) < 0.001)
-				ts = 0;
-			float tc = pow((1 - pow(ts, 2)), 0.5);
-			if (tc > 1)
-				tc = 1;
-			else if (tc < -1)
-				tc = -1;
-			theta5[0] = (atan2(ts, tc)) / Angle2Rad;
-			theta5[1] = (atan2(ts, -tc)) / Angle2Rad;
-			theta5[2] = (-atan2(ts, -tc)) / Angle2Rad;
-			theta5[3] = (-atan2(ts, tc)) / Angle2Rad;
-		}
-		//���ץ��W��
-		for (int i = 0; i < 4; i++)
-		{
-
-			if (theta5[i] > 180)
-			{
-				theta5[i] = theta5[i] - 360;
-			}
-			if (theta5[i] < -180)
-			{
-				theta5[i] = theta5[i] + 360;
-			}
-
-			//if (( theta5[i]<-25 || theta5[i] > 120 ))//�_���I
-			//{
-			//	theta5[i] = -999;
-			//}
-		}
-
-		//-------------------------------------------------------------------------------
-		for (int j = 0; j < 4; j++)
-		{
-			if (theta5[j] != -999)
-
-				J5 = theta5[j] * Angle2Rad;
-			{
-				//J6-----------------------------------------------------------------------
-				//phi = atan2( py1, ( a6 + px1 ) );
-				//IK_J6 = ( atan2( ( d3*cos( J4 ) - d5 ), ( -d3*cos( J5 )*sin( J4 ) ) ) - phi ) * 180 / pi;
-				float phi = atan2(py1, (px1 + alength_6));
-
-				theta6 = (atan2((Motor_Distance_3 * cos(J4) - Motor_Distance_5), (-Motor_Distance_3 * cos(J5) * sin(J4))) - phi) / Angle2Rad;
-			}
-			//���ץ��W��
-
-			if (theta6 > 180)
-			{
-				theta6 = theta6 - 360;
-			}
-			if (theta6 < -180)
-			{
-				theta6 = theta6 + 360;
-			}
-			if (theta6 <= 0 || theta6 > 180)
-			{
-				theta6 = -999;
-			}
-
-			//����F����
-
-			//-------------------------------------------------------------------------------
-
-			if (theta6 != -999)
-			{
-
-				J6 = theta6 * Angle2Rad;
-				{
-					//J2-------------------------------------------------------------------
-					//	  tc = az1*sin(J4)*sin(J5) - ay1*(cos(J4)*cos(J6) + cos(J5)*sin(J4)*sin(J6)) - ax1*(cos(J4)*sin(J6) - cos(J5)*cos(J6)*sin(J4));
-					float tc = az1 * sin(J4) * sin(J5) - ay1 * (cos(J4) * cos(J6) + cos(J5) * sin(J4) * sin(J6)) - ax1 * (cos(J4) * sin(J6) - cos(J5) * cos(J6) * sin(J4));
-					if (tc > 1)
-						tc = 1;
-					else if (tc < -1)
-						tc = -1;
-					float ts = pow((1 - pow(tc, 2)), 0.5);
-					if (ts > 1)
-						ts = 1;
-					else if (ts < -1)
-						ts = -1;
-					theta2[0] = (atan2(ts, -tc)) / Angle2Rad;
-					theta2[1] = (atan2(ts, tc)) / Angle2Rad;
-					theta2[2] = (-atan2(ts, tc)) / Angle2Rad;
-					theta2[3] = (-atan2(ts, -tc)) / Angle2Rad;
-				}
-				//���ץ��W��
-				for (int i = 0; i < 4; i++)
-				{
-
-					if (theta2[i] != -999)
-					{
-						if (theta2[i] > 180)
-						{
-							theta2[i] = theta2[i] - 360;
-						}
-						if (theta2[i] < -180)
-						{
-							theta2[i] = theta2[i] + 360;
-						}
-
-						if ((theta2[i] <= 65 || theta2[i] >= 180)) //�_���I
-						{
-							theta2[i] = -999;
-						}
-					}
-				}
-
-				//-------------------------------------------------------------------------------
-				for (int l = 0; l < 4; l++)
-				{
-					if (theta2[l] != -999)
-					{
-
-						J2 = theta2[l] * Angle2Rad;
-						{
-							//J3--------------------------------------------------------------
-							// tc = (ax1*(sin(J4)*sin(J6) + cos(J4)*cos(J5)*cos(J6)) + ay1*(cos(J6)*sin(J4) - cos(J4)*cos(J5)*sin(J6)) + az1*cos(J4)*sin(J5))/sin(J2);
-							float tc = (ax1 * (sin(J4) * sin(J6) + cos(J4) * cos(J5) * cos(J6)) + ay1 * (cos(J6) * sin(J4) - cos(J4) * cos(J5) * sin(J6)) + az1 * cos(J4) * sin(J5)) / sin(J2);
-							if (tc > 1)
-								tc = 1;
-							else if (tc < -1)
-								tc = -1;
-							float ts = pow((1 - pow(tc, 2)), 0.5);
-							if (ts > 1)
-								ts = 1;
-							else if (ts < -1)
-								ts = -1;
-							theta3[0] = (atan2(ts, -tc)) / Angle2Rad;
-							theta3[1] = (atan2(ts, tc)) / Angle2Rad;
-							theta3[2] = (-atan2(ts, tc)) / Angle2Rad;
-							theta3[3] = (-atan2(ts, -tc)) / Angle2Rad;
-						}
-						//���ץ��W��
-						for (int i = 0; i < 4; i++)
-						{
-							if (theta3[i] != -999)
-							{
-								if (theta3[i] > 180)
-								{
-									theta3[i] = theta3[i] - 360;
-								}
-								if (theta3[i] < -180)
-								{
-									theta3[i] = theta3[i] + 360;
-								}
-							}
-						}
-
-						//-------------------------------------------------------------------------------
-						for (int m = 0; m < 4; m++)
-						{
-							if (theta3[m] != -999)
-							{
-
-								J3 = theta3[m] * Angle2Rad;
-								{
-									//J1----------------------------------------------------------------------
-									//tc= (nz1*sin(J4)*sin(J5) - ny1*(cos(J4)*cos(J6) + cos(J5)*sin(J4)*sin(J6)) - nx1*(cos(J4)*sin(J6) - cos(J5)*cos(J6)*sin(J4)))/(-sin(J2));
-
-									float tc = (nz1 * sin(J4) * sin(J5) - ny1 * (cos(J4) * cos(J6) + cos(J5) * sin(J4) * sin(J6)) - nx1 * (cos(J4) * sin(J6) - cos(J5) * cos(J6) * sin(J4))) / (-sin(J2));
-									if (tc > 1)
-										tc = 1;
-									else if (tc < -1)
-										tc = -1;
-									float ts = pow((1 - pow(tc, 2)), 0.5);
-									if (ts > 1)
-										ts = 1;
-									else if (ts < -1)
-										ts = -1;
-									theta1[0] = (atan2(ts, -tc)) / Angle2Rad;
-									theta1[1] = (atan2(ts, tc)) / Angle2Rad;
-									theta1[2] = (-atan2(ts, tc)) / Angle2Rad;
-									theta1[3] = (-atan2(ts, -tc)) / Angle2Rad;
-								}
-								//���ץ��W��
-								for (int i = 0; i < 4; i++)
-								{
-									if (theta1[i] != -999)
-									{
-										if (theta1[i] > 180)
-										{
-											theta1[i] = theta1[i] - 360;
-										}
-										if (theta1[i] < -180)
-										{
-											theta1[i] = theta1[i] + 360;
-										}
-									}
-								}
-
-								//-------------------------------------------------------------------------------
-								for (int n = 0; n < 4; n++)
-								{
-									if (theta1[n] != -999)
-									{
-
-										J1 = theta1[n] * Angle2Rad;
-										//���i�઺��-------------------------------------------b------------
-
-										bool check = true;
-										//�����X�Ӫ��ѻP�쥻���O�_���P
-										float j1, j2, j3, j4, j5, j6;
-										j1 = J1 * Rad2Angle;
-										j2 = J2 * Rad2Angle;
-										j3 = J3 * Rad2Angle;
-										j4 = J4 * Rad2Angle;
-										j5 = J5 * Rad2Angle;
-										j6 = J6 * Rad2Angle;
-										cv::Mat *tmpT = Calculate_ArmForwardKinematics(J1, J2, J3, J4, J5, J6);
-
-										for (int o = 0; o < 4; o++)
-										{
-											for (int p = 0; p < 4; p++)
-											{
-
-												if (round(round_value * tmpT->at<float>(o, p)) != round(round_value * T->at<float>(o, p)))
-												{
-
-													check = false;
-												}
-											}
-											//cout << endl;
-										}
-										if (check)
-										{
-
-											float temp_theta[6], re_theta[6];
-											float tmp1 = J1 * Rad2Angle;
-											float tmp2 = J2 * Rad2Angle;
-											float tmp3 = J3 * Rad2Angle;
-											float tmp4 = J4 * Rad2Angle;
-											float tmp5 = J5 * Rad2Angle;
-											float tmp6 = J6 * Rad2Angle;
-
-											re_theta[0] = J1 * Rad2Angle;
-											re_theta[1] = J2 * Rad2Angle;
-											re_theta[2] = J3 * Rad2Angle;
-											re_theta[3] = J4 * Rad2Angle;
-											re_theta[4] = J5 * Rad2Angle;
-											re_theta[5] = J6 * Rad2Angle;
-
-											temp_theta[0] = J1 * Rad2Angle + 90;
-											temp_theta[1] = J2 * Rad2Angle - 90;
-											temp_theta[2] = J3 * Rad2Angle - 90;
-											temp_theta[3] = J4 * Rad2Angle;
-											temp_theta[4] = J5 * Rad2Angle + 180;
-											temp_theta[5] = J6 * Rad2Angle - 90;
-
-											for (int o = 0; o < 6; o++)
-											{
-												if (temp_theta[o] > 180)
-												{
-													temp_theta[o] = temp_theta[o] - 360;
-												}
-												else if (temp_theta[o] < -180)
-												{
-													temp_theta[o] = temp_theta[o] + 360;
-												}
-											}
-
-											// Motor direction adjustment
-											temp_theta[0] = (temp_theta[0]);
-											temp_theta[1] = -(temp_theta[1]);
-											temp_theta[2] = -(temp_theta[2]);
-											temp_theta[3] = (temp_theta[3]);
-											temp_theta[4] = (temp_theta[4]);
-											temp_theta[5] = -(temp_theta[5]);
-
-											int tmp_delta_Ang =
-												abs(temp_theta[0] - GetMotor_PresentAngle(FIRST_HAND_ID)) + abs(temp_theta[1] - GetMotor_PresentAngle(FIRST_HAND_ID + 1)) + abs(temp_theta[2] - GetMotor_PresentAngle(FIRST_HAND_ID + 2)) + abs(temp_theta[3] - GetMotor_PresentAngle(FIRST_HAND_ID + 3)) + abs(temp_theta[4] - GetMotor_PresentAngle(FIRST_HAND_ID + 4)) + abs(temp_theta[5] - GetMotor_PresentAngle(FIRST_HAND_ID + 5));
-
-											if (tmp_delta_Ang < delta_Ang)
-											{
-												delta_Ang = tmp_delta_Ang;
-												jacobian = Jacobian(J1, J2, J3, J4, J5, J6, tmpT);
-
-												for (int o = 0; o < 6; o++)
-												{
-													Solution[o] = temp_theta[o];
-												}
-												ArmMotionEnable = true;
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-	if (Solution[0] == 0 && Solution[1] == 0 && Solution[2] == 0 && Solution[3] == 0 && Solution[4] == 0 && Solution[5] == 0)
-	{
-		ArmMotionEnable = false;
-	}
-	if (delta_Ang > 150)
-	{
-		ArmMotionEnable = false;
-	}
-	return Solution;
-}
-// 7 DOFs InverseKinematics
-float *SaleArmRight::Arm_InverseKinematics(const float &pre_angle, cv::Mat *&T)
-{
-	cv::Mat *T_OriArm2Shoulder = new cv::Mat(4, 4, CV_32FC1, cv::Scalar::all(0));
-	cv::Mat *T_ShoulderTurn = new cv::Mat(4, 4, CV_32FC1, cv::Scalar::all(0));
-	cv::Mat *T_Shoulder2Arm = new cv::Mat(4, 4, CV_32FC1, cv::Scalar::all(0));
-	float b = 120;
-	double shoulder_angle = pre_angle;
-
-	float nx_T, ny_T, nz_T, ox_T, oy_T, oz_T, ax_T, ay_T, az_T, px_T, py_T, pz_T;
-	nx_T = T->at<float>(0, 0);
-	ny_T = T->at<float>(1, 0);
-	nz_T = T->at<float>(2, 0);
-	ox_T = T->at<float>(0, 1);
-	oy_T = T->at<float>(1, 1);
-	oz_T = T->at<float>(2, 1);
-	ax_T = T->at<float>(0, 2);
-	ay_T = T->at<float>(1, 2);
-	az_T = T->at<float>(2, 2);
-	px_T = T->at<float>(0, 3);
-	py_T = T->at<float>(1, 3);
-	pz_T = T->at<float>(2, 3);
-	//==========================================
-	T_OriArm2Shoulder->at<float>(0, 0) = 1;
-	T_OriArm2Shoulder->at<float>(0, 1) = 0;
-	T_OriArm2Shoulder->at<float>(0, 2) = 0;
-	T_OriArm2Shoulder->at<float>(0, 3) = 0;
-
-	T_OriArm2Shoulder->at<float>(1, 0) = 0;
-	T_OriArm2Shoulder->at<float>(1, 1) = 1;
-	T_OriArm2Shoulder->at<float>(1, 2) = 0;
-	T_OriArm2Shoulder->at<float>(1, 3) = 0;
-
-	T_OriArm2Shoulder->at<float>(2, 0) = 0;
-	T_OriArm2Shoulder->at<float>(2, 1) = 0;
-	T_OriArm2Shoulder->at<float>(2, 2) = 1;
-	T_OriArm2Shoulder->at<float>(2, 3) = -b;
-
-	T_OriArm2Shoulder->at<float>(3, 0) = 0;
-	T_OriArm2Shoulder->at<float>(3, 1) = 0;
-	T_OriArm2Shoulder->at<float>(3, 2) = 0;
-	T_OriArm2Shoulder->at<float>(3, 3) = 1;
-
-	//===========================================
-	T_ShoulderTurn->at<float>(0, 0) = cos(shoulder_angle * Angle2Rad); //shoulder_angle�S���["-"�O�]���t�t�o��
-	T_ShoulderTurn->at<float>(0, 1) = 0;
-	T_ShoulderTurn->at<float>(0, 2) = -sin(shoulder_angle * Angle2Rad);
-	T_ShoulderTurn->at<float>(0, 3) = 0;
-
-	T_ShoulderTurn->at<float>(1, 0) = 0;
-	T_ShoulderTurn->at<float>(1, 1) = 1;
-	T_ShoulderTurn->at<float>(1, 2) = 0;
-	T_ShoulderTurn->at<float>(1, 3) = 0;
-
-	T_ShoulderTurn->at<float>(2, 0) = sin(shoulder_angle * Angle2Rad);
-	T_ShoulderTurn->at<float>(2, 1) = 0;
-	T_ShoulderTurn->at<float>(2, 2) = cos(shoulder_angle * Angle2Rad);
-	T_ShoulderTurn->at<float>(2, 3) = 0;
-
-	T_ShoulderTurn->at<float>(3, 0) = 0;
-	T_ShoulderTurn->at<float>(3, 1) = 0;
-	T_ShoulderTurn->at<float>(3, 2) = 0;
-	T_ShoulderTurn->at<float>(3, 3) = 1;
-
-	//===========================================
-	T_Shoulder2Arm->at<float>(0, 0) = 1;
-	T_Shoulder2Arm->at<float>(0, 1) = 0;
-	T_Shoulder2Arm->at<float>(0, 2) = 0;
-	T_Shoulder2Arm->at<float>(0, 3) = 0;
-
-	T_Shoulder2Arm->at<float>(1, 0) = 0;
-	T_Shoulder2Arm->at<float>(1, 1) = 1;
-	T_Shoulder2Arm->at<float>(1, 2) = 0;
-	T_Shoulder2Arm->at<float>(1, 3) = 0;
-
-	T_Shoulder2Arm->at<float>(2, 0) = 0;
-	T_Shoulder2Arm->at<float>(2, 1) = 0;
-	T_Shoulder2Arm->at<float>(2, 2) = 1;
-	T_Shoulder2Arm->at<float>(2, 3) = b;
-
-	T_Shoulder2Arm->at<float>(3, 0) = 0;
-	T_Shoulder2Arm->at<float>(3, 1) = 0;
-	T_Shoulder2Arm->at<float>(3, 2) = 0;
-	T_Shoulder2Arm->at<float>(3, 3) = 1;
-
-	////////////////////////////////////////////////////////////First ver.
-	ArmMotionEnable = false;
-
-	float J1, J2, J3, J4, J5, J6;
-
-	float delta_Pos = 4096 * 1 + 151875 * 3 + 250950 * 2;
-
-	float theta1[4];
-	float theta2[4];
-	float theta3[4];
-	float theta4[4];
-	float theta5[4];
-	float theta6;
-	float nx1, ny1, nz1, ox1, oy1, oz1, ax1, ay1, az1, px1, py1, pz1;
-	float nx_test, ny_test, nz_test, ox_test, oy_test, oz_test, ax_test, ay_test, az_test, px_test, py_test, pz_test;
-	float nx_goal, ny_goal, nz_goal, ox_goal, oy_goal, oz_goal, ax_goal, ay_goal, az_goal, px_goal, py_goal, pz_goal;
-
-	int delta_Ang = 180 * 6;
-
-	//cv::Mat T1 = T->inv(); //ori
-	//   cv::Mat T_test = *T_Shoulder2Arm*(*T_ShoulderTurn)*(*T_OriArm2Shoulder)*T->inv();
-	//cv::Mat T_test = T->inv(); //ori
-	//cv::Mat T_test = *T; //ori
-
-	//cv::Mat T_goal = (T_Shoulder2Arm->inv())*(T_ShoulderTurn->inv())*(T_OriArm2Shoulder->inv())*(*T);
-	cv::Mat T_goal = (T_Shoulder2Arm->inv()) * (T_ShoulderTurn->inv()) * (T_OriArm2Shoulder->inv()) * (*T);
-	/*T_test.at<float>(0, 3) = round(T_goal.at<float>(0, 3));
-	T_test.at<float>(1, 3) = round(T_goal.at<float>(1, 3));
-	T_test.at<float>(2, 3) = round(T_goal.at<float>(2, 3));*/
-	/*T_goal.at<float>(0, 3) = round(T_goal.at<float>(0, 3));
-	T_goal.at<float>(1, 3) = round(T_goal.at<float>(1, 3));
-	T_goal.at<float>(2, 3) = round(T_goal.at<float>(2, 3));*/
-	cv::Mat T1 = T_goal.inv();
-	//cv::Mat T1 = T_test.inv();
-
-	//T1 = T_test;
-
-	//cv::Mat T_test = T_test->inv();
-	//cv::Mat T_test = *T_Shoulder2Arm*(*T_ShoulderTurn)*(*T_OriArm2Shoulder)*T->inv();
-
-	//initial------------------------------------------------------------//
-	nx_T = T->at<float>(0, 0);
-	ny_T = T->at<float>(1, 0);
-	nz_T = T->at<float>(2, 0);
-	ox_T = T->at<float>(0, 1);
-	oy_T = T->at<float>(1, 1);
-	oz_T = T->at<float>(2, 1);
-	ax_T = T->at<float>(0, 2);
-	ay_T = T->at<float>(1, 2);
-	az_T = T->at<float>(2, 2);
-	px_T = T->at<float>(0, 3);
-	py_T = T->at<float>(1, 3);
-	pz_T = T->at<float>(2, 3);
-
-	//--------------------goal T
-	nx_goal = T_goal.at<float>(0, 0);
-	ny_goal = T_goal.at<float>(1, 0);
-	nz_goal = T_goal.at<float>(2, 0);
-	ox_goal = T_goal.at<float>(0, 1);
-	oy_goal = T_goal.at<float>(1, 1);
-	oz_goal = T_goal.at<float>(2, 1);
-	ax_goal = T_goal.at<float>(0, 2);
-	ay_goal = T_goal.at<float>(1, 2);
-	az_goal = T_goal.at<float>(2, 2);
-	px_goal = T_goal.at<float>(0, 3);
-	py_goal = T_goal.at<float>(1, 3);
-	pz_goal = T_goal.at<float>(2, 3);
-	//T = Calculate_ArmForwardKinematics(0* Angle2Rad, 10 * Angle2Rad, 90 * Angle2Rad, 0 * Angle2Rad, 70 * Angle2Rad, 0 * Angle2Rad);
-
-	//-----------------------------------------------
-	nx1 = T1.at<float>(0, 0);
-	ny1 = T1.at<float>(1, 0);
-	nz1 = T1.at<float>(2, 0);
-	ox1 = T1.at<float>(0, 1);
-	oy1 = T1.at<float>(1, 1);
-	oz1 = T1.at<float>(2, 1);
-	ax1 = T1.at<float>(0, 2);
-	ay1 = T1.at<float>(1, 2);
-	az1 = T1.at<float>(2, 2);
-	px1 = T1.at<float>(0, 3);
-	py1 = T1.at<float>(1, 3);
-	pz1 = T1.at<float>(2, 3);
-
-	for (int i = 0; i < 4; i++)
-	{
-		theta1[i] = -999;
-		theta2[i] = -999;
-		theta3[i] = -999;
-		theta4[i] = -999;
-		theta5[i] = -999;
-		theta6 = -999;
-	}
-
-	float *Solution = new float[7];
-	for (int i = 0; i < 6; i++)
-	{
-		Solution[i] = 0;
-	}
-	//--------------------------------------------------------------------//
-	{
-		//k = a6 ^ 2 + 2 * a6*px1 + px1 ^ 2 + py1 ^ 2 + pz1 ^ 2 - d3 ^ 2 - d5 ^ 2;
-
-		float k = pow(alength_6, 2) + 2 * alength_6 * px1 + pow(px1, 2) + pow(py1, 2) + pow(pz1, 2) - pow(Motor_Distance_3, 2) - pow(Motor_Distance_5, 2);
-
-		float a = -2 * Motor_Distance_3 * Motor_Distance_5;
-		float tc = (k / a);
-
-		if (tc > 1)
-			tc = 1;
-		else if (tc < -1)
-			tc = -1;
-
-		float ts = pow((1 - pow(tc, 2)), 0.5);
-		if (ts > 1)
-			ts = 1;
-		else if (ts < -1)
-			ts = -1;
-
-		theta4[0] = atan2(ts, -tc) / Angle2Rad;
-		theta4[1] = atan2(ts, tc) / Angle2Rad;
-		theta4[2] = -(atan2(ts, -tc) / Angle2Rad);
-		theta4[3] = -(atan2(ts, tc) / Angle2Rad);
-	}
-	for (int i = 0; i < 4; i++)
-	{
-		if (theta4[i] > 180)
-		{
-			theta4[i] = theta4[i] - 360;
-		}
-		if (theta4[i] < -180)
-		{
-			theta4[i] = theta4[i] + 360;
-		}
-
-		if (theta4[i] <= -120 || theta4[i] >= 120) //�_���I
-		{
-			theta4[i] = -999;
-		}
-	}
-
-	for (int i = 0; i < 4; i++)
-	{
-		if (theta4[i] != -999)
-		{
-			J4 = theta4[i] * Angle2Rad;
-			//J5-----------------------------------------------------------------------------
-			//Matlab
-			//ts= (pz1)/(-d3*sin(J4));
-			float ts = (pz1 / (-Motor_Distance_3 * sin(J4)));
-			if (ts > 1)
-				ts = 1;
-			else if (ts < -1)
-				ts = -1;
-			else if (abs(ts) < 0.001)
-				ts = 0;
-			float tc = pow((1 - pow(ts, 2)), 0.5);
-			if (tc > 1)
-				tc = 1;
-			else if (tc < -1)
-				tc = -1;
-			theta5[0] = (atan2(ts, tc)) / Angle2Rad;
-			theta5[1] = (atan2(ts, -tc)) / Angle2Rad;
-			theta5[2] = (-atan2(ts, -tc)) / Angle2Rad;
-			theta5[3] = (-atan2(ts, tc)) / Angle2Rad;
-		}
-		//���ץ��W��
-		for (int i = 0; i < 4; i++)
-		{
-
-			if (theta5[i] > 180)
-			{
-				theta5[i] = theta5[i] - 360;
-			}
-			if (theta5[i] < -180)
-			{
-				theta5[i] = theta5[i] + 360;
-			}
-
-			//if (( theta5[i]<-25 || theta5[i] > 120 ))//�_���I
-			//{
-			//	theta5[i] = -999;
-			//}
-		}
-
-		//-------------------------------------------------------------------------------
-		for (int j = 0; j < 4; j++)
-		{
-			if (theta5[j] != -999)
-
-				J5 = theta5[j] * Angle2Rad;
-			{
-				//J6-----------------------------------------------------------------------
-				//phi = atan2( py1, ( a6 + px1 ) );
-				//IK_J6 = ( atan2( ( d3*cos( J4 ) - d5 ), ( -d3*cos( J5 )*sin( J4 ) ) ) - phi ) * 180 / pi;
-				float phi = atan2(py1, (px1 + alength_6));
-
-				theta6 = (atan2((Motor_Distance_3 * cos(J4) - Motor_Distance_5), (-Motor_Distance_3 * cos(J5) * sin(J4))) - phi) / Angle2Rad;
-			}
-			//���ץ��W��
-
-			if (theta6 > 180)
-			{
-				theta6 = theta6 - 360;
-			}
-			if (theta6 < -180)
-			{
-				theta6 = theta6 + 360;
-			}
-			if (theta6 <= 0 || theta6 > 180)
-			{
-				theta6 = -999;
-			}
-
-			//����F����
-
-			//-------------------------------------------------------------------------------
-
-			if (theta6 != -999)
-			{
-
-				J6 = theta6 * Angle2Rad;
-				{
-					//J2-------------------------------------------------------------------
-					//	  tc = az1*sin(J4)*sin(J5) - ay1*(cos(J4)*cos(J6) + cos(J5)*sin(J4)*sin(J6)) - ax1*(cos(J4)*sin(J6) - cos(J5)*cos(J6)*sin(J4));
-					float tc = az1 * sin(J4) * sin(J5) - ay1 * (cos(J4) * cos(J6) + cos(J5) * sin(J4) * sin(J6)) - ax1 * (cos(J4) * sin(J6) - cos(J5) * cos(J6) * sin(J4));
-					if (tc > 1)
-						tc = 1;
-					else if (tc < -1)
-						tc = -1;
-					float ts = pow((1 - pow(tc, 2)), 0.5);
-					if (ts > 1)
-						ts = 1;
-					else if (ts < -1)
-						ts = -1;
-					theta2[0] = (atan2(ts, -tc)) / Angle2Rad;
-					theta2[1] = (atan2(ts, tc)) / Angle2Rad;
-					theta2[2] = (-atan2(ts, tc)) / Angle2Rad;
-					theta2[3] = (-atan2(ts, -tc)) / Angle2Rad;
-				}
-				//���ץ��W��
-				for (int i = 0; i < 4; i++)
-				{
-
-					if (theta2[i] != -999)
-					{
-						if (theta2[i] > 180)
-						{
-							theta2[i] = theta2[i] - 360;
-						}
-						if (theta2[i] < -180)
-						{
-							theta2[i] = theta2[i] + 360;
-						}
-						if ((theta2[i] <= 65 || theta2[i] >= 180)) //�_���I
-						{
-							theta2[i] = -999;
-						}
-					}
-				}
-
-				//-------------------------------------------------------------------------------
-				for (int l = 0; l < 4; l++)
-				{
-					if (theta2[l] != -999)
-					{
-
-						J2 = theta2[l] * Angle2Rad;
-						{
-							//J3--------------------------------------------------------------
-							// tc = (ax1*(sin(J4)*sin(J6) + cos(J4)*cos(J5)*cos(J6)) + ay1*(cos(J6)*sin(J4) - cos(J4)*cos(J5)*sin(J6)) + az1*cos(J4)*sin(J5))/sin(J2);
-							float tc = (ax1 * (sin(J4) * sin(J6) + cos(J4) * cos(J5) * cos(J6)) + ay1 * (cos(J6) * sin(J4) - cos(J4) * cos(J5) * sin(J6)) + az1 * cos(J4) * sin(J5)) / sin(J2);
-							if (tc > 1)
-								tc = 1;
-							else if (tc < -1)
-								tc = -1;
-							float ts = pow((1 - pow(tc, 2)), 0.5);
-							if (ts > 1)
-								ts = 1;
-							else if (ts < -1)
-								ts = -1;
-							theta3[0] = (atan2(ts, -tc)) / Angle2Rad;
-							theta3[1] = (atan2(ts, tc)) / Angle2Rad;
-							theta3[2] = (-atan2(ts, tc)) / Angle2Rad;
-							theta3[3] = (-atan2(ts, -tc)) / Angle2Rad;
-						}
-						//���ץ��W��
-						for (int i = 0; i < 4; i++)
-						{
-							if (theta3[i] != -999)
-							{
-								if (theta3[i] > 180)
-								{
-									theta3[i] = theta3[i] - 360;
-								}
-								if (theta3[i] < -180)
-								{
-									theta3[i] = theta3[i] + 360;
-								}
-							}
-						}
-
-						//-------------------------------------------------------------------------------
-						for (int m = 0; m < 4; m++)
-						{
-							if (theta3[m] != -999)
-							{
-
-								J3 = theta3[m] * Angle2Rad;
-								{
-									//J1----------------------------------------------------------------------
-									//tc= (nz1*sin(J4)*sin(J5) - ny1*(cos(J4)*cos(J6) + cos(J5)*sin(J4)*sin(J6)) - nx1*(cos(J4)*sin(J6) - cos(J5)*cos(J6)*sin(J4)))/(-sin(J2));
-
-									float tc = (nz1 * sin(J4) * sin(J5) - ny1 * (cos(J4) * cos(J6) + cos(J5) * sin(J4) * sin(J6)) - nx1 * (cos(J4) * sin(J6) - cos(J5) * cos(J6) * sin(J4))) / (-sin(J2));
-									if (tc > 1)
-										tc = 1;
-									else if (tc < -1)
-										tc = -1;
-									float ts = pow((1 - pow(tc, 2)), 0.5);
-									if (ts > 1)
-										ts = 1;
-									else if (ts < -1)
-										ts = -1;
-									theta1[0] = (atan2(ts, -tc)) / Angle2Rad;
-									theta1[1] = (atan2(ts, tc)) / Angle2Rad;
-									theta1[2] = (-atan2(ts, tc)) / Angle2Rad;
-									theta1[3] = (-atan2(ts, -tc)) / Angle2Rad;
-								}
-								//���ץ��W��
-								for (int i = 0; i < 4; i++)
-								{
-									if (theta1[i] != -999)
-									{
-										if (theta1[i] > 180)
-										{
-											theta1[i] = theta1[i] - 360;
-										}
-										if (theta1[i] < -180)
-										{
-											theta1[i] = theta1[i] + 360;
-										}
-									}
-								}
-
-								//-------------------------------------------------------------------------------
-								for (int n = 0; n < 4; n++)
-								{
-									if (theta1[n] != -999)
-									{
-
-										J1 = theta1[n] * Angle2Rad;
-										//���i�઺��-------------------------------------------b------------
-
-										bool check = true;
-										//�����X�Ӫ��ѻP�쥻���O�_���P
-										float j1, j2, j3, j4, j5, j6;
-										j1 = J1 * Rad2Angle;
-										j2 = J2 * Rad2Angle;
-										j3 = J3 * Rad2Angle;
-										j4 = J4 * Rad2Angle;
-										j5 = J5 * Rad2Angle;
-										j6 = J6 * Rad2Angle;
-										cv::Mat *tmpT = Calculate_ArmForwardKinematics(pre_angle, J1, J2, J3, J4, J5, J6);
-
-										for (int o = 0; o < 4; o++)
-										{
-											for (int p = 0; p < 4; p++)
-											{
-
-												if (round(round_value * tmpT->at<float>(o, p)) != round(round_value * T->at<float>(o, p)))
-												{
-
-													check = false;
-												}
-											}
-											//cout << endl;
-										}
-										if (check)
-										{
-
-											float temp_theta[6], re_theta[6];
-											float tmp1 = J1 * Rad2Angle;
-											float tmp2 = J2 * Rad2Angle;
-											float tmp3 = J3 * Rad2Angle;
-											float tmp4 = J4 * Rad2Angle;
-											float tmp5 = J5 * Rad2Angle;
-											float tmp6 = J6 * Rad2Angle;
-
-											re_theta[0] = J1 * Rad2Angle;
-											re_theta[1] = J2 * Rad2Angle;
-											re_theta[2] = J3 * Rad2Angle;
-											re_theta[3] = J4 * Rad2Angle;
-											re_theta[4] = J5 * Rad2Angle;
-											re_theta[5] = J6 * Rad2Angle;
-
-											temp_theta[0] = J1 * Rad2Angle + 90;
-											temp_theta[1] = J2 * Rad2Angle - 90;
-											temp_theta[2] = J3 * Rad2Angle - 90;
-											temp_theta[3] = J4 * Rad2Angle;
-											temp_theta[4] = J5 * Rad2Angle + 180;
-											temp_theta[5] = J6 * Rad2Angle - 90;
-
-											for (int o = 0; o < 6; o++)
-											{
-												if (temp_theta[o] > 180)
-												{
-													temp_theta[o] = temp_theta[o] - 360;
-												}
-												else if (temp_theta[o] < -180)
-												{
-													temp_theta[o] = temp_theta[o] + 360;
-												}
-											}
-
-											// Motor direction adjustment
-											temp_theta[0] = (temp_theta[0]);
-											temp_theta[1] = -(temp_theta[1]);
-											temp_theta[2] = -(temp_theta[2]);
-											temp_theta[3] = (temp_theta[3]);
-											temp_theta[4] = (temp_theta[4]);
-											temp_theta[5] = -(temp_theta[5]);
-
-											int tmp_delta_Ang =
-												10 * abs(temp_theta[0] - GetMotor_PresentAngle(FIRST_HAND_ID)) + abs(temp_theta[1] - GetMotor_PresentAngle(FIRST_HAND_ID + 1)) + abs(temp_theta[2] - GetMotor_PresentAngle(FIRST_HAND_ID + 2)) + abs(temp_theta[3] - GetMotor_PresentAngle(FIRST_HAND_ID + 3)) + abs(temp_theta[4] - GetMotor_PresentAngle(FIRST_HAND_ID + 4)) + abs(temp_theta[5] - GetMotor_PresentAngle(FIRST_HAND_ID + 5));
-
-											if (tmp_delta_Ang < delta_Ang)
-											{
-												delta_Ang = tmp_delta_Ang;
-												jacobian = Jacobian(J1, J2, J3, J4, J5, J6, tmpT);
-
-												for (int o = 0; o < 6; o++)
-												{
-													Solution[o] = temp_theta[o];
-												}
-												ArmMotionEnable = true;
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-	if (Solution[0] == 0 && Solution[1] == 0 && Solution[2] == 0 && Solution[3] == 0 && Solution[4] == 0 && Solution[5] == 0)
-	{
-		ArmMotionEnable = false;
-	}
-
-	Solution[6] = pre_angle;
-	return Solution;
-}
-float *SaleArmRight::CenterToArm(float x, float y, float z)
-{
-	float *Solution = new float[3];
-
-	Solution[0] = x;
-	Solution[1] = z;
-	Solution[2] = -y - 430 / 2 - 5;
-	return Solution;
-}
-float *SaleArmRight::CenterToShoulder(float x, float y, float z)
-{
-	float *Solution = new float[3];
-
-	Solution[0] = x;
-	Solution[1] = z + dis_CenterZ_To_ShoulderY_Ori - Get_Scrw_Shift(); //����V�U���t�A�V�W�����A�����O�t��
-	Solution[2] = -y - 346 / 2;
-	return Solution;
+	/* get motor delta angle*/
+	float J0 = GetMotor_PresentAngle(FIRST_SHOULDER_ID_) * Angle2Rad;
+	float J1 = GetMotor_PresentAngle(FIRST_HAND_ID_ + 0) * Angle2Rad;
+	float J2 = GetMotor_PresentAngle(FIRST_HAND_ID_ + 1) * Angle2Rad;
+	float J3 = GetMotor_PresentAngle(FIRST_HAND_ID_ + 2) * Angle2Rad;
+	float J4 = GetMotor_PresentAngle(FIRST_HAND_ID_ + 3) * Angle2Rad;
+	float J5 = GetMotor_PresentAngle(FIRST_HAND_ID_ + 4) * Angle2Rad;
+	float J6 = GetMotor_PresentAngle(FIRST_HAND_ID_ + 5) * Angle2Rad;
+
+	/* basic transform matrix from i-1 to i */
+	/* the sign of delta angle is decided by the motor setting direction and the definition of coordination */
+	Eigen::Matrix<float, 4, 4> T01 = GetTransformMatrix(-J0, M_PI_2, 0, 0);
+	Eigen::Matrix<float, 4, 4> T12 = GetTransformMatrix(+J1 - M_PI_2, M_PI_2, 0, SHOULDER_LINK_LENGTH_);
+	Eigen::Matrix<float, 4, 4> T23 = GetTransformMatrix(-J2 + M_PI_2, -M_PI_2, 0, 0);
+	Eigen::Matrix<float, 4, 4> T34 = GetTransformMatrix(-J3 + M_PI_2, M_PI_2, 0, UPPER_LINK_LENGTH_);
+	Eigen::Matrix<float, 4, 4> T45 = GetTransformMatrix(+J4, M_PI_2, 0, 0);
+	Eigen::Matrix<float, 4, 4> T56 = GetTransformMatrix(+J5, M_PI_2, 0, LOWER_LINK_LENGTH_);
+	Eigen::Matrix<float, 4, 4> T67 = GetTransformMatrix(+J6 + M_PI_2, M_PI_2, END_EFFECTOR_LENGTH_, 0);
+
+	/* transform matrix based on the 1st coordination */
+	Eigen::Matrix<float, 4, 4> T02 = T01 * T12;
+	Eigen::Matrix<float, 4, 4> T03 = T02 * T23;
+	Eigen::Matrix<float, 4, 4> T04 = T03 * T34;
+	Eigen::Matrix<float, 4, 4> T05 = T04 * T45;
+	Eigen::Matrix<float, 4, 4> T06 = T05 * T56;
+	Eigen::Matrix<float, 4, 4> T07 = T06 * T67;
+
+	/* end effector oreientation */
+	float oz = atan2(T07(1, 0), T07(0, 0));
+	float oy = atan2(-T07(2, 0), (T07(0, 0) * cos(oz) + T07(1, 0) * sin(oz)));
+	float ox = atan2((T07(0, 2) * sin(oz) - T07(1, 2) * cos(oz)), (T07(1, 1) * cos(oz) - T07(0, 1) * sin(oz)));
+
+	Arm::current_orientation_ << ox, oy, oz;
+
+	/* positions based on the 1st coordination */
+	Eigen::Matrix<float, 3, 1> P00;
+	Eigen::Matrix<float, 3, 1> P01;
+	Eigen::Matrix<float, 3, 1> P02;
+	Eigen::Matrix<float, 3, 1> P03;
+	Eigen::Matrix<float, 3, 1> P04;
+	Eigen::Matrix<float, 3, 1> P05;
+	Eigen::Matrix<float, 3, 1> P06;
+	Eigen::Matrix<float, 3, 1> P07;
+
+	P00 << 0, 0, 0;
+	P01 << T01(0, 3), T01(1, 3), T01(2, 3);
+	P02 << T02(0, 3), T02(1, 3), T02(2, 3);
+	P03 << T03(0, 3), T03(1, 3), T03(2, 3);
+	P04 << T04(0, 3), T04(1, 3), T04(2, 3);
+	P05 << T05(0, 3), T05(1, 3), T05(2, 3);
+	P06 << T06(0, 3), T06(1, 3), T06(2, 3);
+	P07 << T07(0, 3), T07(1, 3), T07(2, 3);
+
+	Arm::current_position_ = P07;
+
+	/* rotation based on the 1st coordination (upper part of the jacobian matrix) */
+	Eigen::Matrix<float, 3, 1> Z00;
+	Eigen::Matrix<float, 3, 1> Z01;
+	Eigen::Matrix<float, 3, 1> Z02;
+	Eigen::Matrix<float, 3, 1> Z03;
+	Eigen::Matrix<float, 3, 1> Z04;
+	Eigen::Matrix<float, 3, 1> Z05;
+	Eigen::Matrix<float, 3, 1> Z06;
+
+	Z00 << 0, 0, 1;
+	Z01 << T01(0, 2), T01(1, 2), T01(2, 2);
+	Z02 << T02(0, 2), T02(1, 2), T02(2, 2);
+	Z03 << T03(0, 2), T03(1, 2), T03(2, 2);
+	Z04 << T04(0, 2), T04(1, 2), T04(2, 2);
+	Z05 << T05(0, 2), T05(1, 2), T05(2, 2);
+	Z06 << T06(0, 2), T06(1, 2), T06(2, 2);
+
+	/* linear transform based on the 1st coordination (lower part of the jacobian matrix) */
+	Eigen::Matrix<float, 3, 1> Jv01 = Z01.cross(P07 - P01);
+	Eigen::Matrix<float, 3, 1> Jv02 = Z02.cross(P07 - P02);
+	Eigen::Matrix<float, 3, 1> Jv03 = Z03.cross(P07 - P03);
+	Eigen::Matrix<float, 3, 1> Jv04 = Z04.cross(P07 - P04);
+	Eigen::Matrix<float, 3, 1> Jv05 = Z05.cross(P07 - P05);
+	Eigen::Matrix<float, 3, 1> Jv06 = Z06.cross(P07 - P06);
+
+	/* full jacobian matrix (member variable which should be refreshed after arm moves) */
+	Arm::jacobian_matrix_ << Z01(0, 0), Z02(0, 0), Z03(0, 0), Z04(0, 0), Z05(0, 0), Z06(0, 0),
+		Z01(1, 0), Z02(1, 0), Z03(1, 0), Z04(1, 0), Z05(1, 0), Z06(1, 0),
+		Z01(2, 0), Z02(2, 0), Z03(2, 0), Z04(2, 0), Z05(2, 0), Z06(2, 0),
+		Jv01(0, 0), Jv02(0, 0), Jv03(0, 0), Jv04(0, 0), Jv05(0, 0), Jv06(0, 0),
+		Jv01(1, 0), Jv02(1, 0), Jv03(1, 0), Jv04(1, 0), Jv05(1, 0), Jv06(1, 0),
+		Jv01(2, 0), Jv02(2, 0), Jv03(2, 0), Jv04(2, 0), Jv05(2, 0), Jv06(2, 0);
 }
 
-float *SaleArmRight::ShoulderToArm(float x, float y, float z)
+/**
+ * This function is set to be PUBLIC in order to be used in strategy.
+ * 
+ * @param vi - target velocity of motors from 0th to 6th 
+ */
+void SaleArmRight::SetArmVelocity(float v0, float v1, float v2, float v3, float v4, float v5, float v6)
 {
-	float *Solution = new float[3];
-	double shoulder_angle = 0;
-	double dis_shoulder2arm = 13;
-	double b = 120;
-
-	cv::Mat T_Shift = cv::Mat(4, 4, CV_32FC1, cv::Scalar::all(0));
-	cv::Mat T_Turn = cv::Mat(4, 4, CV_32FC1, cv::Scalar::all(0));
-
-	cv::Mat Coordinate_Old = cv::Mat(4, 1, CV_32FC1, cv::Scalar::all(0));
-	cv::Mat Coordinate_New = cv::Mat(4, 1, CV_32FC1, cv::Scalar::all(0));
-
-	double temp = cos(shoulder_angle * Angle2Rad);
-
-	T_Turn.at<float>(0, 0) = cos(shoulder_angle * Angle2Rad);
-	T_Turn.at<float>(0, 1) = 0;
-	T_Turn.at<float>(0, 2) = sin(shoulder_angle * Angle2Rad);
-	T_Turn.at<float>(0, 3) = 0;
-
-	T_Turn.at<float>(1, 0) = 0;
-	T_Turn.at<float>(1, 1) = 1;
-	T_Turn.at<float>(1, 2) = 0;
-	T_Turn.at<float>(1, 3) = 0;
-
-	T_Turn.at<float>(2, 0) = -sin(shoulder_angle * Angle2Rad);
-	T_Turn.at<float>(2, 1) = 0;
-	T_Turn.at<float>(2, 2) = cos(shoulder_angle * Angle2Rad);
-	T_Turn.at<float>(2, 3) = 0;
-
-	T_Turn.at<float>(3, 0) = 0;
-	T_Turn.at<float>(3, 1) = 0;
-	T_Turn.at<float>(3, 2) = 0;
-	T_Turn.at<float>(3, 3) = 1;
-
-	T_Shift.at<float>(0, 0) = 1;
-	T_Shift.at<float>(0, 1) = 0;
-	T_Shift.at<float>(0, 2) = 0;
-	T_Shift.at<float>(0, 3) = -b * sin(shoulder_angle * Angle2Rad);
-
-	T_Shift.at<float>(1, 0) = 0;
-	T_Shift.at<float>(1, 1) = 1;
-	T_Shift.at<float>(1, 2) = 0;
-	T_Shift.at<float>(1, 3) = 0;
-
-	T_Shift.at<float>(2, 0) = 0;
-	T_Shift.at<float>(2, 1) = 0;
-	T_Shift.at<float>(2, 2) = 1;
-	T_Shift.at<float>(2, 3) = -b * cos(shoulder_angle * Angle2Rad);
-
-	T_Shift.at<float>(3, 3) = 0;
-	T_Shift.at<float>(3, 3) = 0;
-	T_Shift.at<float>(3, 3) = 0;
-	T_Shift.at<float>(3, 3) = 1;
-
-	Coordinate_Old.at<float>(0, 0) = x;
-	Coordinate_Old.at<float>(1, 0) = y;
-	Coordinate_Old.at<float>(2, 0) = z;
-	Coordinate_Old.at<float>(3, 0) = 1;
-
-	Coordinate_New = T_Shift * T_Turn * Coordinate_Old;
-
-	Solution[0] = Coordinate_New.at<float>(0, 0);
-	Solution[1] = Coordinate_New.at<float>(1, 0);
-	Solution[2] = Coordinate_New.at<float>(2, 0);
-	return Solution;
-}
-float *SaleArmRight::ArmToShoulder(float shoulder_angle, float x, float y, float z)
-{
-	// *** shoulder_angle in RADIAN
-	float *Solution = new float[3];
-	double b = 120;
-
-	cv::Mat T_Shift = cv::Mat(4, 4, CV_32FC1, cv::Scalar::all(0));
-	cv::Mat T_Turn = cv::Mat(4, 4, CV_32FC1, cv::Scalar::all(0));
-
-	cv::Mat T_Shift_inv = cv::Mat(4, 4, CV_32FC1, cv::Scalar::all(0));
-	cv::Mat T_Turn_inv = cv::Mat(4, 4, CV_32FC1, cv::Scalar::all(0));
-
-	cv::Mat Coordinate_Old = cv::Mat(4, 1, CV_32FC1, cv::Scalar::all(0));
-	cv::Mat Coordinate_New = cv::Mat(4, 1, CV_32FC1, cv::Scalar::all(0));
-
-	T_Turn.at<float>(0, 0) = cos(shoulder_angle);
-	T_Turn.at<float>(0, 1) = 0;
-	T_Turn.at<float>(0, 2) = sin(shoulder_angle);
-	T_Turn.at<float>(0, 3) = 0;
-
-	T_Turn.at<float>(1, 0) = 0;
-	T_Turn.at<float>(1, 1) = 1;
-	T_Turn.at<float>(1, 2) = 0;
-	T_Turn.at<float>(1, 3) = 0;
-
-	T_Turn.at<float>(2, 0) = -sin(shoulder_angle);
-	T_Turn.at<float>(2, 1) = 0;
-	T_Turn.at<float>(2, 2) = cos(shoulder_angle);
-	T_Turn.at<float>(2, 3) = 0;
-
-	T_Turn.at<float>(3, 0) = 0;
-	T_Turn.at<float>(3, 1) = 0;
-	T_Turn.at<float>(3, 2) = 0;
-	T_Turn.at<float>(3, 3) = 1;
-
-	T_Turn_inv = T_Turn.inv();
-
-	T_Shift.at<float>(0, 0) = 1;
-	T_Shift.at<float>(0, 1) = 0;
-	T_Shift.at<float>(0, 2) = 0;
-	T_Shift.at<float>(0, 3) = -b * sin(shoulder_angle);
-
-	T_Shift.at<float>(1, 0) = 0;
-	T_Shift.at<float>(1, 1) = 1;
-	T_Shift.at<float>(1, 2) = 0;
-	T_Shift.at<float>(1, 3) = 0;
-
-	T_Shift.at<float>(2, 0) = 0;
-	T_Shift.at<float>(2, 1) = 0;
-	T_Shift.at<float>(2, 2) = 1;
-	T_Shift.at<float>(2, 3) = -b * cos(shoulder_angle);
-
-	T_Shift.at<float>(3, 3) = 0;
-	T_Shift.at<float>(3, 3) = 0;
-	T_Shift.at<float>(3, 3) = 0;
-	T_Shift.at<float>(3, 3) = 1;
-
-	T_Shift_inv = T_Shift.inv();
-
-	Coordinate_Old.at<float>(0, 0) = x;
-	Coordinate_Old.at<float>(1, 0) = y;
-	Coordinate_Old.at<float>(2, 0) = z;
-	Coordinate_Old.at<float>(3, 0) = 1;
-
-	Coordinate_New = T_Turn_inv * T_Shift_inv * Coordinate_Old;
-
-	Solution[0] = Coordinate_New.at<float>(0, 0);
-	Solution[1] = Coordinate_New.at<float>(1, 0);
-	Solution[2] = Coordinate_New.at<float>(2, 0) + 10;
-	return Solution;
+	SetMotor_Velocity(FIRST_SHOULDER_ID_, +v0 * pro_radpersec2scale_);
+	SetMotor_Velocity(FIRST_HAND_ID_ + 0, +v1 * pro_radpersec2scale_);
+	SetMotor_Velocity(FIRST_HAND_ID_ + 1, -v2 * pro_radpersec2scale_);
+	SetMotor_Velocity(FIRST_HAND_ID_ + 2, -v3 * pro_radpersec2scale_);
+	SetMotor_Velocity(FIRST_HAND_ID_ + 3, +v4 * pro_radpersec2scale_);
+	SetMotor_Velocity(FIRST_HAND_ID_ + 4, +v5 * pro_radpersec2scale_);
+	SetMotor_Velocity(FIRST_HAND_ID_ + 5, +v6 * pro_radpersec2scale_);
 }
 
-float *SaleArmRight::ShoulderToCenter(float x, float y, float z)
+/**
+ * This function basically implements the new version of 6 DOF (or called the fake 7 DOF) GotoPosition in velocity mode,
+ * in which the end effector angular velocities (RPY) and linear velocities (XYZ) are transformed into angular velocities of 6 motors by jacobian matrix. 
+ * 
+ * Jacobian matrix can only actually solve the solutions of 6 DOF arm,
+ * but with the dynamically end effector data, the movement of 0th motor can be combined with the 6 DOF and be done together.
+ * 
+ * @param J0 - target angle of the 0th motor (in degree)
+ * @param oi - RPY angle of the target orientation (in degree, so it need to be multiplied by Angle2Rad as following)
+ * @param pi - target position (in minimeter)
+ */
+void SaleArmRight::TrajectoryPlanning(const float &J0, const float &ox, const float &oy, const float &oz, const float &px, const float &py, const float &pz)
 {
-	float *Solution = new float[3];
+	/* used to control the scalar of motor velocity */
+    const float velocity_factor = 1.0;
+    /* used to control angular (RPY) precision */
+    const float angular_threshold = M_PI / 180;
+    /* used to control linear (XYZ) precision */
+    const float linear_threshold = 0.1;
+    /* used to control zeroth motor angle precision */
+    const float zeroth_joint_threshold = M_PI / 180;
 
-	Solution[0] = x;
-	Solution[2] = y - dis_CenterZ_To_ShoulderY_Ori + Get_Scrw_Shift();
-	Solution[1] = -z - 346 / 2 + 10;
+    Eigen::Matrix<float, 3, 1> target_position;
+    Eigen::Matrix<float, 3, 1> target_orientation;
+    target_position << px, py, pz;
+    target_orientation << ox, oy, oz;
+    target_orientation *= Angle2Rad;
 
-	return Solution;
+    /* angular RMS error is to check whether RPY is close enough to target orientation */
+    float angular_error = RootMeanSquareError(target_orientation, current_orientation_);
+
+    /* linear RMS error is to check whether XYZ is close enough to target position */
+    float linear_error = RootMeanSquareError(target_position, current_position_);
+
+    /* 0th joint error */
+    float zeroth_joint_error = (J0 - GetMotor_PresentAngle(FIRST_SHOULDER_ID_)) * Angle2Rad;
+
+    Eigen::Matrix<float, 3, 1> angular_velocity;
+    Eigen::Matrix<float, 3, 1> linear_velocity;
+    angular_velocity.setZero(3, 1);
+    linear_velocity.setZero(3, 1);
+
+    float velocity_zeroth_joint = 0.0;
+
+    /* simple acceleration control, this factor will increase to 1.0 as the counter increases */
+    float acceleration_factor = 0.1;
+    int counter = 0;
+
+    is_working_ = true;
+
+    /* only when all the values of error are under thresholds or when predicted velocity is out of range can the loop be broken */
+    while (angular_error > angular_threshold || linear_error > linear_threshold || abs(zeroth_joint_error) > zeroth_joint_threshold)
+    {
+        /* first update the jacobian matrix, current orientation and position */
+        CalculateJacobianMatrix();
+
+        /* calculate new error based on oriention and position */
+        angular_error = RootMeanSquareError(target_orientation, current_orientation_);
+        linear_error = RootMeanSquareError(target_position, current_position_);
+        zeroth_joint_error = (J0 - GetMotor_PresentAngle(FIRST_SHOULDER_ID_)) * Angle2Rad;
+
+        /* linear acceleration control */
+        if (acceleration_factor < 1 && counter % 20 == 0)
+            acceleration_factor += 0.1;
+
+        counter++;
+
+        /* linear deceleration control */
+        angular_velocity = (target_orientation - current_orientation_) * velocity_factor * acceleration_factor;
+        linear_velocity = (target_position - current_position_) * velocity_factor * acceleration_factor;
+        velocity_zeroth_joint = zeroth_joint_error * acceleration_factor;
+
+        /* end-effector velocity includes angular part (pitch, raw, yaw) in the upper and linear part (spatial position) in the lower */
+        Eigen::Matrix<float, 6, 1> end_effector_velocity;
+        end_effector_velocity << angular_velocity, linear_velocity;
+
+        /* find the solution of Jw = V by the function in library <Eigen/LU> */
+        Eigen::Matrix<float, 6, 1> motor_velocity;
+        motor_velocity = jacobian_matrix_.lu().solve(end_effector_velocity);        
+        motor_velocity = CheckMotorVelocity(motor_velocity);
+
+        if (abs(velocity_zeroth_joint) >= (M_PI / 12))
+            velocity_zeroth_joint = Sign(velocity_zeroth_joint) * (M_PI / 12);
+
+        if (is_out_of_limit_)
+        {
+            std::cout << "\t[WARNING] Dangerous velocity! Fail to arrive." << std::endl;
+            SetAllMotorsVelocity(0);
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+            is_out_of_limit_ = false;
+            break;
+        }
+        else
+        {
+            /* after upper limit control, we found that motors may stop moving as they are very close to ther target point. */
+            /* so here are some lower limit solution to handle the problem */
+            if (abs(motor_velocity(0, 0) * pro_radpersec2scale_) <= 1 &&
+                abs(motor_velocity(1, 0) * pro_radpersec2scale_) <= 1 &&
+                abs(motor_velocity(2, 0) * pro_radpersec2scale_) <= 1 &&
+                abs(motor_velocity(3, 0) * pro_radpersec2scale_) <= 1 &&
+                abs(motor_velocity(4, 0) * pro_radpersec2scale_) <= 1 &&
+                abs(motor_velocity(5, 0) * pro_radpersec2scale_) <= 1)
+            {
+                motor_velocity *= 10;
+            }
+
+            /* set motor speed accroding to the solution */
+            /* again, the sign of velocity is accroding to the installation of motor and the definition of coordination */
+            /* for the right arm in current version, it should be (+, +, -, -, +, +, +) */
+            SetArmVelocity(velocity_zeroth_joint,
+                        motor_velocity(0, 0),
+                        motor_velocity(1, 0),
+                        motor_velocity(2, 0),
+                        motor_velocity(3, 0),
+                        motor_velocity(4, 0),
+                        motor_velocity(5, 0));
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(int(delay_time_)));
+    }
+    SetAllMotorsVelocity(0);
+    is_working_ = false;
+    std::cout << "\t[INFO] Move is over." << std::endl;
+    std::cout << "\t\tFinal position (" << GetCurrentPosition(0) << ", "
+              << GetCurrentPosition(1) << ", "
+              << GetCurrentPosition(2) << ")" << std::endl;
+
+    std::cout << "\t\tFinal orientation (" << GetCurrentOrientation(0) << ", "
+              << GetCurrentOrientation(1) << ", "
+              << GetCurrentOrientation(2) << ")" << std::endl;
 }
-float SaleArmRight::Get_Scrw_Shift()
-{
-	std::string readFileName = "ScrewBall_Height.txt";
-	std::ifstream in(readFileName.c_str());
-	std::string inputStr;
-	std::vector<float> inputContent;
-	while (std::getline(in, inputStr))
-	{
-		inputContent.push_back(std::stof(inputStr));
-	}
-	in.close();
-	if (inputContent.size() > 1)
-	{
 
-		height_shift_now = inputContent[0];
-		return inputContent[0];
-	}
-	else
-		return height_shift_now;
-}
-void SaleArmRight::ShoulderTurn(float angle)
+void SaleArmRight::PneumaticOn()
 {
-	SetMotor_Angle(FIRST_SHOULDER_ID, angle);
-	WaitAllMotorsArrival();
+	const char *port_name = "/dev/ttyACM0";
+    Arm::port_file_ = fopen(port_name, "w");
+    fprintf(port_file_, "%d", 3);
+    fclose(port_file_);
+	std::cout << "\t[INFO] Right Pneumatic ON." << std::endl;
+}
+void SaleArmRight::PneumaticOff()
+{
+	const char *port_name = "/dev/ttyACM0";
+    Arm::port_file_ = fopen(port_name, "w");
+    fprintf(port_file_, "%d", 2);
+    fclose(port_file_);
+	std::cout << "\t[INFO] Right Pneumatic OFF." << std::endl;
 }

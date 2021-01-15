@@ -6,7 +6,7 @@ Form_ControlPanel::Form_ControlPanel(QWidget *parent) : QMainWindow(parent),
 	ui->setupUi(this);
 	form_robot = new Form_Robot(this);
 	form_scara = new Form_Scara(this);
-	form_network = new Form_Network(this);
+	form_may = new Form_May(this);
 	form_strategy = new Form_Strategy(this);
 
 }
@@ -15,7 +15,7 @@ Form_ControlPanel::~Form_ControlPanel()
 {
 	form_robot->deleteLater();
 	form_scara->deleteLater();
-	form_network->deleteLater();
+	form_may->deleteLater();
 	form_strategy->deleteLater();
 	delete ui;
 }
@@ -28,8 +28,8 @@ void Form_ControlPanel::closeEvent(QCloseEvent *event)
 		form_scara->close();
 	if (form_strategy->isVisible())
 		form_strategy->close();
-	if (form_network->isVisible())
-		form_network->close();
+	if (form_may->isVisible())
+		form_may->close();
 }
 
 void Form_ControlPanel::on_pB_Form_Robot_clicked()
@@ -56,10 +56,10 @@ void Form_ControlPanel::on_pB_Form_Strategy_clicked()
 		form_strategy->hide();
 }
 
-void Form_ControlPanel::on_pB_Form_Network_clicked()
+void Form_ControlPanel::on_pB_Form_May_clicked()
 {
-	if (form_network->isHidden())
-		form_network->show();
+	if (form_may->isHidden())
+		form_may->show();
 	else
-		form_network->hide();
+		form_may->hide();
 }

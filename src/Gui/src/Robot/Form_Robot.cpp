@@ -46,6 +46,14 @@ Form_Robot::Form_Robot(QWidget *parent) : QDialog(parent),
 	form_mobile->moveToThread(thread_mobile);
 	thread_mobile->start();
 
+	/* ForceSensor */
+	form_forcesensor = new Form_ForceSensor(ui);
+	thread_forcesensor = new QThread();
+	QObject::connect(ui->ForceSensor_btn_LeftDataNormalize, SIGNAL(clicked()), form_forcesensor, SLOT(LeftForceSensorNormalize()));
+	QObject::connect(ui->ForceSensor_btn_RightDataNormalize, SIGNAL(clicked()), form_forcesensor, SLOT(RightForceSensorNormalize()));
+	form_forcesensor->moveToThread(thread_forcesensor);
+	thread_forcesensor->start();
+
 	QObject::connect(ui->Xbox_Enable, SIGNAL(stateChanged(int)), this, SLOT(XBoxJoystick_state(int)));
 }
 
@@ -54,9 +62,11 @@ Form_Robot::~Form_Robot()
 	form_head->deleteLater();
 	form_arm->deleteLater();
 	form_mobile->deleteLater();
+	form_forcesensor->deleteLater();
 	thread_head->deleteLater();
 	thread_arm->deleteLater();
 	thread_mobile->deleteLater();
+	thread_forcesensor->deleteLater();
 	delete ui;
 }
 
@@ -73,6 +83,7 @@ void Form_Robot::on_Robot_btn_Reconnect_clicked()
 	form_head->SetHeadandLifting(CRobot->CHeadandLifting);
 	form_arm->SetArm(CRobot->CLeftArm, CRobot->CRightArm);
 	form_mobile->SetMobile(CRobot->CMobile);
+	form_forcesensor->SetForceSensor(CRobot->CLeftForceSensor, CRobot->CRightForceSensor);
 
 	_is_deleted_thread_display = false;
 	thread_display = new std::thread(&Form_Robot::Display, this);
@@ -126,6 +137,7 @@ void Form_Robot::showEvent(QShowEvent *event)
 	form_head->SetHeadandLifting(CRobot->CHeadandLifting);
 	form_arm->SetArm(CRobot->CLeftArm, CRobot->CRightArm);
 	form_mobile->SetMobile(CRobot->CMobile);
+	form_forcesensor->SetForceSensor(CRobot->CLeftForceSensor, CRobot->CRightForceSensor);
 
 	_is_deleted_thread_display = false;
 	thread_display = new std::thread(&Form_Robot::Display, this);
@@ -147,11 +159,17 @@ void Form_Robot::Display()
 	while (!_is_deleted_thread_display)
 	{
 		if (ui->Correction->currentIndex() == 0)
+		{
 			form_arm->Display();
+			CRobot->CLeftArm->CalculateJacobianMatrix();
+			CRobot->CRightArm->CalculateJacobianMatrix();
+		}			
 		else if (ui->Correction->currentIndex() == 1)
 			form_mobile->Display();
 		else if (ui->Correction->currentIndex() == 2)
 			form_head->Display();
+		else if (ui->Correction->currentIndex() == 3)
+			form_forcesensor->Display();
 		else
 			;
 		this_thread::sleep_for(chrono::milliseconds(50));

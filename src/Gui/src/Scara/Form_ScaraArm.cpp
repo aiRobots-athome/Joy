@@ -6,14 +6,8 @@ void Form_ScaraArm::on_ScaraArm_btn_PosGo_clicked()
 
 	const float px = ui->ScaraArm_lineEdit_X->text().toFloat();
 	const float py = ui->ScaraArm_lineEdit_Y->text().toFloat();
-	const float pz = ui->ScaraArm_lineEdit_Z->text().toFloat();
 
-	const int oz_i = (int) oz;
-	const int px_i = (int) px;
-	const int py_i = (int) py;
-	
-	// CScaraArm->GotoPosition(0, 0, oz, px, py, pz);
-	CScaraArm->GotoPosition(0, 0, oz_i, px_i, py_i, pz);
+	CScaraArm->TrajectoryPlanning(oz, px, py, 1);
 }
 
 void Form_ScaraArm::on_Scara_btn_Reset_clicked()
@@ -37,28 +31,10 @@ void Form_ScaraArm::on_Goal_Height_btn_clicked()
 	CScaraArm->GoScrewHeight(height);
 }
 
-void Form_ScaraArm::Get_Now_Position()
-{
-	cv::Mat tempT = CScaraArm->GetKinematics();
-	int x = tempT.at<float>(0, 3);
-	int y = tempT.at<float>(1, 3);
-	int z = CScaraArm->GetPresentHeight();
-	float nx = tempT.at<float>(0, 0);
-	float ny = tempT.at<float>(1, 0);
-	int oz = atan2(ny, nx) * Rad2Angle;
-	if (oz < -180)
-		oz = oz + 360;
-	else if (oz > 180)
-		oz = oz - 360;
-
-	ui->ScaraArm_label_PresentX->setText(QString::number(x));
-	ui->ScaraArm_label_PresentY->setText(QString::number(y));
-	ui->ScaraArm_label_PresentZ->setText(QString::number(z));
-	ui->ScaraArm_label_PresentOz->setText(QString::number(oz));
-}
-
 void Form_ScaraArm::Display()
 {
+	CScaraArm->CalculateJacobianMatrix();
+
 	// ID
 	ui->ScaraArm_label_ID->setText(QString::number(CScaraArm->GetMotor_ID(0)));
 	ui->ScaraArm_label_ID_2->setText(QString::number(CScaraArm->GetMotor_ID(1)));
@@ -92,7 +68,16 @@ void Form_ScaraArm::Display()
 	isOK((abs(CScaraArm->GetMotor_PresentTorque(2)) < torque_threshold) ? true : false, ui->ScaraArm_label_PresentTorque_3);
 	isOK((abs(CScaraArm->GetMotor_PresentTorque(3)) < torque_threshold) ? true : false, ui->ScaraArm_label_PresentTorque_4);
 
-	Get_Now_Position();
+	// forward kinematics
+	ui->ScaraArm_label_PresentX->setText(QString::number((float)CScaraArm->GetCurrentPosition(0)));
+	ui->ScaraArm_label_PresentY->setText(QString::number((float)CScaraArm->GetCurrentPosition(1)));
+	ui->ScaraArm_label_PresentZ->setText(QString::number((float)CScaraArm->GetPresentHeight()));
+	ui->ScaraArm_label_PresentOz->setText(QString::number((float)CScaraArm->GetCurrentOrientation(2)));
+
+	if (CScaraArm->GetWorkingState())
+		QMetaObject::invokeMethod(ui->Tab_ScaraArm, "setStyleSheet", Qt::QueuedConnection, Q_ARG(QString, "QWidget { background-color: rgb(255, 200, 200)}"));
+	else
+		QMetaObject::invokeMethod(ui->Tab_ScaraArm, "setStyleSheet", Qt::QueuedConnection, Q_ARG(QString, "QWidget { background-color: rgb(255, 255, 255)}"));	
 }
 
 void Form_ScaraArm::isOK(bool checked_thing, QLabel *label)

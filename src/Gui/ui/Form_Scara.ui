@@ -35,9 +35,12 @@
       <string notr="true">background-color:rgb(255, 255, 255);</string>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="Tab_ScaraArm">
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
       <attribute name="title">
        <string>ScaraArm</string>
       </attribute>
@@ -271,40 +274,7 @@
              <string notr="true">background-color:rgb(251, 255, 231)</string>
             </property>
             <property name="text">
-             <string>0</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QLabel" name="ScaraArm_label_PresentZ">
-            <property name="minimumSize">
-             <size>
-              <width>70</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>70</width>
-              <height>90</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <family>Bitstream Vera Sans</family>
-              <pointsize>12</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color:rgb(251, 255, 231)</string>
-            </property>
-            <property name="text">
-             <string>0</string>
+             <string>-</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -405,7 +375,7 @@
              <string notr="true">background-color:rgb(251, 255, 231)</string>
             </property>
             <property name="text">
-             <string>0</string>
+             <string>-</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -579,6 +549,26 @@
             </property>
            </widget>
           </item>
+          <item row="3" column="1">
+           <widget class="QLabel" name="ScaraArm_label_PresentZ">
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color:rgb(251, 255, 231)</string>
+            </property>
+            <property name="text">
+             <string>-</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
         <item row="0" column="1">
@@ -682,42 +672,6 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="2">
-           <widget class="QLineEdit" name="ScaraArm_lineEdit_Oy">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>70</width>
-              <height>90</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <family>微軟正黑體</family>
-              <pointsize>12</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="layoutDirection">
-             <enum>Qt::LeftToRight</enum>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color:rgb(255, 248, 252)</string>
-            </property>
-            <property name="text">
-             <string>0</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="1">
            <widget class="QLineEdit" name="ScaraArm_lineEdit_X">
             <property name="minimumSize">
@@ -747,10 +701,10 @@
              <string notr="true">background-color:rgb(255, 248, 252)</string>
             </property>
             <property name="text">
-             <string>900</string>
+             <string>600</string>
             </property>
             <property name="alignment">
-             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+             <set>Qt::AlignCenter</set>
             </property>
            </widget>
           </item>
@@ -888,7 +842,7 @@
              <string>0</string>
             </property>
             <property name="alignment">
-             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+             <set>Qt::AlignCenter</set>
             </property>
            </widget>
           </item>
@@ -924,7 +878,7 @@
              <string>0</string>
             </property>
             <property name="alignment">
-             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+             <set>Qt::AlignCenter</set>
             </property>
            </widget>
           </item>
@@ -965,42 +919,6 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="1">
-           <widget class="QLineEdit" name="ScaraArm_lineEdit_Z">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>70</width>
-              <height>90</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <family>微軟正黑體</family>
-              <pointsize>12</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="layoutDirection">
-             <enum>Qt::LeftToRight</enum>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color:rgb(255, 248, 252)</string>
-            </property>
-            <property name="text">
-             <string>0</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
           <item row="3" column="3">
            <widget class="QPushButton" name="ScaraArm_btn_PosGo">
             <property name="minimumSize">
@@ -1035,38 +953,62 @@
            </widget>
           </item>
           <item row="1" column="2">
-           <widget class="QLineEdit" name="ScaraArm_lineEdit_Ox">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>70</width>
-              <height>90</height>
-             </size>
-            </property>
+           <widget class="QLabel" name="ScaraArm_label_Ox">
             <property name="font">
              <font>
-              <family>微軟正黑體</family>
               <pointsize>12</pointsize>
               <weight>75</weight>
               <bold>true</bold>
              </font>
             </property>
-            <property name="layoutDirection">
-             <enum>Qt::LeftToRight</enum>
-            </property>
             <property name="styleSheet">
-             <string notr="true">background-color:rgb(255, 248, 252)</string>
+             <string notr="true">background-color:rgb(251, 255, 231)</string>
             </property>
             <property name="text">
-             <string>0</string>
+             <string>-</string>
             </property>
             <property name="alignment">
-             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2">
+           <widget class="QLabel" name="ScaraArm_label_Oy">
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color:rgb(251, 255, 231)</string>
+            </property>
+            <property name="text">
+             <string>-</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QLabel" name="ScaraArm_label_Z">
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color:rgb(251, 255, 231)</string>
+            </property>
+            <property name="text">
+             <string>-</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
             </property>
            </widget>
           </item>
@@ -2659,6 +2601,37 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>Correction</tabstop>
+  <tabstop>Screw_btn_Up</tabstop>
+  <tabstop>Screw_btn_Down</tabstop>
+  <tabstop>Screw_lineEdit_Height</tabstop>
+  <tabstop>Screw_btn_Go</tabstop>
+  <tabstop>ScaraArm_btn_Reset</tabstop>
+  <tabstop>ScaraArm_lineEdit_X</tabstop>
+  <tabstop>ScaraArm_lineEdit_Y</tabstop>
+  <tabstop>ScaraArm_lineEdit_Oz</tabstop>
+  <tabstop>ScaraArm_btn_PosGo</tabstop>
+  <tabstop>ScaraArm_btn_Start</tabstop>
+  <tabstop>ScaraArm_btn_Stop</tabstop>
+  <tabstop>Scara_btn_Reconnect</tabstop>
+  <tabstop>XYPlatform_btn_Start</tabstop>
+  <tabstop>XYPlatform_btn_Stop</tabstop>
+  <tabstop>XYPlatform_spinBox_Y</tabstop>
+  <tabstop>XYPlatform_spinBox_X</tabstop>
+  <tabstop>XYPlatform_btn_Reset</tabstop>
+  <tabstop>XYPlatform_graphicsView_Camera</tabstop>
+  <tabstop>VisionCar_spin_CarAngle</tabstop>
+  <tabstop>VisionCar_spin_Screw</tabstop>
+  <tabstop>VisionCar_btn_Start</tabstop>
+  <tabstop>VisionCar_btn_Stop</tabstop>
+  <tabstop>VisionCar_btn_PosGo</tabstop>
+  <tabstop>VisionCar_spin_CamAngle</tabstop>
+  <tabstop>VisionCar_graphicsView_Camera</tabstop>
+  <tabstop>VisionCar_Cam_CTL</tabstop>
+  <tabstop>VisionCar_Screw_CTL</tabstop>
+  <tabstop>VisionCar_btn_Reset</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

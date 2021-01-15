@@ -16,6 +16,8 @@ Robot::Robot()
     CLeftArm = SaleArmLeft::getSaleArmLeft();
     CRightArm = SaleArmRight::getSaleArmRight();
     CMobile = Mobile::getMobile();
+    CLeftForceSensor = new ForceSensor("/dev/ttyUSB4");
+    CRightForceSensor = new ForceSensor("/dev/ttyUSB5");
 
     cout << "Class constructed: Robot" << endl;
     cout << "================================================================================" << endl;
@@ -29,6 +31,8 @@ Robot::~Robot()
     delete CLeftArm;
     delete CRightArm;
     delete CMobile;
+    delete CLeftForceSensor;
+    delete CRightForceSensor;
     inst_ = nullptr;
 }
 

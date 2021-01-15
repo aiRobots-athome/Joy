@@ -18,8 +18,9 @@ public:
 
     /* CORE function */
     void CalculateJacobianMatrix(void);
-    void TrajectoryPlanning(const float &oz, const float &px, const float &py);
+    void TrajectoryPlanning(const float &oz, const float &px, const float &py, const float velocity_factor);
     bool GoScrewHeight(const float &goal_height);
+    void GoToPosition(float *goal, float h, float speed_max);
 
     /* Set data function */
     void SetArmVelocity(float v0, float v1, float v2);

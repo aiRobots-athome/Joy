@@ -82,3 +82,37 @@ void Wheel::Stop()
 {
     SetAllMotorsTorqueEnable(false);
 }
+
+void Wheel::MoveByConstant(const int &velocity)
+{
+    SetMotor_Velocity(wheel_LF, -velocity);
+    SetMotor_Velocity(wheel_RF, +velocity);
+    SetMotor_Velocity(wheel_LB, -velocity);
+    SetMotor_Velocity(wheel_RB, +velocity);
+}
+
+void Wheel::SelfTurnByConstant(const int &velocity)
+{
+    SetMotor_Velocity(wheel_LF, +velocity);
+    SetMotor_Velocity(wheel_RF, +velocity);
+    SetMotor_Velocity(wheel_LB, +velocity);
+    SetMotor_Velocity(wheel_RB, +velocity);
+}
+
+void Wheel::LockOn(void)
+{
+    // SetMotor_TorqueEnable(wheel_LB, true);
+    // SetMotor_TorqueEnable(wheel_RB, true);
+    SetAllMotorsTorqueEnable(true);
+}
+
+void Wheel::Wait(void)
+{
+    while(true)
+    {
+        std::cout << GetMotor_PresentVelocity(wheel_LF) << std::endl;
+        if (abs(GetMotor_PresentVelocity(wheel_LF)) < 5)
+            break;
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+}

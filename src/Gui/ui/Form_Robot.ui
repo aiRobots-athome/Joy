@@ -14,6 +14,23 @@
    <string>Robot</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="1" column="0">
+    <widget class="QPushButton" name="Robot_btn_Reconnect">
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(255, 212, 229)</string>
+     </property>
+     <property name="text">
+      <string>Reconnect</string>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="0">
     <widget class="QTabWidget" name="Correction">
      <property name="enabled">
@@ -31,7 +48,7 @@
       <string notr="true">background-color: rgb(255, 255, 255);</string>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <property name="iconSize">
       <size>
@@ -1072,36 +1089,12 @@
         <property name="title">
          <string>LeftGripper</string>
         </property>
-        <widget class="QPushButton" name="LeftGripper_btn_Hold">
-         <property name="geometry">
-          <rect>
-           <x>220</x>
-           <y>40</y>
-           <width>71</width>
-           <height>28</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <family>微軟正黑體</family>
-           <pointsize>12</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">background-color: rgb(225, 225, 225);</string>
-         </property>
-         <property name="text">
-          <string>Hold</string>
-         </property>
-        </widget>
         <widget class="QPushButton" name="LeftGripper_btn_Release">
          <property name="geometry">
           <rect>
-           <x>310</x>
+           <x>350</x>
            <y>40</y>
-           <width>81</width>
+           <width>111</width>
            <height>28</height>
           </rect>
          </property>
@@ -1109,58 +1102,43 @@
           <font>
            <family>Bitstream Vera Sans</family>
            <pointsize>12</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
+           <weight>50</weight>
+           <bold>false</bold>
           </font>
          </property>
          <property name="styleSheet">
           <string notr="true">background-color: rgb(225, 225, 225);</string>
          </property>
          <property name="text">
-          <string>Release</string>
+          <string>OFF</string>
          </property>
         </widget>
-        <widget class="QSplitter" name="splitter_2">
+        <widget class="QPushButton" name="LeftGripper_btn_Hold">
          <property name="geometry">
           <rect>
-           <x>30</x>
+           <x>130</x>
            <y>40</y>
            <width>111</width>
            <height>27</height>
           </rect>
          </property>
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
+         <property name="font">
+          <font>
+           <family>微軟正黑體</family>
+           <pointsize>12</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
          </property>
-         <widget class="QLabel" name="LeftGripper_label_title_Angle">
-          <property name="font">
-           <font>
-            <family>微軟正黑體</family>
-            <pointsize>12</pointsize>
-            <weight>75</weight>
-            <bold>true</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>Angle:</string>
-          </property>
-         </widget>
-         <widget class="QLineEdit" name="LeftGripper_lineEdit_Angle">
-          <property name="font">
-           <font>
-            <family>微軟正黑體</family>
-            <pointsize>12</pointsize>
-            <weight>75</weight>
-            <bold>true</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>0</string>
-          </property>
-         </widget>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(225, 225, 225);</string>
+         </property>
+         <property name="text">
+          <string>ON</string>
+         </property>
         </widget>
        </widget>
-       <widget class="QGroupBox" name="groupBox_2">
+       <widget class="QGroupBox" name="Left_GroupBox_control">
         <property name="geometry">
          <rect>
           <x>10</x>
@@ -1229,8 +1207,8 @@
              </property>
             </widget>
            </item>
-           <item row="1" column="1">
-            <widget class="QLabel" name="Leftarm_label_PresentX">
+           <item row="3" column="1">
+            <widget class="QLabel" name="Leftarm_label_PresentZ">
              <property name="minimumSize">
               <size>
                <width>70</width>
@@ -1256,73 +1234,6 @@
              </property>
              <property name="text">
               <string>0</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QLabel" name="LeftHand_label_title_Pos_2">
-             <property name="minimumSize">
-              <size>
-               <width>70</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>70</width>
-               <height>90</height>
-              </size>
-             </property>
-             <property name="font">
-              <font>
-               <pointsize>12</pointsize>
-               <weight>75</weight>
-               <bold>true</bold>
-              </font>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">background-color:rgb(232, 232, 232)</string>
-             </property>
-             <property name="text">
-              <string>Pos</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="0">
-            <widget class="QLabel" name="LeftHand_label_title_Z_2">
-             <property name="minimumSize">
-              <size>
-               <width>70</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>70</width>
-               <height>90</height>
-              </size>
-             </property>
-             <property name="font">
-              <font>
-               <pointsize>12</pointsize>
-               <weight>75</weight>
-               <bold>true</bold>
-              </font>
-             </property>
-             <property name="layoutDirection">
-              <enum>Qt::LeftToRight</enum>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">background-color:rgb(232, 232, 232)</string>
-             </property>
-             <property name="text">
-              <string>Z</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignCenter</set>
@@ -1395,6 +1306,38 @@
              </property>
             </widget>
            </item>
+           <item row="0" column="2">
+            <widget class="QLabel" name="LeftHand_label_title_AxisRotate_2">
+             <property name="minimumSize">
+              <size>
+               <width>70</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>70</width>
+               <height>90</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">background-color:rgb(232, 232, 232)</string>
+             </property>
+             <property name="text">
+              <string>Rotate</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
            <item row="2" column="2">
             <widget class="QLabel" name="Leftarm_label_PresentOy">
              <property name="minimumSize">
@@ -1428,41 +1371,8 @@
              </property>
             </widget>
            </item>
-           <item row="1" column="2">
-            <widget class="QLabel" name="Leftarm_label_PresentOx">
-             <property name="minimumSize">
-              <size>
-               <width>70</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>70</width>
-               <height>90</height>
-              </size>
-             </property>
-             <property name="font">
-              <font>
-               <family>Bitstream Vera Sans</family>
-               <pointsize>12</pointsize>
-               <weight>75</weight>
-               <bold>true</bold>
-              </font>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">background-color:rgb(251, 255, 231)</string>
-             </property>
-             <property name="text">
-              <string>0</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="2">
-            <widget class="QLabel" name="LeftHand_label_title_AxisRotate_2">
+           <item row="0" column="1">
+            <widget class="QLabel" name="LeftHand_label_title_Pos_2">
              <property name="minimumSize">
               <size>
                <width>70</width>
@@ -1486,15 +1396,15 @@
               <string notr="true">background-color:rgb(232, 232, 232)</string>
              </property>
              <property name="text">
-              <string>Rotate</string>
+              <string>Pos</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignCenter</set>
              </property>
             </widget>
            </item>
-           <item row="3" column="1">
-            <widget class="QLabel" name="Leftarm_label_PresentZ">
+           <item row="1" column="2">
+            <widget class="QLabel" name="Leftarm_label_PresentOx">
              <property name="minimumSize">
               <size>
                <width>70</width>
@@ -1555,6 +1465,74 @@
              </property>
              <property name="text">
               <string>Y</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QLabel" name="LeftHand_label_title_Z_2">
+             <property name="minimumSize">
+              <size>
+               <width>70</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>70</width>
+               <height>90</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="layoutDirection">
+              <enum>Qt::LeftToRight</enum>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">background-color:rgb(232, 232, 232)</string>
+             </property>
+             <property name="text">
+              <string>Z</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QLabel" name="Leftarm_label_PresentX">
+             <property name="minimumSize">
+              <size>
+               <width>70</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>70</width>
+               <height>90</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <family>Bitstream Vera Sans</family>
+               <pointsize>12</pointsize>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">background-color:rgb(251, 255, 231)</string>
+             </property>
+             <property name="text">
+              <string>0</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignCenter</set>
@@ -1728,7 +1706,7 @@
               <string notr="true">background-color:rgb(255, 248, 252)</string>
              </property>
              <property name="text">
-              <string>-300</string>
+              <string>120</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -1882,7 +1860,7 @@
               <string notr="true">background-color:rgb(255, 248, 252)</string>
              </property>
              <property name="text">
-              <string>0</string>
+              <string>-300</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -3146,9 +3124,9 @@
         <widget class="QPushButton" name="RightGripper_btn_Hold">
          <property name="geometry">
           <rect>
-           <x>220</x>
+           <x>130</x>
            <y>40</y>
-           <width>71</width>
+           <width>111</width>
            <height>28</height>
           </rect>
          </property>
@@ -3156,23 +3134,23 @@
           <font>
            <family>微軟正黑體</family>
            <pointsize>12</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
+           <weight>50</weight>
+           <bold>false</bold>
           </font>
          </property>
          <property name="styleSheet">
           <string notr="true">background-color: rgb(225, 225, 225);</string>
          </property>
          <property name="text">
-          <string>Hold</string>
+          <string>ON</string>
          </property>
         </widget>
         <widget class="QPushButton" name="RightGripper_btn_Release">
          <property name="geometry">
           <rect>
-           <x>310</x>
+           <x>350</x>
            <y>40</y>
-           <width>81</width>
+           <width>111</width>
            <height>28</height>
           </rect>
          </property>
@@ -3180,58 +3158,19 @@
           <font>
            <family>Bitstream Vera Sans</family>
            <pointsize>12</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
+           <weight>50</weight>
+           <bold>false</bold>
           </font>
          </property>
          <property name="styleSheet">
           <string notr="true">background-color: rgb(225, 225, 225);</string>
          </property>
          <property name="text">
-          <string>Release</string>
+          <string>OFF</string>
          </property>
-        </widget>
-        <widget class="QSplitter" name="splitter">
-         <property name="geometry">
-          <rect>
-           <x>30</x>
-           <y>40</y>
-           <width>111</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <widget class="QLabel" name="RightGripper_label_title_Angle">
-          <property name="font">
-           <font>
-            <family>微軟正黑體</family>
-            <pointsize>12</pointsize>
-            <weight>75</weight>
-            <bold>true</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>Angle:</string>
-          </property>
-         </widget>
-         <widget class="QLineEdit" name="RightGripper_lineEdit_Angle">
-          <property name="font">
-           <font>
-            <family>微軟正黑體</family>
-            <pointsize>12</pointsize>
-            <weight>75</weight>
-            <bold>true</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>0</string>
-          </property>
-         </widget>
         </widget>
        </widget>
-       <widget class="QGroupBox" name="groupBox_11">
+       <widget class="QGroupBox" name="Right_GroupBox_control">
         <property name="geometry">
          <rect>
           <x>10</x>
@@ -3935,7 +3874,7 @@
               <string notr="true">background-color:rgb(255, 248, 252)</string>
              </property>
              <property name="text">
-              <string>0</string>
+              <string>-300</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -3971,7 +3910,7 @@
               <string notr="true">background-color:rgb(255, 248, 252)</string>
              </property>
              <property name="text">
-              <string>-300</string>
+              <string>-120</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -7615,27 +7554,595 @@
        </property>
       </widget>
      </widget>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QPushButton" name="Robot_btn_Reconnect">
-     <property name="font">
-      <font>
-       <pointsize>12</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: rgb(255, 212, 229)</string>
-     </property>
-     <property name="text">
-      <string>Reconnect</string>
-     </property>
+     <widget class="QWidget" name="Tab_ForceSensor">
+      <attribute name="title">
+       <string>ForceSensor</string>
+      </attribute>
+      <widget class="QGroupBox" name="groupBox_2">
+       <property name="geometry">
+        <rect>
+         <x>50</x>
+         <y>10</y>
+         <width>550</width>
+         <height>551</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>20</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+       <property name="title">
+        <string>Left</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+       <widget class="QWidget" name="gridLayoutWidget_2">
+        <property name="geometry">
+         <rect>
+          <x>60</x>
+          <y>70</y>
+          <width>421</width>
+          <height>441</height>
+         </rect>
+        </property>
+        <layout class="QGridLayout" name="ForceSensor_grid_left">
+         <item row="0" column="0">
+          <widget class="QLabel" name="ForceSensor_label_title_LFx">
+           <property name="font">
+            <font>
+             <pointsize>20</pointsize>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background-color :rgb(225, 255, 225)</string>
+           </property>
+           <property name="text">
+            <string>Fx</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="ForceSensor_label_title_LMy">
+           <property name="font">
+            <font>
+             <pointsize>20</pointsize>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background-color :rgb(225, 255, 225)</string>
+           </property>
+           <property name="text">
+            <string>My</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="0">
+          <widget class="QLabel" name="ForceSensor_label_title_LMz">
+           <property name="font">
+            <font>
+             <pointsize>20</pointsize>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background-color :rgb(225, 255, 225)</string>
+           </property>
+           <property name="text">
+            <string>Mz</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="ForceSensor_label_title_LFz">
+           <property name="font">
+            <font>
+             <pointsize>20</pointsize>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background-color :rgb(225, 255, 225)</string>
+           </property>
+           <property name="text">
+            <string>Fz</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="ForceSensor_label_title_LMx">
+           <property name="font">
+            <font>
+             <pointsize>20</pointsize>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background-color :rgb(225, 255, 225)</string>
+           </property>
+           <property name="text">
+            <string>Mx</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="ForceSensor_label_title_LFy">
+           <property name="font">
+            <font>
+             <pointsize>20</pointsize>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background-color :rgb(225, 255, 225)</string>
+           </property>
+           <property name="text">
+            <string>Fy</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLabel" name="ForceSensor_label_value_LFx">
+           <property name="font">
+            <font>
+             <pointsize>20</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>0</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLabel" name="ForceSensor_label_value_LFy">
+           <property name="font">
+            <font>
+             <pointsize>20</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>0</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QLabel" name="ForceSensor_label_value_LFz">
+           <property name="font">
+            <font>
+             <pointsize>20</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>0</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QLabel" name="ForceSensor_label_value_LMx">
+           <property name="font">
+            <font>
+             <pointsize>20</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>0</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <widget class="QLabel" name="ForceSensor_label_value_LMy">
+           <property name="font">
+            <font>
+             <pointsize>20</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>0</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="1">
+          <widget class="QLabel" name="ForceSensor_label_value_LMz">
+           <property name="font">
+            <font>
+             <pointsize>20</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>0</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+      <widget class="QGroupBox" name="groupBox_5">
+       <property name="geometry">
+        <rect>
+         <x>640</x>
+         <y>10</y>
+         <width>550</width>
+         <height>551</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>20</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="title">
+        <string>Right</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+       <widget class="QWidget" name="gridLayoutWidget_5">
+        <property name="geometry">
+         <rect>
+          <x>60</x>
+          <y>70</y>
+          <width>431</width>
+          <height>441</height>
+         </rect>
+        </property>
+        <layout class="QGridLayout" name="ForceSensor_grid_left_3">
+         <item row="0" column="0">
+          <widget class="QLabel" name="ForceSensor_label_title_RFx">
+           <property name="font">
+            <font>
+             <pointsize>20</pointsize>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background-color :rgb(225, 255, 225)</string>
+           </property>
+           <property name="text">
+            <string>Fx</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="ForceSensor_label_title_RMy">
+           <property name="font">
+            <font>
+             <pointsize>20</pointsize>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background-color :rgb(225, 255, 225)</string>
+           </property>
+           <property name="text">
+            <string>My</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="0">
+          <widget class="QLabel" name="ForceSensor_label_title_RMz">
+           <property name="font">
+            <font>
+             <pointsize>20</pointsize>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background-color :rgb(225, 255, 225)</string>
+           </property>
+           <property name="text">
+            <string>Mz</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="ForceSensor_label_title_RFz">
+           <property name="font">
+            <font>
+             <pointsize>20</pointsize>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background-color :rgb(225, 255, 225)</string>
+           </property>
+           <property name="text">
+            <string>Fz</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="ForceSensor_label_title_RMx">
+           <property name="font">
+            <font>
+             <pointsize>20</pointsize>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background-color :rgb(225, 255, 225)</string>
+           </property>
+           <property name="text">
+            <string>Mx</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="ForceSensor_label_title_RFy">
+           <property name="font">
+            <font>
+             <pointsize>20</pointsize>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background-color :rgb(225, 255, 225)</string>
+           </property>
+           <property name="text">
+            <string>Fy</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLabel" name="ForceSensor_label_value_RFx">
+           <property name="font">
+            <font>
+             <pointsize>20</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>0</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLabel" name="ForceSensor_label_value_RFy">
+           <property name="font">
+            <font>
+             <pointsize>20</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>0</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QLabel" name="ForceSensor_label_value_RFz">
+           <property name="font">
+            <font>
+             <pointsize>20</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>0</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QLabel" name="ForceSensor_label_value_RMx">
+           <property name="font">
+            <font>
+             <pointsize>20</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>0</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <widget class="QLabel" name="ForceSensor_label_value_RMy">
+           <property name="font">
+            <font>
+             <pointsize>20</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>0</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="1">
+          <widget class="QLabel" name="ForceSensor_label_value_RMz">
+           <property name="font">
+            <font>
+             <pointsize>20</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>0</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+      <widget class="QPushButton" name="ForceSensor_btn_LeftDataNormalize">
+       <property name="geometry">
+        <rect>
+         <x>220</x>
+         <y>590</y>
+         <width>211</width>
+         <height>91</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>16</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Data Normalize</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="ForceSensor_btn_RightDataNormalize">
+       <property name="geometry">
+        <rect>
+         <x>810</x>
+         <y>590</y>
+         <width>211</width>
+         <height>91</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>16</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Data Normalize</string>
+       </property>
+      </widget>
+     </widget>
     </widget>
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>Correction</tabstop>
+  <tabstop>Robot_btn_Reconnect</tabstop>
+  <tabstop>LeftHand_lineEdit_X</tabstop>
+  <tabstop>LeftHand_lineEdit_Y</tabstop>
+  <tabstop>LeftHand_lineEdit_Z</tabstop>
+  <tabstop>LeftHand_lineEdit_Ox</tabstop>
+  <tabstop>LeftHand_lineEdit_Oy</tabstop>
+  <tabstop>LeftHand_lineEdit_Oz</tabstop>
+  <tabstop>LeftHand_lineEdit_Axis0</tabstop>
+  <tabstop>LeftHand_btn_Start</tabstop>
+  <tabstop>LeftHand_btn_Stop</tabstop>
+  <tabstop>LeftHand_btn_PosGo</tabstop>
+  <tabstop>LeftGripper_btn_Release</tabstop>
+  <tabstop>RightHand_lineEdit_X</tabstop>
+  <tabstop>RightHand_lineEdit_Y</tabstop>
+  <tabstop>RightHand_lineEdit_Z</tabstop>
+  <tabstop>RightHand_lineEdit_Ox</tabstop>
+  <tabstop>RightHand_lineEdit_Oy</tabstop>
+  <tabstop>RightHand_lineEdit_Oz</tabstop>
+  <tabstop>RightHand_lineEdit_Axis0</tabstop>
+  <tabstop>RightHand_btn_Start</tabstop>
+  <tabstop>RightHand_btn_Stop</tabstop>
+  <tabstop>RightHand_btn_PosGo</tabstop>
+  <tabstop>RightGripper_btn_Hold</tabstop>
+  <tabstop>RightGripper_btn_Release</tabstop>
+  <tabstop>MobileControl</tabstop>
+  <tabstop>Move_lineEdit_Distance</tabstop>
+  <tabstop>Move_btn_Backward</tabstop>
+  <tabstop>Move_btn_Forward</tabstop>
+  <tabstop>Move_btn_Right</tabstop>
+  <tabstop>Move_btn_Stop</tabstop>
+  <tabstop>Move_btn_Left</tabstop>
+  <tabstop>Move_btn_Start</tabstop>
+  <tabstop>SelfTurn_lineEdit_Direction</tabstop>
+  <tabstop>Xbox_Enable</tabstop>
+  <tabstop>SelfTurn_btn_Left</tabstop>
+  <tabstop>SelfTurn_btn_Right</tabstop>
+  <tabstop>Circle_lineEdit_Distance</tabstop>
+  <tabstop>Circle_lineEdit_Radius</tabstop>
+  <tabstop>Oblique_btn_Forward</tabstop>
+  <tabstop>Oblique_btn_Backward</tabstop>
+  <tabstop>Oblique_lineEdit_Direction</tabstop>
+  <tabstop>Oblique_lineEdit_Distance</tabstop>
+  <tabstop>Turn_btn_Forward</tabstop>
+  <tabstop>Turn_btn_Backward</tabstop>
+  <tabstop>Turn_lineEdit_Distance</tabstop>
+  <tabstop>Turn_lineEdit_Direction</tabstop>
+  <tabstop>Circle_btn_Forward</tabstop>
+  <tabstop>Circle_btn_Backward</tabstop>
+  <tabstop>MobileControl_lineEdit_Velocity</tabstop>
+  <tabstop>HeadHorizontal_Slider</tabstop>
+  <tabstop>HeadVertical_Slider</tabstop>
+  <tabstop>Leftlifting_lineEdit_NowHeight</tabstop>
+  <tabstop>Leftlifting_lineEdit_Speed</tabstop>
+  <tabstop>Leftlifting_lineEdit_Torque</tabstop>
+  <tabstop>Leftlifting_btn_Up</tabstop>
+  <tabstop>Leftlifting_btn_Down</tabstop>
+  <tabstop>Leftlifting_btn_Reset</tabstop>
+  <tabstop>Leftlifting_lineEdit_GoalHeight</tabstop>
+  <tabstop>Leftlifting_btn_GoalHeightGo</tabstop>
+  <tabstop>Rightlifting_lineEdit_NowHeight</tabstop>
+  <tabstop>Rightlifting_lineEdit_Speed</tabstop>
+  <tabstop>Rightlifting_lineEdit_Torque</tabstop>
+  <tabstop>Rightlifting_btn_Up</tabstop>
+  <tabstop>Rightlifting_btn_Down</tabstop>
+  <tabstop>Rightlifting_btn_Reset</tabstop>
+  <tabstop>Rightlifting_lineEdit_GoalHeight</tabstop>
+  <tabstop>Rightlifting_btn_GoalHeightGo</tabstop>
+  <tabstop>Head_btn_Reset</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

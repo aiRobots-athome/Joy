@@ -5,6 +5,7 @@
 #include "Mobile/Mobile.h"
 #include "Speech/Speech.h"
 #include "Vision/Vision.h"
+#include "ForceSensor/ForceSensor.h"
 
 class Robot
 {
@@ -19,6 +20,8 @@ public:
 	SaleArmLeft *CLeftArm;
 	SaleArmRight *CRightArm;
 	Mobile *CMobile;
+	ForceSensor *CLeftForceSensor;
+	ForceSensor *CRightForceSensor;
 
 private:
 	static Robot *inst_;

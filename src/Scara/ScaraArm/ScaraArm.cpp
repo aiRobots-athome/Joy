@@ -214,13 +214,17 @@ void ScaraArm::CalculateJacobianMatrix()
 }
 
 /** 
- * @param oi - RPY angle of the target orientation (in degree, so it need to be multiplied by Angle2Rad as following)
- * @param pi - target position (in minimeter)
+ * Plan the trajectory speificily for scara arm
+ * 
+ * @param oz - z orientation angle of the target orientation
+ * @param px - target x position (in minimeter)
+ * @param py - target y position (in minimeter)
+ * @param velocity_factor - used to control the scalar of motor velocity
  */
-void ScaraArm::TrajectoryPlanning(const float &oz, const float &px, const float &py)
+void ScaraArm::TrajectoryPlanning(const float &oz, const float &px, const float &py, const float velocity_factor = 1.0f)
 {
 	/* used to control the scalar of motor velocity */
-	const float velocity_factor = 1.0;
+	// const float velocity_factor = 1.0;
 	/* used to control angular (RPY) precision */
 	const float angular_threshold = M_PI / 180;
 	/* used to control linear (XYZ) precision */
@@ -323,6 +327,19 @@ void ScaraArm::TrajectoryPlanning(const float &oz, const float &px, const float 
 	is_working_ = false;
 }
 
+/**
+ * Go to desire position using trajectory planning
+ * 
+ * @param goal - SCARA target goal
+ * @param h - scara target height
+ * @param speed_max - moving speed 
+ */
+void ScaraArm::GoToPosition(float *goal, float h, float speed_max=1.0f) 
+{
+	GoScrewHeight(h);
+	TrajectoryPlanning(goal[2], goal[3], goal[4], speed_max);
+}
+
 float ScaraArm::GetPresentHeight()
 {
 	return current_screw_height_;
@@ -422,5 +439,6 @@ bool ScaraArm::GoScrewHeight(const float &goal_height)
  */
 void ScaraArm::Reset()
 {
-	GoScrewHeight(250.0f);
+    float init_pos[] = {0.f, 0.f, 58.f, 257.f, 406.f, 250.f};
+	GoToPosition(init_pos, init_pos[5], 1);
 }

@@ -2,7 +2,7 @@
 
 Scaratest::Scaratest() {
     cScara = Scara::getScara();
-    float casay1[] = {0.f, 0.f, 58.f, 638.f, 704.f, 212.f};
+    float casay1[] = {0.f, 0.f, 58.f, 361.f, 774.f, 212.f};
     set_pos(casay, 0, casay1);
     float stat1[] = {0.f, 0.f, 27.f, 947.f, 376.f, 238.f};
     set_pos(stations, 0, stat1);
@@ -129,13 +129,13 @@ void Scaratest::cassette(int id, int drawer, bool io) {
     ready[5] = CASAY[id][5];
     ready_pos(casay, id, ready);    // Get ready pos
 
-    cScara->CScaraArm->GotoPosition(0,0, ready[2], ready[3], ready[4], (ready[5] + drawer * DRAWER_H + (int)io * LIFT_DIS));
-    cScara->CScaraArm->go_straight(CASAY[id], (CASAY[id][5] + drawer * DRAWER_H + (int)io * LIFT_DIS), DIV);    // Move from ready to cassette
+    cScara->CScaraArm->GoToPosition(ready, (ready[5] + drawer * DRAWER_H + (int)io * LIFT_DIS), DIV);
+    cScara->CScaraArm->GoToPosition(CASAY[id], (CASAY[id][5] + drawer * DRAWER_H + (int)io * LIFT_DIS), DIV);    // Move from ready to cassette
     io = !io;   // inverse io value for easier caculation
 
     // printf("io = %d\n", io);    // FOR DEBUG
-    cScara->CScaraArm->go_straight(CASAY[id], (CASAY[id][5] + drawer * DRAWER_H + (int)io * LIFT_DIS), DIV);  // Lift/place waffer
-    cScara->CScaraArm->go_straight(ready, (CASAY[id][5] + drawer * DRAWER_H + (int)io * LIFT_DIS), DIV);    // Move back to ready position
+    cScara->CScaraArm->GoToPosition(CASAY[id], (CASAY[id][5] + drawer * DRAWER_H + (int)io * LIFT_DIS), DIV);  // Lift/place waffer
+    cScara->CScaraArm->GoToPosition(ready, (CASAY[id][5] + drawer * DRAWER_H + (int)io * LIFT_DIS), DIV);    // Move back to ready position
 }
 
 /**
@@ -153,13 +153,13 @@ void Scaratest::station(int id, bool io) {
     ready[5] = STATE[id][5];
     ready_pos(stations, id, ready);    // Get ready pos
     
-    cScara->CScaraArm->GotoPosition(0,0, ready[2], ready[3], ready[4], (ready[5] + (int)io * (LIFT_DIS + STAT_SHIFT)));
-    cScara->CScaraArm->go_straight(STATE[id], (STATE[id][5] + (int)io * (LIFT_DIS + STAT_SHIFT)), DIV);    // Move from ready to cassette
+    cScara->CScaraArm->GoToPosition(ready, (ready[5] + (int)io * (LIFT_DIS + STAT_SHIFT)), DIV);
+    cScara->CScaraArm->GoToPosition(STATE[id], (STATE[id][5] + (int)io * (LIFT_DIS + STAT_SHIFT)), DIV);    // Move from ready to cassette
 
     io = !io;    
     // printf("io = %d\n", io);    // FOR DEBUG
-    cScara->CScaraArm->go_straight(STATE[id], (STATE[id][5] + (int)io * (LIFT_DIS + STAT_SHIFT)), DIV);  // Lift/place waffer
-    cScara->CScaraArm->go_straight(ready, (STATE[id][5] + (int)io * (LIFT_DIS + STAT_SHIFT)), DIV);    // Move back to ready position
+    cScara->CScaraArm->GoToPosition(STATE[id], (STATE[id][5] + (int)io * (LIFT_DIS + STAT_SHIFT)), DIV);  // Lift/place waffer
+    cScara->CScaraArm->GoToPosition(ready, (STATE[id][5] + (int)io * (LIFT_DIS + STAT_SHIFT)), DIV);    // Move back to ready position
 }
 
 Scaratest::~Scaratest() {}

@@ -35,7 +35,7 @@ class Scaratest
         float STAT_SHIFT = 15;
         float LIFT_DIS = 4;
         float SAFE_DIS = 300;
-        float DIV = 10;
+        float DIV = 1;
     
     private:
         Scara *cScara;

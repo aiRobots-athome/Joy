@@ -395,6 +395,8 @@ bool ScaraArm::GoScrewHeight(const float &goal_height)
 		float delta_height = goal_height - current_screw_height_;
 		float delta_angle = delta_height / REV_2_SCREW * 360;
 
+		SetMotor_Velocity(SCREW_MOTOR_ID_, 500);
+
 		// Motor angle is set to present angle + angle needed
 		SetMotor_Angle(SCREW_MOTOR_ID_, delta_angle + GetMotor_PresentAngle(SCREW_MOTOR_ID_));
 
@@ -403,9 +405,8 @@ bool ScaraArm::GoScrewHeight(const float &goal_height)
 		this_thread::sleep_for(chrono::milliseconds(500));
 
 		WaitMotorArrival(SCREW_MOTOR_ID_);
+		
 		this_thread::sleep_for(chrono::milliseconds(50));
-
-		SetMotor_Velocity(SCREW_MOTOR_ID_, 500);
 
 		WriteHeight(goal_height);
 		current_screw_height_ = goal_height;

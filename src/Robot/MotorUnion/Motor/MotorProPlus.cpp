@@ -4,7 +4,7 @@ MotorProPlus::MotorProPlus()
 	: Motor(57600, 0, 512, 552, 556, 560, 564, 574, 576, 580, 11, 1, 4, 4, 4, 4, 2, 4, 4) {}
 
 MotorProPlus::MotorProPlus(const unsigned char &MotorID, const string &MotorModel)
-	: Motor(57600, MotorID, 512, 552, 556, 560, 564, 574, 576, 580, 11, 1, 4, 4, 4, 4, 2, 4, 4)
+	: Motor(4000000, MotorID, 512, 552, 556, 560, 564, 574, 576, 580, 11, 1, 4, 4, 4, 4, 2, 4, 4)
 {
 	if (MotorModel == "Pro20+")
 	{

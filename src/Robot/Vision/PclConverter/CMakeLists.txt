@@ -3,7 +3,7 @@ project(PclConverter)
 
 add_subdirectory(spec_msg)
 
-find_package(PCL 1.8 REQUIRED COMPONENTS filters common PATHS /usr/lib/x86_64-linux-gnu/cmake/pcl)
+find_package(PCL 1.10 REQUIRED COMPONENTS filters common PATHS /usr/lib/x86_64-linux-gnu/cmake/pcl)
 find_package(catkin REQUIRED 
     COMPONENTS 
     nodelet

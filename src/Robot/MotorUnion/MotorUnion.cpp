@@ -335,11 +335,9 @@ void MotorUnion::BGReadWrite()
 {
 	while (!_is_deleted_thread_BG)
 	{
-		if (CheckAllMotorsConnected())
-		{
-			WriteData();
-			ReadData();
-		}
+		WriteData();
+		ReadData();
+		this_thread::sleep_for(chrono::milliseconds(1));
 	}
 }
 

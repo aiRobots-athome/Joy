@@ -7,11 +7,6 @@
 class Vision
 {
 public:
-  Vision();
-  ~Vision();
-
-  ImageConverter *CImageConverter;
-  MouseEvent *CMouseEvent;
-  ImageProcessing *CImageProcessing;
-  PclConverter *CPclConverter;
+	Vision();
+	~Vision();
 };

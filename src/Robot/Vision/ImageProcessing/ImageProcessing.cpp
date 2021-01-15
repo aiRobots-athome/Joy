@@ -29,7 +29,7 @@ void ImageProcessing::ColorFilter(cv::Mat &src, int H_min, int H_max, int S_min,
     cv::Mat matMask1 = cv::Mat::zeros(src.rows, src.cols, CV_8U);;
     cv::Mat matMask2 = cv::Mat::zeros(src.rows, src.cols, CV_8U);;
 
-    cv::cvtColor(src, matHSV, CV_BGR2HSV);
+    cv::cvtColor(src, matHSV, cv::COLOR_BGR2HSV);
 
     // Ensure the HSV input values are in correct range
     H_min = H_min > 180 ? 180 : H_min;
@@ -110,7 +110,7 @@ void ImageProcessing::BlurImage(cv::Mat &src)
 void ImageProcessing::BinaryImage(cv::Mat &src, int nThreshold)
 {
     cv::Mat src_gray;
-    cv::cvtColor(src, src_gray, CV_RGB2GRAY);
+    cv::cvtColor(src, src_gray, cv::COLOR_RGB2GRAY);
 
     cv::Mat dst = cv::Mat::zeros(src_gray.rows, src_gray.cols, src_gray.type());
 
@@ -119,7 +119,7 @@ void ImageProcessing::BinaryImage(cv::Mat &src, int nThreshold)
         if ((int)src_gray.at<uchar>(y, x) > nThreshold)
             dst.at<uchar>(y, x) = (uchar)255;
     }
-    cv::cvtColor(dst, src, CV_GRAY2BGR);
+    cv::cvtColor(dst, src, cv::COLOR_GRAY2BGR);
 
     src_gray.release();
     dst.release();
@@ -158,8 +158,8 @@ void ImageProcessing::ContourTool::FindContours(const cv::Mat &src, int nMinArea
     
     cv::Mat src_gray;
 
-    cvtColor(src, src_gray, CV_RGB2GRAY);
-	findContours(src_gray, vec2_ptContoursFound, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
+    cvtColor(src, src_gray, cv::COLOR_RGB2GRAY);
+	findContours(src_gray, vec2_ptContoursFound, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
     
 
     for (int i = 0; i < vec2_ptContoursFound.size(); i++)
@@ -192,8 +192,8 @@ void ImageProcessing::ContourTool::FindMaxContours(const cv::Mat &src)
 
     cv::Mat src_gray;
 
-    cvtColor(src, src_gray, CV_RGB2GRAY);
-    findContours(src_gray, vec2_ptContoursFound, CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
+    cvtColor(src, src_gray, cv::COLOR_RGB2GRAY);
+    findContours(src_gray, vec2_ptContoursFound, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);
     
 
     int nMaxContourArea = 0;
@@ -329,8 +329,8 @@ void ImageProcessing::Circle::FindCircles(cv::Mat &src)
 {
     cv::Mat src_gray;
   
-    cv::cvtColor(src, src_gray, CV_BGR2GRAY);
-    cv::HoughCircles(src_gray, this->vec_vec3fCircles, CV_HOUGH_GRADIENT, 1, src_gray.rows / 8, 100, this->nCenterDetectionThreshold);
+    cv::cvtColor(src, src_gray, cv::COLOR_BGR2GRAY);
+    cv::HoughCircles(src_gray, this->vec_vec3fCircles, cv::HOUGH_GRADIENT, 1, src_gray.rows / 8, 100, this->nCenterDetectionThreshold);
 
     src_gray.release();
 }

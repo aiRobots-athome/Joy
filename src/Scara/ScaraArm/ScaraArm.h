@@ -1,7 +1,9 @@
 #pragma once
 #include <fstream>
 #include <iostream>
-#include <opencv2/opencv.hpp>
+#include <eigen3/Eigen/Core>
+#include <eigen3/Eigen/Dense>
+#include <eigen3/Eigen/LU>
 #include "../../Robot/MotorUnion/MotorUnion.h"
 
 class ScaraArm : public MotorUnion
@@ -9,33 +11,33 @@ class ScaraArm : public MotorUnion
 public:
     static ScaraArm *getScaraArm();
     ~ScaraArm() { inst_ = nullptr; };
-    
+
     void Start();
     void Stop();
-
-    // Arm
-    cv::Mat GetKinematics();
-    float &GetPresentHeight();
-    void GotoPosition(const int &ox, const int &oy, const int &oz, const int &x, const int &y, const float &height);
-
-    // Screw
-    bool GoScrewHeight(const float &goal_height);
-    void go_straight(float *goal, float h, float speed_max);
-    void go_straight_tmp(float *head, float *tail, float h, float div);
-
     void Reset();
 
-private:
-    // Arm
-    cv::Mat Calculate_ArmForwardKinematics(const float &J1, const float &J2, const float &J3);
-    cv::Mat TransRotate(const float &ox, const float &oy, const float &oz);
-    float *Arm_InverseKinematics(const cv::Mat &T);
-    void GotoPosition(const cv::Mat &T);
-    void GotoPosition(const int &ox, const int &oy, const int &oz, const int &x, const int &y, const int &z);
-    void SetPosition(const cv::Mat &T);
-    void SetPosition(const int &ox, const int &oy, const int &oz, const int &x, const int &y, const int &z);
-    cv::Mat cal_vel(cv::Mat head, cv::Mat tail, float speed);
+    /* CORE function */
+    void CalculateJacobianMatrix(void);
+    void TrajectoryPlanning(const float &oz, const float &px, const float &py);
+    bool GoScrewHeight(const float &goal_height);
 
+    /* Set data function */
+    void SetArmVelocity(float v0, float v1, float v2);
+
+    /* Get data function */
+    Eigen::Matrix<float, 4, 4> GetTransformMatrix(const float &theta, const float &alpha, const float &a, const float &d);
+    Eigen::Matrix<float, 3, 3> GetRotationMatrix(const int &axis_index, const float &theta);
+    Eigen::Matrix<float, 3, 3> GetJacobianMatrix(void);
+    float GetCurrentPosition(int index);
+    float GetCurrentOrientation(int index);
+    float GetPresentHeight();
+    bool GetWorkingState(void);
+
+    /* Functional */
+    float RootMeanSquareError(Eigen::Matrix<float, 3, 1> target_data, Eigen::Matrix<float, 3, 1> current_data);
+    Eigen::Matrix<float, 3, 1> CheckMotorVelocity(Eigen::Matrix<float, 3, 1> motor_velocity);
+
+private:
     // Screw
     void ReadHeight();
     void WriteHeight(const float &height) const;
@@ -44,22 +46,25 @@ private:
     ScaraArm();
     static ScaraArm *inst_;
 
-    const unsigned char FIRST_HAND_ID;
-    
-    const float J2_sign;            // Joint 2 direction, due to the machanic, Joint 2 has to be inverted
-    const float Arm1_Length;        // Length from Joint 0 to 1
-    const float Arm2_Length;        // Length from Joint 1 to 2
-    const float Arm3_Length;        // Length from Joint 2 to 3
-    const float Arm4_Length;        // Length from Joint 3 to 4
-    const float Degree2Resolution;
+    const unsigned char SCREW_MOTOR_ID_;
+    const float LINK0_LENGTH_;
+    const float LINK1_LENGTH_;
+    const float LINK2_LENGTH_;
+    const float PRO_RADS2SCALE_; // Used to map from RADIAN to Pro series SCALE (Protocol 2)
+    const float MX_RADS2SCALE_;  // Used to map from RADIAN to Mx series SCALE (Protocol 2)
 
-    bool USING_BIG;                 // Which kind of scara used, 0 for big, 1 for small
-    int Height_Resol;               // Resolution of present motor which control height
-    const int PRO200_RESOL;         // Resolution of Pro200
-    const int MX106_RESOL;          // Resolution of Mx106
-    const int REV_2_SCREW;          // 1 rev equal to how many screw
-    int Acc_Factor;                 // Accelleration fector for move straight
+    const int PRO200_RESOLUTION_; // Resolution of Pro200
+    const int MX106_RESOLUTION_;  // Resolution of Mx106
+    const int REV_2_SCREW;        // 1 rev equal to how many screw
 
-    float now_height;
-    bool ScaraArmMotionEnable;
+    float current_screw_height_;
+
+    Eigen::Matrix<float, 3, 3> jacobian_matrix_;
+    Eigen::Matrix<float, 3, 3> inverse_jacobian_matrix_;
+
+    Eigen::Matrix<float, 3, 1> current_position_;
+    Eigen::Matrix<float, 3, 1> current_orientation_;
+
+    bool is_out_of_limit_; // True if predicted motor velocity is out of range
+    bool is_working_;      // True if arm is moving
 };

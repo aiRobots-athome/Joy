@@ -57,6 +57,7 @@ private:
     const int PRO200_RESOLUTION_; // Resolution of Pro200
     const int MX106_RESOLUTION_;  // Resolution of Mx106
     const int REV_2_SCREW;        // 1 rev equal to how many screw
+    const int ZERO_PT_H;            // Height in real life when motor of screw is set to zero
 
     float current_screw_height_;
 

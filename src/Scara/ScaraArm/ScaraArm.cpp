@@ -37,7 +37,8 @@ ScaraArm::ScaraArm()
 	  MX106_RESOLUTION_(4096),
 	  PRO_RADS2SCALE_(60.0 / (2 * M_PI) / 0.01),
 	  MX_RADS2SCALE_(60.0),
-	  REV_2_SCREW(226)
+	  REV_2_SCREW(226),
+	  ZERO_PT_H(182.1)
 {
 	std::cout << "\t\tClass constructed: ScaraArm";
 
@@ -409,13 +410,14 @@ bool ScaraArm::GoScrewHeight(const float &goal_height)
 	}
 	else
 	{
-		float delta_height = goal_height - current_screw_height_;
-		float delta_angle = delta_height / REV_2_SCREW * 360;
+		float delta_height = goal_height - ZERO_PT_H;
+		float delta_angle = delta_height * 360 / REV_2_SCREW;
+		float target_angle = delta_angle;
 
 		SetMotor_Velocity(SCREW_MOTOR_ID_, 500);
 
 		// Motor angle is set to present angle + angle needed
-		SetMotor_Angle(SCREW_MOTOR_ID_, delta_angle + GetMotor_PresentAngle(SCREW_MOTOR_ID_));
+		SetMotor_Angle(SCREW_MOTOR_ID_, target_angle);
 
 		// cout << "delta_height: " << delta_height << ", delta_angle: " << delta_angle << endl;
 		// cout << "desire angle: " << GetMotor_Angle(FIRST_HAND_ID) << endl;
@@ -425,8 +427,9 @@ bool ScaraArm::GoScrewHeight(const float &goal_height)
 		
 		this_thread::sleep_for(chrono::milliseconds(50));
 
-		WriteHeight(goal_height);
-		current_screw_height_ = goal_height;
+		float real_goal_height =  GetMotor_PresentAngle(SCREW_MOTOR_ID_) * REV_2_SCREW / 360 + ZERO_PT_H;
+		WriteHeight(real_goal_height);
+		current_screw_height_ = real_goal_height;
 
 		// cout << "sp_angle: " << GetMotor_PresentAngle(FIRST_HAND_ID) << endl;
 		std::cout << "[ScaraArm] Screw arrival !" << endl;

@@ -403,7 +403,7 @@ bool ScaraArm::GoScrewHeight(const float &goal_height)
 		std::cout << "[ScaraArm] Too low" << std::endl;
 		return false;
 	}
-	else if (goal_height == current_screw_height_)
+	else if ( abs(goal_height - current_screw_height_) < 0.1f)
 	{
 		std::cout << "[ScaraArm] Screw arrival !" << std::endl;
 		return true;
@@ -413,6 +413,23 @@ bool ScaraArm::GoScrewHeight(const float &goal_height)
 		float delta_height = goal_height - ZERO_PT_H;
 		float delta_angle = delta_height * 360 / REV_2_SCREW;
 		float target_angle = delta_angle;
+
+		// Target angle correction
+		// Height motor observed
+		float height_m_obs = GetMotor_PresentAngle(SCREW_MOTOR_ID_) * REV_2_SCREW / 360 + ZERO_PT_H;
+		float level_dir = 0;
+		// Check if the motor's observation is incorrect, thershold is set to 1/20 rev, about 10 cm
+		if( abs(height_m_obs - current_screw_height_) > 10) {
+			// If zero position is the one on top of standard level
+			if (GetMotor_PresentAngle(SCREW_MOTOR_ID_) < 0) {
+				level_dir = -1.0f;
+			}
+			// If zero position is the one below standard level
+			else {
+				level_dir = 1.0f;
+			}
+		}
+		target_angle += level_dir * 360;
 
 		SetMotor_Velocity(SCREW_MOTOR_ID_, 500);
 
@@ -427,7 +444,7 @@ bool ScaraArm::GoScrewHeight(const float &goal_height)
 		
 		this_thread::sleep_for(chrono::milliseconds(50));
 
-		float real_goal_height =  GetMotor_PresentAngle(SCREW_MOTOR_ID_) * REV_2_SCREW / 360 + ZERO_PT_H;
+		float real_goal_height = ( GetMotor_PresentAngle(SCREW_MOTOR_ID_) - level_dir * 360 ) * REV_2_SCREW / 360 + ZERO_PT_H;
 		WriteHeight(real_goal_height);
 		current_screw_height_ = real_goal_height;
 

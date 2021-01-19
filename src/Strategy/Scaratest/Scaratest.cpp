@@ -2,7 +2,8 @@
 
 Scaratest::Scaratest() {
     cScara = Scara::getScara();
-    float casay1[] = {0.f, 0.f, 58.f, 361.f, 774.f, 212.f};
+    // float casay1[] = {0.f, 0.f, 58.f, 361.f, 774.f, 212.f};
+    float casay1[] = {0.f, 0.f, -60.31f, 381.8f, -750.62f, 215.5f};
     set_pos(casay, 0, casay1);
     float stat1[] = {0.f, 0.f, 27.f, 947.f, 376.f, 238.f};
     set_pos(stations, 0, stat1);
@@ -21,11 +22,15 @@ Scaratest::Scaratest() {
 }
 
 void Scaratest::test1() {
-    // Get waffer from cassette A
+    // Get waffer from level 1 in cassette A, and put it to level 10
     // Cassette A id = 0
     // Cassette B id = 1
-    go_target(casay, 0, 1, 0);
-    go_target(casay, 0, 1, 1);
+    go_target(casay, 0, 4, 0);
+    go_target(casay, 0, 19, 1);
+
+    // Get waffer from level 10 in cassette A, and put it to level 1
+    go_target(casay, 0, 19, 0);
+    go_target(casay, 0, 4, 1);
 
     // // At station 0, id = 0
     // go_target(stations, 0, 0, 1);   // Put in waffer

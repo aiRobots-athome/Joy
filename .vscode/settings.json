@@ -72,7 +72,11 @@
         "optional": "cpp",
         "set": "cpp",
         "core": "cpp",
-        "specialfunctions": "cpp"
+        "specialfunctions": "cpp",
+        "future": "cpp",
+        "shared_mutex": "cpp",
+        "variant": "cpp",
+        "bit": "cpp"
     },
     "C_Cpp.dimInactiveRegions": false,
     "git.ignoreLimitWarning": true

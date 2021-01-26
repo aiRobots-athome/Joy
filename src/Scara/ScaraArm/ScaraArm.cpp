@@ -1,4 +1,5 @@
 #include "ScaraArm.h"
+#include <time.h>
 
 #define USE_BIG
 
@@ -134,6 +135,11 @@ float ScaraArm::GetCurrentPosition(int index)
 		return -1;
 }
 
+float ScaraArm::GetRadius()
+{
+	return current_position_.norm();
+}
+
 float ScaraArm::GetCurrentOrientation(int index)
 {
 	if (index == 0)
@@ -220,12 +226,177 @@ void ScaraArm::CalculateJacobianMatrix()
  * @param oz - z orientation angle of the target orientation
  * @param px - target x position (in minimeter)
  * @param py - target y position (in minimeter)
- * @param velocity_factor - used to control the scalar of motor velocity
+ * @param max_vel - maximum velocity for planning
+ * @param acc - used to control the scalar of motor velocity
  */
-void ScaraArm::TrajectoryPlanning(const float &oz, const float &px, const float &py, const float velocity_factor = 1.0f)
+void ScaraArm::TrajectoryPlanning(const float &oz, const float &px, const float &py, const float &max_vel, const float &acc)
+{
+	/* End-effector velocity in Cartesian coordinate */
+	current_linear_velocity.setZero(3, 1);
+	current_angular_velocity.setZero(3, 1);
+
+	TrajectoryPlanning(oz, px, py, max_vel, 0, acc);
+
+	SetAllMotorsVelocity(0);
+
+	// Velocity is set to zero
+	current_linear_velocity.setZero(3, 1);
+	current_angular_velocity.setZero(3, 1);
+
+	std::cout << "\t[INFO] Move is over." << std::endl;
+	std::cout << "\t\tFinal position (" << GetCurrentPosition(0) << ", "
+			  << GetCurrentPosition(1) << ", "
+			  << GetCurrentPosition(2) << ")" << std::endl;
+
+	std::cout << "\t\tFinal orientation (" << GetCurrentOrientation(0) << ", "
+			  << GetCurrentOrientation(1) << ", "
+			  << GetCurrentOrientation(2) << ")" << std::endl;
+
+	// /* used to control the scalar of motor velocity */
+	// // const float acc = 1.0;
+	// /* used to control angular (RPY) precision */
+	// const float angular_threshold = M_PI / 180;
+	// /* used to control linear (XYZ) precision */
+	// const float linear_threshold = 0.1;
+
+	// /* Convert target position and orientation into Eigen form */
+	// Eigen::Matrix<float, 3, 1> target_position;
+	// Eigen::Matrix<float, 3, 1> target_orientation;
+	// target_position << px, py, 0;
+	// target_orientation << 0, 0, oz;
+	// target_orientation *= Angle2Rad;
+
+	// /* angular RMS error is to check whether RPY is close enough to target orientation */
+	// float angular_error = RootMeanSquareError(target_orientation, current_orientation_);
+	// /* linear RMS error is to check whether XYZ is close enough to target position */
+	// float linear_error = RootMeanSquareError(target_position, current_position_);
+
+	// /* End-effector velocity in Cartesian coordinate */
+	// Eigen::Matrix<float, 3, 1> linear_velocity;
+	// Eigen::Matrix<float, 3, 1> angular_velocity;
+	// linear_velocity.setZero(3, 1);
+	// angular_velocity.setZero(3, 1);
+
+	// int acceleration_counter = 0;
+	// float acceleration_factor = 0;
+
+	// int stop_counter = 0;
+
+	// is_working_ = true;
+
+	// /* only when all the values of error are under thresholds or when predicted velocity is out of range can the loop be broken */
+	// while (angular_error > angular_threshold || linear_error > linear_threshold)
+	// {
+	// 	/* first update the jacobian matrix, current orientation and position */
+	// 	CalculateJacobianMatrix();
+
+	// 	/* calculate new error based on oriention and position */
+	// 	angular_error = RootMeanSquareError(target_orientation, current_orientation_);
+	// 	linear_error = RootMeanSquareError(target_position, current_position_);
+
+	// 	/* linear deceleration control */
+	// 	angular_velocity = (target_orientation - current_orientation_) * acc * acceleration_factor;
+	// 	linear_velocity = (target_position - current_position_) * acc * acceleration_factor;
+
+	// 	if (acceleration_factor < 1.0 && acceleration_counter % 10 == 0)
+	// 		acceleration_factor += 0.05;
+
+	// 	acceleration_counter++;
+
+	// 	/* end-effector velocity includes angular part (pitch, raw, yaw) in the upper and linear part (spatial position) in the lower */
+	// 	Eigen::Matrix<float, 3, 1> end_effector_velocity;
+	// 	end_effector_velocity << angular_velocity(2), linear_velocity(0), linear_velocity(1);
+
+	// 	/* find the solution of Jw = V by the function in library <Eigen/LU> */
+	// 	Eigen::Matrix<float, 3, 1> motor_velocity;
+	// 	motor_velocity = jacobian_matrix_.lu().solve(end_effector_velocity);
+
+	// 	/* Upper bound check */
+	// 	motor_velocity = CheckMotorVelocity(motor_velocity);
+
+	// 	if (is_out_of_limit_)
+	// 	{
+	// 		std::cout << "\t[WARNING] Dangerous velocity! Fail to arrive." << std::endl;
+
+	// 		SetAllMotorsVelocity(0);
+	// 		std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+	// 		is_out_of_limit_ = false;
+	// 		break;
+	// 	}
+	// 	else
+	// 	{
+	// 		/* Lower bound adjustment */
+	// 		if (abs(motor_velocity(0, 0) * PRO_RADS2SCALE_) <= 3 &&
+	// 			abs(motor_velocity(1, 0) * PRO_RADS2SCALE_) <= 3 &&
+	// 			abs(motor_velocity(2, 0) * PRO_RADS2SCALE_) <= 3)
+	// 		{
+	// 			if (stop_counter < 20)
+	// 				stop_counter++;
+	// 			else
+	// 				break;
+	// 		}
+
+	// 		SetArmVelocity(motor_velocity(0, 0),
+	// 					   motor_velocity(1, 0),
+	// 					   motor_velocity(2, 0));
+	// 	}
+
+	// 	std::this_thread::sleep_for(std::chrono::milliseconds(10));
+	// }
+	// SetAllMotorsVelocity(0);
+	// std::cout << "\t[INFO] Move is over." << std::endl;
+	// std::cout << "\t\tFinal position (" << GetCurrentPosition(0) << ", "
+	// 		  << GetCurrentPosition(1) << ", "
+	// 		  << GetCurrentPosition(2) << ")" << std::endl;
+
+	// std::cout << "\t\tFinal orientation (" << GetCurrentOrientation(0) << ", "
+	// 		  << GetCurrentOrientation(1) << ", "
+	// 		  << GetCurrentOrientation(2) << ")" << std::endl;
+
+	// is_working_ = false;
+}
+
+/**
+ * To plan the velocity for scara
+ * 
+ * @param dis - distance to target
+ * @param init_v - current velocity
+ * @param max_v - maximum velocity in planner
+ * @param end_v - velocity when motion is done
+ * @param acc - acceleration of the motion
+ * @param dure_time - the time start to plan
+ */
+float v_plan(float dis, float init_v, float current_v, float max_v, float end_v, float acc, float dure_time) 
+{
+	float result = init_v + dure_time * acc;
+	// if the velocity is at maximum position
+	if ( result > max_v ) {
+		result = max_v;
+		if (result > current_v)
+			result = current_v;
+	}
+	// if it's time to decelerate
+	float final_v_diff = current_v - end_v;
+	if ( (current_v + end_v) * final_v_diff / (2 * acc) > dis)
+		result = sqrt(2 * acc * dis + pow(end_v, 2));
+	// printf("v=%f ", result);
+	return result;
+}
+
+/** 
+ * Plan the trajectory speificily for scara arm, with ending velocity
+ * 
+ * @param oz - z orientation angle of the target orientation
+ * @param px - target x position (in minimeter)
+ * @param py - target y position (in minimeter)
+ * @param max_vel - maximum velocity when scara is moving
+ * @param end_vel - velocity when scara is at ending position
+ * @param acc - used to control the scalar of motor velocity
+ */
+void ScaraArm::TrajectoryPlanning(const float &oz, const float &px, const float &py, const float &max_vel, const float &end_vel, const float &acc)
 {
 	/* used to control the scalar of motor velocity */
-	// const float velocity_factor = 1.0;
+	// const float acc = 1.0;
 	/* used to control angular (RPY) precision */
 	const float angular_threshold = M_PI / 180;
 	/* used to control linear (XYZ) precision */
@@ -243,22 +414,38 @@ void ScaraArm::TrajectoryPlanning(const float &oz, const float &px, const float 
 	/* linear RMS error is to check whether XYZ is close enough to target position */
 	float linear_error = RootMeanSquareError(target_position, current_position_);
 
-	/* End-effector velocity in Cartesian coordinate */
-	Eigen::Matrix<float, 3, 1> linear_velocity;
-	Eigen::Matrix<float, 3, 1> angular_velocity;
-	linear_velocity.setZero(3, 1);
-	angular_velocity.setZero(3, 1);
+
+	/* Vector of the angle and linear */
+	Eigen::Matrix<float, 3, 1> angular_vec;
+	Eigen::Matrix<float, 3, 1> linear_vec;
+	/* Direction of the angle and linear */
+	Eigen::Matrix<float, 3, 1> angular_dir;
+	Eigen::Matrix<float, 3, 1> linear_dir;
+
+	angular_vec = target_orientation - current_orientation_;
+	linear_vec = target_position - current_position_;
+	float al_ratio = angular_vec.norm() / linear_vec.norm();
+	float init_a_v = current_angular_velocity.norm();
+	float init_l_v = current_linear_velocity.norm();
+	// printf("init_a_v: %f, init_l_v: %f ", init_a_v, init_l_v);
 
 	int acceleration_counter = 0;
 	float acceleration_factor = 0;
 
 	int stop_counter = 0;
+	double start_time = clock();
 
 	is_working_ = true;
 
 	/* only when all the values of error are under thresholds or when predicted velocity is out of range can the loop be broken */
-	while (angular_error > angular_threshold || linear_error > linear_threshold)
+	// float margin = linear_threshold * std::max(end_vel, 1.0f);
+	while (angular_error > angular_threshold * std::max(end_vel * al_ratio, 1.0f) || linear_error > linear_threshold * std::max(end_vel, 1.0f))
+	// while (angular_error > margin * al_ratio || linear_error > margin)
 	{
+		/* Time duration of the loop */
+		double now = clock();
+		double tic_tok = (now - start_time)/CLOCKS_PER_SEC;
+
 		/* first update the jacobian matrix, current orientation and position */
 		CalculateJacobianMatrix();
 
@@ -266,24 +453,33 @@ void ScaraArm::TrajectoryPlanning(const float &oz, const float &px, const float 
 		angular_error = RootMeanSquareError(target_orientation, current_orientation_);
 		linear_error = RootMeanSquareError(target_position, current_position_);
 
-		/* linear deceleration control */
-		angular_velocity = (target_orientation - current_orientation_) * velocity_factor * acceleration_factor;
-		linear_velocity = (target_position - current_position_) * velocity_factor * acceleration_factor;
+		angular_vec = target_orientation - current_orientation_;
+		linear_vec = target_position - current_position_;
+		angular_dir = angular_vec.normalized();
+		linear_dir = linear_vec.normalized();
+		al_ratio = angular_vec.norm() / linear_vec.norm();
 
-		if (acceleration_factor < 1.0 && acceleration_counter % 10 == 0)
-			acceleration_factor += 0.05;
+		// current_angular_velocity = angular_vec * acc * acceleration_factor;
+		current_angular_velocity = angular_dir * v_plan(angular_vec.norm(), init_a_v, current_angular_velocity.norm(), max_vel * al_ratio, end_vel * al_ratio, acc * al_ratio, tic_tok);
+		// current_linear_velocity = linear_vec * acc * acceleration_factor;
+		current_linear_velocity = linear_dir * v_plan(linear_vec.norm(), init_l_v, current_linear_velocity.norm() ,max_vel, end_vel, acc, tic_tok);
 
-		acceleration_counter++;
+		// if (acceleration_factor < 1.0 && acceleration_counter % 10 == 0)
+		// 	acceleration_factor += 0.05;
+
+		// acceleration_counter++;
 
 		/* end-effector velocity includes angular part (pitch, raw, yaw) in the upper and linear part (spatial position) in the lower */
 		Eigen::Matrix<float, 3, 1> end_effector_velocity;
-		end_effector_velocity << angular_velocity(2), linear_velocity(0), linear_velocity(1);
+		end_effector_velocity << current_angular_velocity(2), current_linear_velocity(0), current_linear_velocity(1);
 
 		/* find the solution of Jw = V by the function in library <Eigen/LU> */
 		Eigen::Matrix<float, 3, 1> motor_velocity;
 		motor_velocity = jacobian_matrix_.lu().solve(end_effector_velocity);
 
 		/* Upper bound check */
+		printf("oz: %f, px: %f, py: %f ", oz, px, py);
+		printf("tictok: %f, m1: %f, m2: %f, m3: %f\n", tic_tok, current_orientation_(2), current_position_(0), current_position_(1));
 		motor_velocity = CheckMotorVelocity(motor_velocity);
 
 		if (is_out_of_limit_)
@@ -302,7 +498,7 @@ void ScaraArm::TrajectoryPlanning(const float &oz, const float &px, const float 
 				abs(motor_velocity(1, 0) * PRO_RADS2SCALE_) <= 3 &&
 				abs(motor_velocity(2, 0) * PRO_RADS2SCALE_) <= 3)
 			{
-				if (stop_counter < 20)
+				if (stop_counter < 500)
 					stop_counter++;
 				else
 					break;
@@ -315,16 +511,7 @@ void ScaraArm::TrajectoryPlanning(const float &oz, const float &px, const float 
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	}
-	SetAllMotorsVelocity(0);
-	std::cout << "\t[INFO] Move is over." << std::endl;
-	std::cout << "\t\tFinal position (" << GetCurrentPosition(0) << ", "
-			  << GetCurrentPosition(1) << ", "
-			  << GetCurrentPosition(2) << ")" << std::endl;
-
-	std::cout << "\t\tFinal orientation (" << GetCurrentOrientation(0) << ", "
-			  << GetCurrentOrientation(1) << ", "
-			  << GetCurrentOrientation(2) << ")" << std::endl;
-
+	
 	is_working_ = false;
 }
 
@@ -335,10 +522,10 @@ void ScaraArm::TrajectoryPlanning(const float &oz, const float &px, const float 
  * @param h - scara target height
  * @param speed_max - moving speed 
  */
-void ScaraArm::GoToPosition(float *goal, float h, float speed_max=1.0f) 
+void ScaraArm::GoToPosition(float *goal, float h, float speed_max, float acc) 
 {
 	GoScrewHeight(h);
-	TrajectoryPlanning(goal[2], goal[3], goal[4], speed_max);
+	TrajectoryPlanning(goal[2], goal[3], goal[4], speed_max, acc);
 }
 
 float ScaraArm::GetPresentHeight()
@@ -459,6 +646,6 @@ bool ScaraArm::GoScrewHeight(const float &goal_height)
  */
 void ScaraArm::Reset()
 {
-    float init_pos[] = {0.f, 0.f, 58.f, 257.f, 406.f, 250.f};
-	GoToPosition(init_pos, init_pos[5], 1);
+    float init_pos[] = {0.f, 0.f, 58.f, 200.f, 500.f, 250.f};
+	GoToPosition(init_pos, init_pos[5], 50, 10);
 }

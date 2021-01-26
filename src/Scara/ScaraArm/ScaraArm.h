@@ -18,9 +18,10 @@ public:
 
     /* CORE function */
     void CalculateJacobianMatrix(void);
-    void TrajectoryPlanning(const float &oz, const float &px, const float &py, const float velocity_factor);
+    void TrajectoryPlanning(const float &oz, const float &px, const float &py, const float &max_vel, const float &acc);
+    void TrajectoryPlanning(const float &oz, const float &px, const float &py, const float &max_vel, const float &end_vel, const float &acc);
     bool GoScrewHeight(const float &goal_height);
-    void GoToPosition(float *goal, float h, float speed_max);
+    void GoToPosition(float *goal, float h, float speed_max, float acc);
 
     /* Set data function */
     void SetArmVelocity(float v0, float v1, float v2);
@@ -30,6 +31,7 @@ public:
     Eigen::Matrix<float, 3, 3> GetRotationMatrix(const int &axis_index, const float &theta);
     Eigen::Matrix<float, 3, 3> GetJacobianMatrix(void);
     float GetCurrentPosition(int index);
+    float GetRadius();
     float GetCurrentOrientation(int index);
     float GetPresentHeight();
     bool GetWorkingState(void);
@@ -42,6 +44,7 @@ private:
     // Screw
     void ReadHeight();
     void WriteHeight(const float &height) const;
+    // float v_plan(float dis, float init_v, float max_v, float end_v, float acc, float dure_time);
 
 private:
     ScaraArm();
@@ -66,6 +69,9 @@ private:
 
     Eigen::Matrix<float, 3, 1> current_position_;
     Eigen::Matrix<float, 3, 1> current_orientation_;
+
+	Eigen::Matrix<float, 3, 1> current_linear_velocity;
+	Eigen::Matrix<float, 3, 1> current_angular_velocity;
 
     bool is_out_of_limit_; // True if predicted motor velocity is out of range
     bool is_working_;      // True if arm is moving

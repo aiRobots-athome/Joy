@@ -7,7 +7,7 @@ void Form_ScaraArm::on_ScaraArm_btn_PosGo_clicked()
 	const float px = ui->ScaraArm_lineEdit_X->text().toFloat();
 	const float py = ui->ScaraArm_lineEdit_Y->text().toFloat();
 
-	CScaraArm->TrajectoryPlanning(oz, px, py, 1);
+	CScaraArm->TrajectoryPlanning(oz, px, py, 10, 1);
 }
 
 void Form_ScaraArm::on_Scara_btn_Reset_clicked()

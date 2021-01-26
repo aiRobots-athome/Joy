@@ -23,6 +23,7 @@ Scaratest::Scaratest() {
 }
 
 void Scaratest::test1() {
+    /* !! NEED !! to update the jacobian matrix, current orientation and position first */ 
     cScara->CScaraArm->CalculateJacobianMatrix();
     // Get waffer from level 1 in cassette A, and put it to level 10
     // Cassette A id = 0
@@ -126,25 +127,27 @@ void Scaratest::ready_pos(bool type, int id, float* ans) {
  * @param target - target position
  */
 void Scaratest::transfer(float* target) {
+    /* Angle needs to move */
     float transfer_angle = target[2] - cScara->CScaraArm->GetCurrentOrientation(2);
+    /* Angle change per move */
     float unit_angle = transfer_angle / 30;
-    // float radius = TRANSIT_DIS;
+    
+    /* Calculate the radius of the moving curve */
     float x = cScara->CScaraArm->GetCurrentPosition(0);
     float y = cScara->CScaraArm->GetCurrentPosition(1);
     float radius = sqrt(pow(x, 2) + pow(y, 2));
+
+    /* Moves needs to take to achieve target */
     int move_count = abs(transfer_angle / unit_angle);
-    // int move_dir = 1 - 2*(transfer_angle < 0);
     float angle = cScara->CScaraArm->GetCurrentOrientation(2);
     
-    // printf("toz: %f, tpx: %f, tpy: %f ", angle, radius * sin(angle * 3.14 / 180), radius * cos(angle * 3.14 / 180));
+    /* Premove in trajectory planning */
     for (int i = 0; i < (move_count - 1); i++) {
         angle += unit_angle;
-        printf("toz: %f, tpx: %f, tpy: %f \n", angle, radius * cos(angle * 3.14 / 180), radius * sin(angle * 3.14 / 180));
-    
-        // float present_target[] = {0.f, 0.f, angle, radius * sin(angle * 3.14 / 180), radius * cos(angle * 3.14 / 180), 258.f};
         cScara->CScaraArm->TrajectoryPlanning(angle, radius * cos(angle * 3.14 / 180), radius * sin(angle * 3.14 / 180), SPEED, SPEED, ACC);
     }
 
+    /* Last move in trajectory planning */
     cScara->CScaraArm->TrajectoryPlanning(target[2], target[3], target[4], SPEED, 0, ACC);
 }
 
@@ -162,12 +165,11 @@ void Scaratest::cassette(int id, int drawer, bool io) {
     float ready[6] = {};
     ready[2] = CASAY[id][2];
     ready[5] = CASAY[id][5];
-
     ready_pos(casay, id, ready);    // Get ready pos
 
-    // printf("Here1\n");
+    /* Move to ready position using trajectory planning */
     transfer(ready);
-    // printf("Here2\n");
+    
     cScara->CScaraArm->GoToPosition(ready, (ready[5] + drawer * DRAWER_H + (int)io * LIFT_DIS), SPEED, ACC);
     cScara->CScaraArm->GoToPosition(CASAY[id], (CASAY[id][5] + drawer * DRAWER_H + (int)io * LIFT_DIS), SPEED, ACC);    // Move from ready to cassette
     io = !io;   // inverse io value for easier caculation
@@ -192,9 +194,9 @@ void Scaratest::station(int id, bool io) {
     ready[5] = STATE[id][5];
     ready_pos(stations, id, ready);    // Get ready pos
     
-    // printf("Here3\n");
+    /* Move to ready position using trajectory planning */
     transfer(ready);
-    // printf("Here4\n");
+    
     cScara->CScaraArm->GoToPosition(ready, (ready[5] + (int)io * (LIFT_DIS + STAT_SHIFT)), SPEED, ACC);
     cScara->CScaraArm->GoToPosition(STATE[id], (STATE[id][5] + (int)io * (LIFT_DIS + STAT_SHIFT)), SPEED, ACC);    // Move from ready to cassette
 

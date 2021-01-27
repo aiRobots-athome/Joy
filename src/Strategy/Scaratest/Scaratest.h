@@ -39,6 +39,7 @@ class Scaratest
         float TRANSIT_DIS = 500;
         float SPEED = 100;
         float ACC = 50;
+        float DIV_FACTOR = 30;   // How many pieces cutted per path
     
     private:
         Scara *cScara;

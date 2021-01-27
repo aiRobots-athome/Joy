@@ -101,7 +101,6 @@ bool Scaratest::set_pos(bool type, int id, float *data) {
         return 0;
 }
 
-
 /**
  * Ready position for the scara to action
  * Ready position: The position before/after scara put/get waffer in/out station/cassette 
@@ -130,19 +129,18 @@ void Scaratest::transfer(float* target) {
     /* Angle needs to move */
     float transfer_angle = target[2] - cScara->CScaraArm->GetCurrentOrientation(2);
     /* Angle change per move */
-    float unit_angle = transfer_angle / 30;
+    float unit_angle = transfer_angle / DIV_FACTOR;
     
     /* Calculate the radius of the moving curve */
     float x = cScara->CScaraArm->GetCurrentPosition(0);
     float y = cScara->CScaraArm->GetCurrentPosition(1);
     float radius = sqrt(pow(x, 2) + pow(y, 2));
 
-    /* Moves needs to take to achieve target */
-    int move_count = abs(transfer_angle / unit_angle);
+    /* Present target angle */
     float angle = cScara->CScaraArm->GetCurrentOrientation(2);
     
     /* Premove in trajectory planning */
-    for (int i = 0; i < (move_count - 1); i++) {
+    for (int i = 0; i < (DIV_FACTOR - 1); i++) {
         angle += unit_angle;
         cScara->CScaraArm->TrajectoryPlanning(angle, radius * cos(angle * 3.14 / 180), radius * sin(angle * 3.14 / 180), SPEED, SPEED, ACC);
     }
